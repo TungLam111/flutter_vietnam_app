@@ -32,14 +32,25 @@ class _MyHomePageState extends State<MyHomePage> {
           ]
         ),
       ),
-      body:Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body:Column(
         children: [
-          IconCustom(svgAssetPath: 'assets/icons/noodles.svg',textLabel: 'Món ăn'),
-          IconCustom(svgAssetPath: 'assets/icons/tunic.svg',textLabel: 'Trang phục'),
-          IconCustom(svgAssetPath: 'assets/icons/halong-bay-vietnam.svg',textLabel: 'Phong cảnh'),
-          IconCustom(svgAssetPath: 'assets/icons/asian-hat.svg',textLabel: 'Lưu niệm'),
-        ],
+          //Placeholder dùng để phác họa 
+          Placeholder(fallbackWidth: 20,fallbackHeight: 150,),
+          SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconCustom(svgAssetPath: 'assets/icons/noodles.svg',textLabel: 'Món ăn'),
+              IconCustom(svgAssetPath: 'assets/icons/tunic.svg',textLabel: 'Trang phục'),
+              IconCustom(svgAssetPath: 'assets/icons/halong-bay-vietnam.svg',textLabel: 'Phong cảnh'),
+              IconCustom(svgAssetPath: 'assets/icons/asian-hat.svg',textLabel: 'Lưu niệm'),
+            ],),
+          Row(
+            children: [
+              Placeholder(fallbackWidth: MediaQuery.of(context).size.width/2,fallbackHeight: MediaQuery.of(context).size.width/2,),
+              Placeholder(fallbackWidth: MediaQuery.of(context).size.width/2,fallbackHeight: MediaQuery.of(context).size.width/2,)
+            ],)
+          ],
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
@@ -67,7 +78,7 @@ class CardSlide extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return Container(
-      
+
     );
   }
 }
