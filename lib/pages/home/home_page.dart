@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:flutter_vietnam_app/widgets/long_card.dart';
+import 'package:flutter_vietnam_app/widgets/icon_card.dart';
+import 'package:flutter_vietnam_app/widgets/square_card.dart';
 // 3 bottom bars
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) ;
-
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -32,25 +32,43 @@ class _MyHomePageState extends State<MyHomePage> {
           ]
         ),
       ),
-      body:Column(
-        children: [
-          //Placeholder dùng để phác họa 
-          Placeholder(fallbackWidth: 20,fallbackHeight: 150,),
-          SizedBox(height: 10,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconCustom(svgAssetPath: 'assets/icons/noodles.svg',textLabel: 'Món ăn'),
-              IconCustom(svgAssetPath: 'assets/icons/tunic.svg',textLabel: 'Trang phục'),
-              IconCustom(svgAssetPath: 'assets/icons/halong-bay-vietnam.svg',textLabel: 'Phong cảnh'),
-              IconCustom(svgAssetPath: 'assets/icons/asian-hat.svg',textLabel: 'Lưu niệm'),
-            ],),
-          Row(
-            children: [
-              Placeholder(fallbackWidth: MediaQuery.of(context).size.width/2,fallbackHeight: MediaQuery.of(context).size.width/2,),
-              Placeholder(fallbackWidth: MediaQuery.of(context).size.width/2,fallbackHeight: MediaQuery.of(context).size.width/2,)
-            ],)
-          ],
+      body:SingleChildScrollView(
+        child: Column(
+          children: [
+            //Placeholder dùng để phác họa 
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child:Row(
+                children: [
+                  SizedBox(width:10),
+                  CardSlide(assetImg: 'assets/images/banh_chung.jpg',textLabel: 'Bánh chưng'),
+                  SizedBox(width:10),
+                  CardSlide(assetImg: 'assets/images/ao_dai.jpg',textLabel: 'Áo dài'),
+                  SizedBox(width:10),
+                  CardSlide(assetImg: 'assets/images/cha_gio.jpg',textLabel: 'Chả giò'),
+                  SizedBox(width:10),
+                ],
+              )
+            ),
+            SizedBox(height: 10,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconCard(svgAssetPath: 'assets/icons/noodles.svg',textLabel: 'Món ăn'),
+                IconCard(svgAssetPath: 'assets/icons/tunic.svg',textLabel: 'Trang phục'),
+                IconCard(svgAssetPath: 'assets/icons/halong-bay-vietnam.svg',textLabel: 'Phong cảnh'),
+                IconCard(svgAssetPath: 'assets/icons/asian-hat.svg',textLabel: 'Lưu niệm'),
+              ],),
+            Row(
+              children: [
+                SizedBox(width: 10,),
+                Expanded(child: CardSquare(assetImg:'assets/images/tranh_dong_ho.jpg' ,textLabel: 'Tranh Đông Hồ',)),
+                SizedBox(width: 10,),
+                Expanded(child: CardSquare(assetImg:'assets/images/bun_dau.jpg' ,textLabel: 'Bún Đậu',)),
+                SizedBox(width: 10,),
+              ],)
+            ],
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
@@ -74,43 +92,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-class CardSlide extends StatelessWidget{
-  @override
-  Widget build(BuildContext context){
-    return Container(
 
-    );
-  }
-}
-class IconCustom extends StatelessWidget {
-  final String svgAssetPath;
-  final String textLabel;
-  IconCustom({Key key,this.svgAssetPath,this.textLabel});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height:100,
-      child: Card(
-        shape:RoundedRectangleBorder(
-          side: new BorderSide(color: Colors.black, width: 2.0),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Column(children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(20,10,20,15),
-            child: SvgPicture.asset(
-              svgAssetPath,
-              height:44,
-              width:44,
-              semanticsLabel:'Food Logo',
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: Text(textLabel,style:TextStyle(fontSize: 10,fontWeight:FontWeight.bold)),
-          )
-        ],)
-      ),
-    );
-  }
-}
