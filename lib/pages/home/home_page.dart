@@ -21,7 +21,7 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: (){},
           ),
           title:Text('Hello ABC',
-          style:TextStyle(color:Colors.black)),
+          style:TextStyle(color:Colors.black,fontSize: 20,)),
           actions:[
             IconButton(icon:Icon(Icons.search,color:Colors.black),
             onPressed: (){},
@@ -49,6 +49,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   SizedBox(width:10),
                 ],
               )
+            ),
+            SizedBox(height: 10,),
+            Row(
+              children:[
+                SizedBox(width:10),
+                Container(
+                  width:5,
+                  height:20,
+                  color: Colors.amber
+                ),
+                SizedBox(width:10),
+                Text('Danh mục',style:TextStyle(fontSize: 15))
+              ]
             ),
             SizedBox(height: 10,),
             Row(
