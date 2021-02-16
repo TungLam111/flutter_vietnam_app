@@ -26,13 +26,18 @@ class _ExtractImageState extends State<ExtractImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child:IconButton(
-          icon:Icon(Icons.camera),
-          onPressed: (){
-            getImage(ImageSource.camera);
-          },)
-          ),
+      body: Column(
+        mainAxisAlignment:  MainAxisAlignment.spaceEvenly,
+        children: [
+          SizedBox(height: 10,),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: ElevatedButton(onPressed: (){getImage(ImageSource.camera);}, child: Text('Use camera'))),
+          Container(
+            padding: EdgeInsets.all(10),
+            child: ElevatedButton(onPressed: (){getImage(ImageSource.gallery);}, child: Text('Use gallery'))),
+        ],
+      ),
         );
   }
   Future getImage(ImageSource imgSource) async {
