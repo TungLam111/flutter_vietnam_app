@@ -46,6 +46,8 @@ class _ExtractImageState extends State<ExtractImage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _cropImage();
+        print(_image);
+        
       } else {
         print('No image selected.');
       }
@@ -77,10 +79,7 @@ class _ExtractImageState extends State<ExtractImage> {
             toolbarColor: Colors.deepPurple,
             toolbarWidgetColor: Colors.white,
             initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          title: 'Cropper',
-        ));
+            lockAspectRatio: false),);
       setState(() {
         if (croppedFile != null) 
           _image = croppedFile;
