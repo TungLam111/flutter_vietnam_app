@@ -4,6 +4,14 @@ import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_location.dart';
+import 'package:http/http.dart';
+import 'dart:async';
+import 'dart:io';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:edge_alert/edge_alert.dart';
+import 'package:flutter/services.dart';
+
 class HomeScreen extends StatefulWidget {
 
  @override
@@ -14,6 +22,90 @@ class _HomeScreenState extends State<HomeScreen> {
   TextTheme textTheme;
   List<PopularTourModel> popularTourModels = new List();
   List<CountryModel> country = new List();
+  
+  File _image;
+  String _error;
+  final picker = ImagePicker();
+
+  bool isReply = false;
+  //pick image from camera
+  Future getImage() async {
+    String error;
+    PickedFile pickedFile;
+    try {
+      pickedFile = await picker.getImage(source: ImageSource.camera);
+    } on PlatformException catch (e) {
+      error = e.message;
+    }
+    if (!mounted) return;
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        _cropImage();
+      } else {
+        _error = error;
+      }
+    });
+  }
+
+  Future getFromGallery() async {
+    PickedFile pickedFile;
+    String error;
+    try {
+      pickedFile = await picker.getImage(
+        source: ImageSource.gallery,
+      );
+    } on PlatformException catch (e) {
+      error = e.message;
+    }
+    if (!mounted) return;
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        _cropImage();
+      });
+    } else {
+      _error = error;
+    }
+  }
+
+  Future<Null> _cropImage() async {
+    File croppedFile = await ImageCropper.cropImage(
+        sourcePath: _image.path,
+        aspectRatioPresets: Platform.isAndroid
+            ? [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ]
+            : [
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Extract an image',
+            toolbarColor: Colors.deepPurple,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Cropper',
+        ));
+      setState(() {
+        if (croppedFile != null) 
+          _image = croppedFile;
+      });
+    
+  }
   @override
   void initState() {
     country = getCountrys();
@@ -136,12 +228,18 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
           GestureDetector(
+            onTap:() {
+              getImage();
+            } ,
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 80),
               decoration: BoxDecoration(color: Colors.grey[200] , borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Icon(Icons.add_a_photo_outlined, size:30),)
           ),
            GestureDetector(
+             onTap: ()  {
+               getFromGallery();
+               },
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 15, horizontal: 80),
               decoration: BoxDecoration(color: Colors.grey[200] , borderRadius: BorderRadius.all(Radius.circular(10))),
