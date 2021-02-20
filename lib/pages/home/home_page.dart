@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
-
+import 'home_screen/home_screen.dart';
 // 3 bottom bars
 class MyHomePage extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class _MyHomePageState extends State<MyHomePage> {
   PageController _pageController;
 
   static List<Widget> _page = <Widget>[
-    Container(),
+    HomeScreen(),
     Container(),
     Container(),
     Container(),

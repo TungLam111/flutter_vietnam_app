@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
@@ -86,4 +86,4 @@ class _ExtractImageState extends State<ExtractImage> {
       });
     
   }
-}
+}*/
