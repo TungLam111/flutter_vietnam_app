@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/detail.dart';
+
 class DetailCard extends StatelessWidget {
   final Detail detail;
   DetailCard({this.detail});
@@ -33,7 +34,7 @@ class DetailCard extends StatelessWidget {
             Row(
               children: [
                 SizedBox(width: 5),
-                Text('Bún đậu',style:TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
+                Expanded(child: Text('Bún đậu Phan Dam Tung Lam',maxLines: 3, style:TextStyle(fontWeight: FontWeight.bold,fontSize: 14)),)
               ],
             ),
             Row(

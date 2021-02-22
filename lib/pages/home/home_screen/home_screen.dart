@@ -328,18 +328,18 @@ class PlaceItem extends StatelessWidget {
 }
 
 List<Item> placeList = [
-  Item(image: "images/img1.jpg", itemName: "Destination 1" ,location: "Location 1"),
-  Item(image: "images/img2.png", itemName: "Destination 2" ,location: "Location 2"),
-  Item(image: "images/img3.jpg", itemName: "Destination 3" ,location: "Location 3"),
-  Item(image: "images/img4.jpg",itemName: "Destination 4" ,location: "Location 4"),
-  Item(image: "images/img5.jpg", itemName: "Destination 5" ,location: "Location 5"),
-  Item(image: "images/img6.png", itemName: "Destination 6" ,location: "Location 6"),
-  Item(image: "images/img7.jpg", itemName: "Destination 7" ,location: "Location 7" ),
-  Item(image: "images/img8.png", itemName: "Destination 8" ,location: "Location 8"),
-  Item(image: "images/img9.jpg", itemName: "Destination 9" ,location: "Location 9" ),
-  Item(image: "images/img10.jpg", itemName: "Destination 10" ,location: "Location 10"),
-  Item(image: "images/img11.jpg",itemName: "Destination 11" ,location: "Location 11" ),
-  Item(image: "images/img12.jpg", itemName: "Destination 12" ,location: "Location 12"),
+  Item(image: "assets/images/img1.jpg", itemName: "Destination 1" ,location: "Location 1"),
+  Item(image: "assets/images/img2.png", itemName: "Destination 2" ,location: "Location 2"),
+  Item(image: "assets/images/img3.jpg", itemName: "Destination 3" ,location: "Location 3"),
+  Item(image: "assets/images/img4.jpg",itemName: "Destination 4" ,location: "Location 4"),
+  Item(image: "assets/images/img5.jpg", itemName: "Destination 5" ,location: "Location 5"),
+  Item(image: "assets/images/img6.png", itemName: "Destination 6" ,location: "Location 6"),
+  Item(image: "assets/images/img7.jpg", itemName: "Destination 7" ,location: "Location 7" ),
+  Item(image: "assets/images/img8.png", itemName: "Destination 8" ,location: "Location 8"),
+  Item(image: "assets/images/img9.jpg", itemName: "Destination 9" ,location: "Location 9" ),
+  Item(image: "assets/images/img10.jpg", itemName: "Destination 10" ,location: "Location 10"),
+  Item(image: "assets/images/img11.jpg",itemName: "Destination 11" ,location: "Location 11" ),
+  Item(image: "assets/images/img12.jpg", itemName: "Destination 12" ,location: "Location 12"),
 ];
 
 class CountryListTile extends StatelessWidget {

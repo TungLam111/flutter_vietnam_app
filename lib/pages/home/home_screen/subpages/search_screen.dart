@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/widgets/detail_card.dart';
 import 'package:flutter_vietnam_app/widgets/long_card_recycle.dart';
-void main(){
-  runApp(MaterialApp(
-    home: SearchScreen(),
-  ));
-}
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
@@ -19,20 +14,13 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        onHorizontalDragStart: (e){
-          _swipeStartX=e.globalPosition.dx;
-        },
-        onHorizontalDragUpdate: (e){
-          _swipeDirection=(e.globalPosition.dx>_swipeStartX)?'Right':'Left';
-        },
-        onHorizontalDragEnd: (e){
-          if(_swipeDirection=='Right'){
-            Navigator.pop(context);
-          }
-        },
-        child: SafeArea(
-          child: Column(
+      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomPadding: false,
+      body: SafeArea(
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
             children: [
               _buildSearchs(),
               SizedBox(height: 10,),
@@ -41,15 +29,19 @@ class _SearchScreenState extends State<SearchScreen> {
                 DetailCard(),
               ],),
               CardSlideRecognition(),
+              CardSlideRecognition(),
+              CardSlideRecognition(),
+              CardSlideRecognition(),
             ],
+          )
           ),
         ),
-      ),
+      
     );
   }
   Widget _buildSearchs() {
     return Container(
-      margin: EdgeInsets.all(5),
+      margin: EdgeInsets.all(10),
       alignment: Alignment.center,
       child:Container(
         //padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
@@ -64,7 +56,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 decoration: InputDecoration(
                 prefixIcon: Icon(Icons.search),
                 hintText: 'Looking for places',
-                hintStyle: TextStyle(color:Colors.black),
+                hintStyle: TextStyle(color:Colors.grey[300]),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(15)),
                 onChanged: (value){

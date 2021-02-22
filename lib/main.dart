@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
+import 'package:flutter_vietnam_app/pages/auth/splash_screen.dart';
 import 'package:flutter_vietnam_app/pages/home/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -20,7 +22,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       
-      home: MyHomePage(),
+      home: Login(),
     );
   }
 }
