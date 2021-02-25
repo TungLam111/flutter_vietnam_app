@@ -68,6 +68,8 @@ flutter:
      - assets/images/img11.jpg
      - assets/images/tranh_dong_ho_sqr.jpg
      - assets/images/com_lang_vong_sqr.jpg
+     - assets/images/lua_sqr.jpg
+     - assets/images/mua_roi_sqr.jpg
      - assets/images/huong_dinh_sqr.jpg
   #   - images/a_dot_ham.jpeg
 
