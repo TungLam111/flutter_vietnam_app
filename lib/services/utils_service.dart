@@ -12,8 +12,6 @@ import 'package:mime/src/default_extension_map.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:pigment/pigment.dart';
 
-import 'localization.dart';
-
 class UtilsService {
   String _trustedProxyUrl = '';
 
@@ -139,16 +137,6 @@ class UtilsService {
     }
   }
 */
-  Future<dynamic> initialiseDateFormatting(
-      LocalizationService localizationService) async {
-    Locale locale = localizationService.getLocale();
-    String localeName = locale.toString();
-
-    if (LocalizationService.localizedLocales.contains(locale.languageCode)) {
-      localeName = locale.languageCode.replaceFirst('-', '_');
-    }
-    return initializeDateFormatting(localeName, null);
-  }
 
   Future<String> _getFileMimeTypeFromMagicHeaders(File file) async {
     // TODO When file uploads become larger, this needs to be turned into a stream

@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
-import 'package:flutter_vietnam_app/services/localization.dart';
 import 'package:flutter_vietnam_app/services/utils_service.dart';
 import 'package:crypto/crypto.dart';
 import 'package:http/http.dart';
@@ -12,7 +11,6 @@ import 'package:http_retry/http_retry.dart';
 export 'package:http/http.dart';
 
 class HttpieService {
-  LocalizationService _localizationService;
   UtilsService _utilsService;
   String authorizationToken;
   String magicHeaderName;
@@ -34,7 +32,10 @@ class HttpieService {
   }
 
   void setAuthorizationToken(String token) {
+    print(token);
+    print("hoho");
     authorizationToken = token;
+    print(authorizationToken);
   }
 
   String getAuthorizationToken() {
@@ -43,10 +44,6 @@ class HttpieService {
 
   void removeAuthorizationToken() {
     authorizationToken = null;
-  }
-
-  void setLocalizationService(LocalizationService localizationService) {
-    _localizationService = localizationService;
   }
 
   void setUtilsService(UtilsService utilsService) {
@@ -69,11 +66,11 @@ class HttpieService {
       {Map<String, String> headers,
       body,
       Encoding encoding,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
-        appendLanguageHeader: appendLanguageHeader,
+    //    appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     Response response;
@@ -92,11 +89,11 @@ class HttpieService {
       {Map<String, String> headers,
       body,
       Encoding encoding,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
-        appendLanguageHeader: appendLanguageHeader,
+      //  appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     Response response;
@@ -114,11 +111,11 @@ class HttpieService {
       {Map<String, String> headers,
       body,
       Encoding encoding,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
-        appendLanguageHeader: appendLanguageHeader,
+ //       appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     Response response;
@@ -135,11 +132,11 @@ class HttpieService {
 
   Future<HttpieResponse> delete(url,
       {Map<String, String> headers,
-      bool appendLanguageHeader,
+     // bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
-        appendLanguageHeader: appendLanguageHeader,
+     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     Response response;
@@ -157,19 +154,19 @@ class HttpieService {
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
     Map<String, String> jsonHeaders = _getJsonHeaders();
 
     jsonHeaders.addAll(headers);
-
+    print("kkk");
     return post(url,
         headers: jsonHeaders,
         body: jsonBody,
         encoding: encoding,
-        appendLanguageHeader: appendLanguageHeader,
+    //    appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -177,7 +174,7 @@ class HttpieService {
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
@@ -189,7 +186,7 @@ class HttpieService {
         headers: jsonHeaders,
         body: jsonBody,
         encoding: encoding,
-        appendLanguageHeader: appendLanguageHeader,
+     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -197,7 +194,7 @@ class HttpieService {
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-      bool appendLanguageHeader,
+//      bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
@@ -209,18 +206,18 @@ class HttpieService {
         headers: jsonHeaders,
         body: jsonBody,
         encoding: encoding,
-        appendLanguageHeader: appendLanguageHeader,
+     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
   Future<HttpieResponse> get(url,
       {Map<String, String> headers,
       Map<String, dynamic> queryParameters,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var finalHeaders = _getHeadersWithConfig(
         headers: headers,
-        appendLanguageHeader: appendLanguageHeader,
+     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     if (queryParameters != null && queryParameters.keys.length > 0) {
@@ -249,7 +246,7 @@ class HttpieService {
         headers: headers,
         body: body,
         encoding: encoding,
-        appendLanguageHeader: appendLanguageHeader,
+   //     appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -257,14 +254,14 @@ class HttpieService {
       {Map<String, String> headers,
       Map<String, dynamic> body,
       Encoding encoding,
-      bool appendLanguageHeader,
+  //    bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PATCH',
         headers: headers,
         body: body,
         encoding: encoding,
-        appendLanguageHeader: appendLanguageHeader,
+       // appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -272,14 +269,14 @@ class HttpieService {
       {Map<String, String> headers,
       Map<String, dynamic> body,
       Encoding encoding,
-      bool appendLanguageHeader,
+   //   bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PUT',
         headers: headers,
         body: body,
         encoding: encoding,
-        appendLanguageHeader: appendLanguageHeader,
+     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -288,13 +285,13 @@ class HttpieService {
       String method,
       Map<String, dynamic> body,
       Encoding encoding,
-      bool appendLanguageHeader,
+    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var request = new http.MultipartRequest(method, Uri.parse(url));
 
     var finalHeaders = _getHeadersWithConfig(
         headers: headers ?? {},
-        appendLanguageHeader: appendLanguageHeader,
+      //  appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     request.headers.addAll(finalHeaders);
@@ -347,22 +344,18 @@ class HttpieService {
     return HttpieStreamedResponse(response);
   }
 
-  String _getLanguage() {
-    return _localizationService.getLocale().languageCode.toLowerCase();
-  }
-
   Map<String, String> _getHeadersWithConfig(
       {Map<String, String> headers = const {},
-      bool appendLanguageHeader,
+     // bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     headers = headers ?? {};
 
     Map<String, String> finalHeaders = Map.from(headers);
 
-    appendLanguageHeader = appendLanguageHeader ?? true;
+   // appendLanguageHeader = appendLanguageHeader ?? true;
     appendAuthorizationToken = appendAuthorizationToken ?? false;
 
-    if (appendLanguageHeader) finalHeaders['Accept-Language'] = _getLanguage();
+   // if (appendLanguageHeader) finalHeaders['Accept-Language'] = _getLanguage();
 
     if (appendAuthorizationToken && authorizationToken != null) {
       finalHeaders['Authorization'] = 'Token $authorizationToken';
@@ -606,10 +599,6 @@ class HttpieArgumentsError implements Exception {
   String toString() => 'HttpieArgumentsError: $msg';
 }
 
-// These overrides are used by the standard dart:http/HttpClient to change how
-// it behaves. All settings changed here will apply to every single HttpClient
-// used by any other package, as long as they're running inside a zone with
-// these set.
 class HttpieOverrides extends HttpOverrides {
   String _proxy;
   final HttpOverrides _previous = HttpOverrides.current;

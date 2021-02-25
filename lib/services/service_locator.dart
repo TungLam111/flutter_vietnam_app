@@ -1,10 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
+class OBStorage {
+  _Store store;
+  String namespace;
 
-class StorageService {
+  OBStorage({this.store, this.namespace});
+
   OBStorage getSecureStorage({String namespace}) {
     return OBStorage(store: _SecureStore(), namespace: namespace);
   }
@@ -13,13 +16,6 @@ class StorageService {
     return OBStorage(
         store: _SystemPreferencesStorage(namespace), namespace: namespace);
   }
-}
-
-class OBStorage {
-  _Store store;
-  String namespace;
-
-  OBStorage({this.store, this.namespace});
 
   Future<String> get(String key, {String defaultValue}) async {
     String finalKey = _makeKey(key);
@@ -33,6 +29,8 @@ class OBStorage {
   }
 
   Future<void> set(String key, dynamic value) {
+    print(key);
+    print(value);
     return this.store.set(_makeKey(key), value);
   }
 
@@ -64,10 +62,7 @@ class _SecureStore implements _Store<String> {
   }
 
   void _loadPreviouslyStoredKeys() async {
-    // Storing the previous keys in a list in preferences instead of obtaining
-    // them using storage.readAll(). For one thing, readAll() would decrypt all
-    // stored data and send it back, which is unnecessary. On top of that,
-    // readAll() doesn't work on iOS (https://github.com/mogol/flutter_secure_storage/issues/70).
+
     SharedPreferences preferences = await SharedPreferences.getInstance();
     List<String> storedKeys = preferences.getStringList('secure_store.keylist');
     if(storedKeys != null && storedKeys.isNotEmpty)  _storedKeys.addAll(storedKeys);
