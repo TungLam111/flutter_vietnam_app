@@ -26,18 +26,21 @@ class _PageViewAnotherState extends State<PageViewAnother> {
       children: [
         APageView(
           imageAsset:'assets/images/mua_roi_sqr.jpg',
+          titleAsset: 'assets/images/mua_roi_font.jpg',
           bigText:'Ứng dụng VinTravel',
           description: 'Ứng dụng giới thiệu các cảnh đẹp, món ăn, trang phục Việt Nam',
           visibleButton: false,
         ),
         APageView(
           imageAsset: 'assets/images/com_lang_vong_sqr.jpg',
+          titleAsset: 'assets/images/com_lang_vong_font.jpg',
           bigText: 'Second',
           description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
           visibleButton: false,
         ),
         APageView(
           imageAsset: 'assets/images/lua_sqr.jpg',
+          titleAsset: 'assets/images/lua_ha_dong_font.jpg',
           bigText: 'Third',
           description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
           visibleButton: true,
@@ -75,23 +78,35 @@ class _PageViewAnotherState extends State<PageViewAnother> {
 }
 class APageView extends StatelessWidget {
   final String imageAsset;
+  final String titleAsset;
   final String bigText;
   final String description;
   final bool visibleButton;
-  APageView({this.imageAsset,this.bigText,this.description,this.visibleButton});
+  APageView({this.imageAsset,this.titleAsset,this.bigText,this.description,this.visibleButton});
   @override
   Widget build(BuildContext context) {
     return Container(
             child:Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Row(
+                Stack(
+                  //fit:StackFit.loose,
                   children: [
-                    Spacer(),
-                    Image.asset(imageAsset,width: MediaQuery.of(context).size.width-30,)
+                    Container(
+                      height:500,
+                      alignment: Alignment.centerRight,
+                      child: Image.asset(imageAsset,width: MediaQuery.of(context).size.width-30,)),
+                    Positioned(
+                      bottom: -5,
+                      //right:0,
+                      left:100,
+                      child: Image.asset(titleAsset,
+                        height: 100,
+                        width: MediaQuery.of(context).size.width-30,))
                   ],
                 ),
-                SizedBox(height: 20,),
+                //Spacer(),
+                SizedBox(height: 10,),
                 Text(bigText,style: TextStyle(
                   color: Colors.green,
                   fontSize: 20,

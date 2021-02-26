@@ -73,6 +73,9 @@ flutter:
      - assets/images/lua_sqr.jpg
      - assets/images/mua_roi_sqr.jpg
      - assets/images/huong_dinh_sqr.jpg
+     - assets/images/lua_ha_dong_font.jpg
+     - assets/images/mua_roi_font.jpg
+     - assets/images/com_lang_vong_font.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
