@@ -64,7 +64,7 @@ class _PageViewAnotherState extends State<PageViewAnother> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 150),
       height:12,
-      width:12,
+      width:isActive?30:12,
       decoration: BoxDecoration(
         color: isActive?Colors.green:Colors.grey,
         borderRadius: BorderRadius.all(Radius.circular(12)),
