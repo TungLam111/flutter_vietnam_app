@@ -1,151 +1,39 @@
-import 'dart:async';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/services.dart';
-class OBStorage {
-  _Store store;
-  String namespace;
+import 'package:get_it/get_it.dart';
 
-  OBStorage({this.store, this.namespace});
+import 'tour/tour_service.dart';
+import 'tour/tour_service_implement.dart';
 
-  OBStorage getSecureStorage({String namespace}) {
-    return OBStorage(store: _SecureStore(), namespace: namespace);
-  }
+import 'storage/storage_service.dart';
+import 'storage/storage_service_implement.dart';
 
-  OBStorage getSystemPreferencesStorage({String namespace}) {
-    return OBStorage(
-        store: _SystemPreferencesStorage(namespace), namespace: namespace);
-  }
+import 'web_httpie/httpie.dart';
+import 'web_httpie/httpie_implement.dart';
 
-  Future<String> get(String key, {String defaultValue}) async {
-    String finalKey = _makeKey(key);
-    String value = await this.store.get(finalKey);
-    if (value == null && defaultValue != null) {
-      await store.set(finalKey, defaultValue);
-      value = defaultValue;
-    }
+import 'auth/auth_service.dart';
+import 'auth/auth_service_implement.dart';
 
-    return value;
-  }
+import '../view_models/login_view_model.dart';
+import '../view_models/signup_view_model.dart';
 
-  Future<void> set(String key, dynamic value) {
-    print(key);
-    print(value);
-    return this.store.set(_makeKey(key), value);
-  }
+// Using GetIt is a convenient way to provide services and view models
+// anywhere we need them in the app.
+GetIt serviceLocator = GetIt.instance;
 
-  Future<void> remove(String key) {
-    return this.store.remove(this._makeKey(key));
-  }
+void setupServiceLocator() {
+  // services
+  //serviceLocator.registerLazySingleton<WebApi>(() => WebApiImpl());
+  //serviceLocator.registerLazySingleton<StorageService>(() => StorageServiceImpl());
+  //serviceLocator.registerLazySingleton<CurrencyService>(() => CurrencyServiceImpl());
+  //serviceLocator.registerLazySingleton<LoginService>(()=> LoginServiceImpl());
+  // You can replace the actual services above with fake implementations during development.
+  //
+  // serviceLocator.registerLazySingleton<WebApi>(() => FakeWebApi());
+  // serviceLocator.registerLazySingleton<StorageService>(() => FakeStorageService());
+  // serviceLocator.registerLazySingleton<CurrencyService>(() => CurrencyServiceFake());
 
-  Future<void> clear() {
-    return this.store.clear();
-  }
+  // view models
+  //serviceLocator.registerFactory<CalculateScreenViewModel>(() => CalculateScreenViewModel());
+  //serviceLocator.registerFactory<FavoriteViewModel>(() => FavoriteViewModel());
+  //serviceLocator.registerFactory<LoginScreenViewModel>(() => LoginScreenViewModel());
 
-  String _makeKey(String key) {
-    if (this.namespace == null) return key;
-    return '$namespace.$key';
-  }
-}
-
-class _SecureStore implements _Store<String> {
-  final storage = new FlutterSecureStorage();
-  Set<String> _storedKeys = Set();
-
-  // Clears the whole storage, including other namespaces.
-  Future clearAll(){
-    return storage.deleteAll();
-  }
-
-  _SecureStore() {
-    _loadPreviouslyStoredKeys();
-  }
-
-  void _loadPreviouslyStoredKeys() async {
-
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    List<String> storedKeys = preferences.getStringList('secure_store.keylist');
-    if(storedKeys != null && storedKeys.isNotEmpty)  _storedKeys.addAll(storedKeys);
-  }
-
-  void _saveStoredKeys() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.setStringList('secure_store.keylist', _storedKeys.toList());
-  }
-
-  Future<String> get(String key) async {
-    try {
-      return storage.read(key: key);
-    } on PlatformException {
-      // This might happen when failed to decrypt, in that case the whole storage is useless. Clear it.
-      await clearAll();
-      return null;
-    }
-  }
-
-  Future<void> set(String key, String value) {
-    if (_storedKeys.add(key)) {
-      _saveStoredKeys();
-    }
-    return storage.write(key: key, value: value);
-  }
-
-  Future<void> remove(String key) {
-    if (_storedKeys.remove(key)) {
-      _saveStoredKeys();
-    }
-    return storage.delete(key: key);
-  }
-
-  Future<void> clear() {
-    return Future.wait(
-        _storedKeys.map((String key) => storage.delete(key: key)));
-  }
-}
-
-class _SystemPreferencesStorage implements _Store<String> {
-  final String _namespace;
-
-  Future<SharedPreferences> _sharedPreferencesCache;
-
-  _SystemPreferencesStorage(String namespace) : _namespace = namespace;
-
-  Future<SharedPreferences> _getSharedPreferences() async {
-    if (_sharedPreferencesCache != null) return _sharedPreferencesCache;
-    _sharedPreferencesCache = SharedPreferences.getInstance();
-    return _sharedPreferencesCache;
-  }
-
-  Future<String> get(String key) async {
-    SharedPreferences sharedPreferences = await _getSharedPreferences();
-    return sharedPreferences.get(key);
-  }
-
-  Future<void> set(String key, String value) async {
-    SharedPreferences sharedPreferences = await _getSharedPreferences();
-    return sharedPreferences.setString(key, value);
-  }
-
-  Future<void> remove(String key) async {
-    SharedPreferences sharedPreferences = await _getSharedPreferences();
-    return sharedPreferences.remove(key);
-  }
-
-  Future<void> clear() async {
-    SharedPreferences preferences = await _getSharedPreferences();
-    return Future.wait(preferences
-        .getKeys()
-        .where((key) => key.startsWith('$_namespace.'))
-        .map((key) => preferences.remove(key)));
-  }
-}
-
-abstract class _Store<T> {
-  Future<String> get(String key);
-
-  Future<void> set(String key, T value);
-
-  Future<void> remove(String key);
-
-  Future<void> clear();
 }

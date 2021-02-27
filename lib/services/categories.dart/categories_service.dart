@@ -1,5 +1,5 @@
 
-import 'httpie.dart';
+import '../web_httpie/httpie.dart';
 
 class CategoriesApiService {
   HttpieService _httpService;

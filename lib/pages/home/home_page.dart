@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/pages/auth/page_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
+import 'home_screen/chat/chat_room.dart';
 import 'home_screen/home_screen.dart';
 import 'home_screen/subpages/search_screen.dart';
 // 3 bottom bars
@@ -16,8 +18,8 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Widget> _page = <Widget>[
     HomeScreen(),
     SearchScreen(),
-    Container(),
-    Container(),
+    PageViewAnother(),
+    ChatPage(),
   ];
   @override
   void initState() {
@@ -37,6 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
             body: SizedBox.expand(
               child: PageView(
+                physics: BouncingScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (index) {
                   setState(() => _selectedIndex = index);

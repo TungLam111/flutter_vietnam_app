@@ -1,9 +1,10 @@
 
 import 'package:flutter/material.dart';
 
-import 'httpie.dart';
+import '../web_httpie/httpie.dart';
+import 'auth_service_implement.dart';
 
-class AuthApiService{
+class AuthApiService implements Auth {
   
   static const String apiURL = 'https://murmuring-sierra-28458.herokuapp.com';
   static const CHECK_USERNAME_PATH = 'api/auth/username-check/';

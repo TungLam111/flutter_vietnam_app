@@ -1,28 +1,26 @@
 import 'package:flutter/material.dart';
-void main(){
-  runApp(MaterialApp(
-    home: PageViewAnother(),
-  ));
-}
 class PageViewAnother extends StatefulWidget {
   @override
   _PageViewAnotherState createState() => _PageViewAnotherState();
 }
 
 class _PageViewAnotherState extends State<PageViewAnother> {
-  final PageController ctrl=PageController(initialPage: 0,keepPage: true);
-  int page=0;
+  final int _numPages = 4;
+  final PageController _pageController = PageController(initialPage: 0, keepPage: true);
+  int _currentPage = 0;
+  Size size;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: PageView(
+        physics: BouncingScrollPhysics(),
       onPageChanged: (value){
         setState(() {
-          page=value;  
+          _currentPage = value;  
         });
       },
-      controller: ctrl,
+      controller: _pageController,
       children: [
         APageView(
           imageAsset:'assets/images/mua_roi_sqr.jpg',
@@ -44,36 +42,46 @@ class _PageViewAnotherState extends State<PageViewAnother> {
           bigText: 'Third',
           description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
           visibleButton: true,
+        ),
+         APageView(
+          imageAsset: 'assets/images/lua_sqr.jpg',
+          titleAsset: 'assets/images/lua_ha_dong_font.jpg',
+          bigText: 'Third',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
+          visibleButton: true,
         )
       ],
     ),
     bottomSheet: Container(
       color: Colors.white,
-      padding: EdgeInsets.all(8),
+      padding: EdgeInsets.symmetric(vertical: 30),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _circleBar((page==0)),
-          SizedBox(width: 5,),
-          _circleBar((page-1==0)),
-          SizedBox(width: 5,),
-          _circleBar((page-2==0)),
-        ],
+        children: _buildPageIndicator(),
       ),
     ),
   );
 }
-  Widget _circleBar(bool isActive){
+
+ List<Widget> _buildPageIndicator() {
+    List<Widget> list = [];
+    for (int i = 0; i < _numPages; i++) {
+      list.add(i == _currentPage ? _indicator(true) : _indicator(false));
+    }
+    return list;
+  }
+
+  Widget _indicator(bool isActive) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 150),
-      height:12,
-      width:isActive?30:12,
+      duration: Duration(milliseconds: 500),
+      margin: EdgeInsets.symmetric(horizontal: 4.0),
+      height: 5.0,
+      width: isActive ? 20.0 : 8,
       decoration: BoxDecoration(
-        color: isActive?Colors.green:Colors.grey,
+        color: isActive ? Color(0xff139157) : Colors.grey[400],
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     );
-
   }
 }
 class APageView extends StatelessWidget {
