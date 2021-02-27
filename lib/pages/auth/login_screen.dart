@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     _validationService = ValidationService();
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    ScreenUtil.instance = ScreenUtil().init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
     return new Scaffold(
@@ -110,18 +110,18 @@ class _LoginState extends State<Login> {
                     children: <Widget>[
                       Image.asset(
                         "assets/images/logo.png",
-                        width: ScreenUtil.getInstance().setWidth(110),
-                        height: ScreenUtil.getInstance().setHeight(110),
+                        width: ScreenUtil().setWidth(110),
+                        height: ScreenUtil().setHeight(110),
                       ),
                       Text("LOGO",
                           style: TextStyle(
-                              fontSize: ScreenUtil.getInstance().setSp(46),
+                              fontSize: ScreenUtil().setSp(46),
                               letterSpacing: .6,
                               fontWeight: FontWeight.bold))
                     ],
                   ),
                   SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(180),
+                    height: ScreenUtil().setHeight(180),
                   ),
                   FormCard(
                     formKey: _formKey,
@@ -133,7 +133,7 @@ class _LoginState extends State<Login> {
                     passwordValidate: _validatePassword,
                     passwordFocusNode : _passwordFocusNode
                     ),
-                  SizedBox(height: ScreenUtil.getInstance().setHeight(40)),
+                  SizedBox(height: ScreenUtil().setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -156,8 +156,8 @@ class _LoginState extends State<Login> {
                       ),
                       InkWell(
                         child: Container(
-                          width: ScreenUtil.getInstance().setWidth(330),
-                          height: ScreenUtil.getInstance().setHeight(100),
+                          width: ScreenUtil().setWidth(330),
+                          height: ScreenUtil().setHeight(100),
                           decoration: BoxDecoration(
                               gradient: LinearGradient(colors: [
                                 Color(0xFF17ead9),
@@ -192,7 +192,7 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                   SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(40),
+                    height: ScreenUtil().setHeight(40),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

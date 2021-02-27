@@ -49,14 +49,14 @@ class FormCard extends StatelessWidget {
           children: <Widget>[
             Text("Login",
                 style: TextStyle(
-                    fontSize: ScreenUtil.getInstance().setSp(45),
+                    fontSize: ScreenUtil().setSp(45),
                     letterSpacing: .6)),
             SizedBox(
-              height: ScreenUtil.getInstance().setHeight(30),
+              height: ScreenUtil().setHeight(30),
             ),
             Text("Username",
                 style: TextStyle(
-                    fontSize: ScreenUtil.getInstance().setSp(26))),
+                    fontSize: ScreenUtil().setSp(26))),
             TextFormField(
               validator: usernameValidate,
               controller: userNameController,
@@ -65,11 +65,11 @@ class FormCard extends StatelessWidget {
                   hintStyle: TextStyle(color: Colors.grey, fontSize: 12.0)),
             ),
             SizedBox(
-              height: ScreenUtil.getInstance().setHeight(30),
+              height: ScreenUtil().setHeight(30),
             ),
             Text("PassWord",
                 style: TextStyle(
-                    fontSize: ScreenUtil.getInstance().setSp(26))),
+                    fontSize: ScreenUtil().setSp(26))),
             TextFormField(
               focusNode: passwordFocusNode,
               validator: passwordValidate,
@@ -96,7 +96,7 @@ class FormCard extends StatelessWidget {
                   
             ),
             SizedBox(
-              height: ScreenUtil.getInstance().setHeight(35),
+              height: ScreenUtil().setHeight(35),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -105,7 +105,7 @@ class FormCard extends StatelessWidget {
                   "Forgot Password?",
                   style: TextStyle(
                       color: Colors.blue,
-                      fontSize: ScreenUtil.getInstance().setSp(28)),
+                      fontSize: ScreenUtil().setSp(28)),
                 )
               ],
             )
