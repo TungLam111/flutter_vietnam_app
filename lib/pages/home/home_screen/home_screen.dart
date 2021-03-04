@@ -3,7 +3,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_vietnam_app/common/widgets/pages/page_location.dart';
+import 'package:flutter_vietnam_app/common/widgets/pages/page_tour.dart';
 import 'package:http/http.dart';
 import 'dart:async';
 import 'dart:io';

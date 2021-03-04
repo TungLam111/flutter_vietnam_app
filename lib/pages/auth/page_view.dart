@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+const Map<int, Color> _color = {0: Colors.green, 1: Colors.orange, 2: Colors.amber, 3: Colors.red };
 class PageViewAnother extends StatefulWidget {
   @override
   _PageViewAnotherState createState() => _PageViewAnotherState();
@@ -6,64 +8,118 @@ class PageViewAnother extends StatefulWidget {
 
 class _PageViewAnotherState extends State<PageViewAnother> {
   final int _numPages = 4;
-  final PageController _pageController = PageController(initialPage: 0, keepPage: true);
+  final PageController _pageController =
+      PageController(initialPage: 0, keepPage: true);
   int _currentPage = 0;
   Size size;
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: PageView(
-        physics: BouncingScrollPhysics(),
-      onPageChanged: (value){
-        setState(() {
-          _currentPage = value;  
-        });
-      },
-      controller: _pageController,
-      children: [
-        APageView(
-          imageAsset:'assets/images/mua_roi_sqr.jpg',
-          titleAsset: 'assets/images/mua_roi_font.jpg',
-          bigText:'Ứng dụng VinTravel',
-          description: 'Ứng dụng giới thiệu các cảnh đẹp, món ăn, trang phục Việt Nam',
-          visibleButton: false,
-        ),
-        APageView(
-          imageAsset: 'assets/images/com_lang_vong_sqr.jpg',
-          titleAsset: 'assets/images/com_lang_vong_font.jpg',
-          bigText: 'Second',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
-          visibleButton: false,
-        ),
-        APageView(
-          imageAsset: 'assets/images/lua_sqr.jpg',
-          titleAsset: 'assets/images/lua_ha_dong_font.jpg',
-          bigText: 'Third',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
-          visibleButton: true,
-        ),
-         APageView(
-          imageAsset: 'assets/images/lua_sqr.jpg',
-          titleAsset: 'assets/images/lua_ha_dong_font.jpg',
-          bigText: 'Third',
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultricies ultrices diam, in laoreet velit scelerisque sed',
-          visibleButton: true,
-        )
-      ],
-    ),
-    bottomSheet: Container(
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(vertical: 30),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: _buildPageIndicator(),
-      ),
-    ),
-  );
-}
+        backgroundColor: _color[_currentPage].withOpacity(0.4),
+        body: Container(
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+         //   color: Colors.red,
+            child: Column(children: [
+              Expanded(
+                  child: PageView(
+                physics: BouncingScrollPhysics(),
+                onPageChanged: (value) {
+                  setState(() {
+                    _currentPage = value;
+                    print(_currentPage);
+                  });
+                },
+                controller: _pageController,
+                children: [
+                  APageView(
+                    imageAsset: 'assets/images/com_lang_vong_sqr-removebg-preview.png',
+                    bigText: 'Understanding about Vietnamese culture by images',
+                    color: _color[_currentPage]
+                  ),
+                  APageView(
+                    imageAsset: 'assets/images/mua_roi_sqr-removebg-preview.png',
+                    bigText: 'Best destination recommendation for tourism',
+                    color: _color[_currentPage]
+                  ),
+                  APageView(
+                    imageAsset: 'assets/images/com_lang_vong_sqr-removebg-preview.png',
+                    bigText: 'Provide the most tour recommendation service ',
+                    color: _color[_currentPage]
+                  ),
+                  APageView(
+                    imageAsset: 'assets/images/mua_roi_sqr-removebg-preview.png',
+                    bigText: 'Connect with local enthusiastic guiders',
+                    color: _color[_currentPage]
+                  )
+                ],
+              )),
+              Container(
+                  child: Container(
+                padding: EdgeInsets.symmetric(vertical: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _buildPageIndicator(),
+                ),
+              )),
+              Container(
+                height: 80,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: _buildFreeSpace()),
+              
+            ])));
+  }
 
- List<Widget> _buildPageIndicator() {
+  Widget _buildFreeSpace() {
+    
+     if (_currentPage == 3){
+       return Row(
+         mainAxisAlignment: MainAxisAlignment.center,
+         children: [
+             GestureDetector(
+       child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+         decoration: BoxDecoration(
+           borderRadius: BorderRadius.all(Radius.circular(20)),
+           color: Colors.white,),
+         child: Text("GET STARTED",style: TextStyle(color: _color[_currentPage].withOpacity(0.7)))
+       ),),
+         ],
+       );
+     }
+     else return Row(
+       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+       children: [
+       GestureDetector(
+       child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+         decoration: BoxDecoration(
+           borderRadius: BorderRadius.all(Radius.circular(20)),
+           color: Colors.white,),
+         child: Text("GET STARTED",style: TextStyle(color: _color[_currentPage].withOpacity(0.7)))
+       ),),
+       GestureDetector(
+       child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
+         decoration: BoxDecoration(
+           borderRadius: BorderRadius.all(Radius.circular(20)),
+   ),
+         child: Text("NEXT",style: TextStyle(color: Colors.white))
+       ),)
+     ],);
+  }
+
+  List<Widget> _buildPageIndicator() {
     List<Widget> list = [];
     for (int i = 0; i < _numPages; i++) {
       list.add(i == _currentPage ? _indicator(true) : _indicator(false));
@@ -78,67 +134,60 @@ class _PageViewAnotherState extends State<PageViewAnother> {
       height: 5.0,
       width: isActive ? 20.0 : 8,
       decoration: BoxDecoration(
-        color: isActive ? Color(0xff139157) : Colors.grey[400],
+        color: isActive ? _color[_currentPage].withOpacity(0.7) : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(12)),
       ),
     );
   }
 }
+
 class APageView extends StatelessWidget {
   final String imageAsset;
-  final String titleAsset;
   final String bigText;
-  final String description;
-  final bool visibleButton;
-  APageView({this.imageAsset,this.titleAsset,this.bigText,this.description,this.visibleButton});
+  final Color color;
+  APageView({this.imageAsset, this.bigText, this.color});
   @override
   Widget build(BuildContext context) {
-    return Container(
-            child:Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Stack(
-                  //fit:StackFit.loose,
-                  children: [
-                    Container(
-                      height:500,
-                      alignment: Alignment.centerRight,
-                      child: Image.asset(imageAsset,width: MediaQuery.of(context).size.width-30,)),
-                    Positioned(
-                      bottom: -5,
-                      //right:0,
-                      left:100,
-                      child: Image.asset(titleAsset,
-                        height: 100,
-                        width: MediaQuery.of(context).size.width-30,))
-                  ],
-                ),
-                //Spacer(),
-                SizedBox(height: 10,),
-                Text(bigText,style: TextStyle(
-                  color: Colors.green,
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),),
-                SizedBox(height: 10,),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(description,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                  ),),
-                ),
-                SizedBox(height: 20,),
-                Opacity(
-                  opacity: visibleButton? 1:0,
-                  child: ElevatedButton(
-                    onPressed: (){},
-                    child: Text('DONE'),
-                  ),
-                )
-              ],)
-      );
+    const TextStyle _style = TextStyle(fontSize: 35, fontWeight: FontWeight.bold);
+    TextSpan _headText = TextSpan(text: bigText[0], style: _style.copyWith(color: color.withOpacity(0.8)) );
+    TextSpan _bodyText = TextSpan(text: bigText.substring(1, bigText.length), style: _style.copyWith(color: Colors.white) );
+    return Stack(children: [
+        Positioned(
+        left: MediaQuery.of(context).size.width * 0.5,
+        child: CircleAvatar(
+        radius: 200,
+        backgroundColor: color.withOpacity(0.5),
+      ),),
+      Positioned(
+        top: MediaQuery.of(context).size.height * 0.4,
+        child: CircleAvatar(
+        radius: 100,
+        backgroundColor: Colors.white,
+      ),),
+      Positioned(
+        top: 100, left: 80,
+        child: Image.asset(
+        imageAsset,
+      )),
+    
+      CircleAvatar(
+        radius: 50,
+        backgroundColor: Colors.white,),
+      CircleAvatar(
+        radius: 80,
+        backgroundColor: color.withOpacity(0.5),
+      ),
+       Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: RichText(
+  text: TextSpan(
+    style: DefaultTextStyle.of(context).style,
+    children: <TextSpan>[
+   _headText,
+_bodyText
+    ],
+  ),
+) )// _bodyText
+    ],);
   }
 }

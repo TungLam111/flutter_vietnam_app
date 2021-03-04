@@ -50,7 +50,7 @@ class _BoardingScreenState extends State<BoardingScreen> {
                     });
                   },
                   children: <Widget>[
-                    boarding(image: "assets/images/img1 (2).jpg", title: ""),
+                    boarding(image: "assets/images/img1_2.jpg", title: ""),
                     boarding(image: "assets/images/img3 (2).jpg", title: ""),
                     boarding(image: "assets/images/img4 (2).jpg", title: ""),
                   ],

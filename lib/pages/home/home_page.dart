@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/common/widgets/pages/page_product.dart';
 import 'package:flutter_vietnam_app/pages/auth/page_view.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
@@ -19,7 +20,8 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     SearchScreen(),
     PageViewAnother(),
-    ChatPage(),
+   // ChatPage(),
+    DescriptionProduct()
   ];
   @override
   void initState() {
@@ -39,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Scaffold(
             body: SizedBox.expand(
               child: PageView(
-                physics: BouncingScrollPhysics(),
+              //  physics: BouncingScrollPhysics(),
                 controller: _pageController,
                 onPageChanged: (index) {
                   setState(() => _selectedIndex = index);

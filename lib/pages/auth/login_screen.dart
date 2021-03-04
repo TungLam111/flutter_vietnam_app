@@ -79,7 +79,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     _validationService = ValidationService();
-    ScreenUtil.instance = ScreenUtil().init(context);
+    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);;
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
     return new Scaffold(
