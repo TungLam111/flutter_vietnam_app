@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vietnam_app/pages/home/home_page.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie.dart';
+import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/validate_service.dart';
+import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 import 'Widgets/FormCard.dart';
 import 'Widgets/SocialIcons.dart';
 import 'Widgets/CustomIcons.dart';
@@ -27,8 +29,8 @@ class _LoginState extends State<Login> {
   bool _loginInProgress;
 
   ValidationService _validationService;
-  Service _userService;
-  
+  final ServiceMain _userService = serviceLocator<ServiceMain>();
+
   void _radio() {
     setState(() {
       _isSelected = !_isSelected;
@@ -39,7 +41,6 @@ class _LoginState extends State<Login> {
   void initState(){
     super.initState();
      _passwordFocusNode = FocusNode();
-    _userService = new Service.create();
     _loginInProgress = false;
     _isSubmitted = false;
     _passwordIsVisible = false;
@@ -79,7 +80,7 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     _validationService = ValidationService();
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);;
+    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     ScreenUtil.instance =
         ScreenUtil(width: 750, height: 1334, allowFontScaling: true);
     return new Scaffold(

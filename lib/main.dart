@@ -3,8 +3,10 @@ import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
 import 'package:flutter_vietnam_app/pages/auth/splash_screen.dart';
 import 'package:flutter_vietnam_app/pages/home/home_page.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_vietnam_app/services/locator.dart';
 
 void main() {
+  setupServiceLocator();
   runApp(MyApp());
 }
 
@@ -22,7 +24,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       
-      home: MyHomePage(),
+      home: Login(),
     );
   }
 }

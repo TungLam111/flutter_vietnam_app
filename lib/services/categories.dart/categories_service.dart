@@ -1,8 +1,11 @@
 
+import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
+
+import '../locator.dart';
 import '../web_httpie/httpie.dart';
 
 class CategoriesApiService {
-  HttpieService _httpService;
+  Httpie _httpService = serviceLocator<Httpie>();
 
   static String apiURL = 'https://murmuring-sierra-28458.herokuapp.com';
   static const getCategoriesPath = 'api/categories/';

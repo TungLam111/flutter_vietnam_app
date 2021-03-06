@@ -9,67 +9,43 @@ class CloneBooking extends StatelessWidget {
     return Stack(
       children: [
         _buildAppBar(),
-        Positioned(
-          bottom: 10,
-          child: _buildCard(context))
+        _buildCard(context)
       ],
     );
   }
   Widget _buildAppBar() => new Scaffold(
-    appBar: PreferredSize(
-      preferredSize: Size.fromHeight(150),
-      child: AppBar(
-        leading: IconButton(
-          onPressed: (){},
-          icon: Icon(Icons.arrow_back)
-        ),
-        title: Center(
-          child: Text('BOARDING PASS',style:TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 4,
-            fontSize: 15
-          ),),
-        ),
-        backgroundColor: Color(0xff1954CF),
-        actions:[
-          IconButton(
-          onPressed: (){},
-          icon: Icon(Icons.vignette_rounded)
-          ),
-          SizedBox(width: 10,)
-        ]
-      ),
-    )
+    body: Container(decoration: BoxDecoration(image: DecorationImage(image: AssetImage("assets/images/img1_2.jpg"), fit: BoxFit.cover)),)
   );
   Widget _buildCard(BuildContext context) {
-    return Container(
-      child: Container(
-        height: MediaQuery.of(context).size.height-100,
+    return  Container(
+      margin: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+        height: MediaQuery.of(context).size.height-110,
         width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black54,
-              blurRadius: 15.0,
-              offset: Offset(0.0, 0.75)
+              color: Colors.grey,
+              blurRadius: 10.0,
+              offset: Offset(0.0, 0.5)
             )
           ]
         ),
-        child:GradientCard(
+        child: GradientCard(
           gradient: Gradients.buildGradient(
            Alignment.topCenter,
            Alignment.bottomCenter,
-           [Color(0xff2f64d4),Color(0xff4d7cda),Colors.white,Colors.white,Colors.white,Colors.white,Colors.white,Colors.white,Colors.white],
+           [Colors.green[900],Colors.green[600],Colors.white,Colors.white,Colors.white,Colors.white,Colors.white,Colors.white,Colors.white],
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)
           ),
           child:Padding(
             padding: EdgeInsets.all(20),
-            child: Column(
+            child: SingleChildScrollView(
+              child: Column(
               children: [
+            
                 Row(
                   children: [
                     Column(
@@ -175,34 +151,17 @@ class CloneBooking extends StatelessWidget {
                 ),
                 //List of customers
                 SizedBox(height: 20,),
-                ShowName(
-                  pathImage: 'assets/images/avt1.jpg',
-                  name: 'Jeremy Russell',
-                  age: '28y',
-                  gender: 'Male',
-                  seatName: '18A',
-                ),
-                SizedBox(height: 20,),
-                ShowName(
-                  pathImage: 'assets/images/avt8.jpg',
-                  name: 'Maria Jenkins',
-                  age: '24y',
-                  gender: 'Female',
-                  seatName: '18B',
-                ),
-                Spacer(),
-                //Barcode
-                BarcodeWidget(
-                  height: 80,
-                  width: MediaQuery.of(context).size.width-140,
-                  barcode: Barcode.code128(),
-                  data: 'H K L O 7 8 M P 8 9 2 S D',
-                )
+          
+           
+          
+    
+                  
+              
               ],
-            ),
+            ),)
           )
         )
-      ),
+      
     );
   }
 }
