@@ -24,51 +24,43 @@ abstract class Httpie {
       {Map<String, String> headers,
       body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   Future<HttpieResponse> put(url,
       {Map<String, String> headers,
       body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken});
 
   Future<HttpieResponse> patch(url,
       {Map<String, String> headers,
       body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}); 
   Future<HttpieResponse> delete(url,
       {Map<String, String> headers,
-     // bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   Future<HttpieResponse> postJSON(url,
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken});
   Future<HttpieResponse> putJSON(url,
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken});
 
   Future<HttpieResponse> patchJSON(url,
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-//      bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   Future<HttpieResponse> get(url,
       {Map<String, String> headers,
       Map<String, dynamic> queryParameters,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   Future<HttpieStreamedResponse> postMultiform(String url,
@@ -82,14 +74,12 @@ abstract class Httpie {
       {Map<String, String> headers,
       Map<String, dynamic> body,
       Encoding encoding,
-  //    bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PATCH',
         headers: headers,
         body: body,
         encoding: encoding,
-       // appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -97,7 +87,6 @@ abstract class Httpie {
       {Map<String, String> headers,
       Map<String, dynamic> body,
       Encoding encoding,
-   //   bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   Future<HttpieStreamedResponse> _multipartRequest(String url,
@@ -105,12 +94,10 @@ abstract class Httpie {
       String method,
       Map<String, dynamic> body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   Map<String, String> getHeadersWithConfig(
       {Map<String, String> headers = const {},
-     // bool appendLanguageHeader,
       bool appendAuthorizationToken}) ;
 
   void handleRequestError(error);

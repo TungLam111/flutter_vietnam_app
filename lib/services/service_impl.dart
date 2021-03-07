@@ -46,7 +46,7 @@ class Service implements ServiceMain {
   Future<void> loginWithAuthToken(String authToken) async {
     await setAuthToken(authToken);
     print("lololo");
-  //  await refreshUser();
+    await refreshUser();
   //  print("momo");
   }
 

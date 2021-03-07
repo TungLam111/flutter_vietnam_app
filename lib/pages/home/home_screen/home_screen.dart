@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_vietnam_app/models/item.dart';
@@ -129,7 +132,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
           ],
         ),
-        body: SingleChildScrollView(
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,11 +144,15 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHeader(),
           const SizedBox(height: 30),
           _buildSearchs(),
+          Text("Current search"),
+
           const SizedBox(height: 30),
+          Text("Popular crossy tours"),
+          Text("Tours in region"),
            Container(
-             padding: EdgeInsets.symmetric(horizontal: 15),
                 height: 240,
                 child: ListView.builder(
+                    
                     itemCount: country.length,
                     shrinkWrap: true,
                     physics: ClampingScrollPhysics(),
@@ -159,8 +168,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               ),
           const SizedBox(height: 30),
+          Text("Popular tours"),
            Container(
-             padding: EdgeInsets.symmetric(horizontal: 15),
              child:   ListView.builder(
                   shrinkWrap: true,
                   physics: ClampingScrollPhysics(),
@@ -177,14 +186,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 
            ),
                   const SizedBox(height: 30),
+          Text("Lastest news"),
           _buildScrollSlider(),
           const SizedBox(height: 30),
+          Text("Categories"),
           _buildCategoriesBar(),
-          const SizedBox(height: 30),
           _buildStaggredItems(),
           const SizedBox(height: 30),
 
-        ],),)
+        ],),))
 
      ));
   }
@@ -193,7 +203,6 @@ class _HomeScreenState extends State<HomeScreen> {
     String name = "Lam";
     TextStyle style = TextStyle(fontWeight: FontWeight.bold, fontSize: 25);
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
    Widget _buildSearchs() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -252,12 +261,39 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildScrollSlider(){
     return Container(
-            padding: EdgeInsets.symmetric(horizontal: 15),
+      margin: const EdgeInsets.only(top: 10),
       child: BoardingScreen())
       ;
   }
   Widget _buildCategoriesBar(){
-    return Container();
+    return 
+  Container(
+    height: 60,
+    margin: EdgeInsets.only(top: 10),
+    child:   ListView.builder(
+      padding: EdgeInsets.only(bottom: 15),
+      scrollDirection: Axis.horizontal,
+      itemCount: categories.length,
+      itemBuilder: (context, index){
+        return  GestureDetector(
+         onTap: (){},
+         child: Container(
+           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+           margin: const EdgeInsets.only(right: 15),
+           child: Text(categories[index].name),
+           decoration: BoxDecoration(
+             color: Colors.white,
+             boxShadow: [
+              BoxShadow(
+                  color: categories[index].color,
+                  blurRadius: 3.0,
+                  offset: Offset(3, 3))
+            ]
+           ),
+           ),);
+      },
+      )
+  );
   }
 
   Widget _buildStaggredItems(){
@@ -271,7 +307,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisCount: 4,
         itemCount: placeList.length,
         staggeredTileBuilder: (int index) =>
-      new StaggeredTile.count(2, index.isEven ? 2 : 1),
+      new StaggeredTile.fit(2),
         itemBuilder: (context, index) => PlaceItem(index: index),
       ),
     );
@@ -288,43 +324,59 @@ class PlaceItem extends StatelessWidget {
     return GestureDetector(
       onTap: () {
       },
-      child: Container(
-        alignment: Alignment.bottomLeft,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-              image: AssetImage(
-                placeList[index].image,
-              ),
-              fit: BoxFit.cover),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                placeList[index].itemName,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+      child:  Card(
+      child: new Column(
+        children: <Widget>[
+          new Stack(
+            children: <Widget>[
+              //new Center(child: new CircularProgressIndicator()),
+              new Center(
+                child: Image.asset(
+                  placeList[index].image,
                 ),
               ),
-              Text(
-                placeList[index].location,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                ),
-              )
             ],
           ),
-        ),
+          new Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: new Column(
+              children: <Widget>[
+                new Text(
+                  'Image number $index',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                new Text(
+                  placeList[index].itemName,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                new Text(
+              placeList[index].location,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
-    );
+    ));
   }
+}
+
+List <Category> categories = [
+  Category(color: Colors.grey, name: "All"),
+  Category(color: Colors.green, name: "Food"),
+  Category(color: Colors.blue, name: "Destination"),
+  Category(color: Colors.red, name: "History"),
+  Category(color: Colors.orange, name: "Music"),
+  Category(color: Colors.yellow, name: "Heritage"),
+  Category(color: Colors.purple, name: "Languague"),
+];
+
+class Category {
+  final String name;
+  final Color color;
+
+  const Category({this.color, this.name});
 }
 
 List<Item> placeList = [

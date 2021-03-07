@@ -68,7 +68,6 @@ class HttpieService implements Httpie{
       bool appendAuthorizationToken}) async {
     var finalHeaders = getHeadersWithConfig(
         headers: headers,
-    //    appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     Response response;
@@ -91,7 +90,6 @@ class HttpieService implements Httpie{
       bool appendAuthorizationToken}) async {
     var finalHeaders = getHeadersWithConfig(
         headers: headers,
-      //  appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     Response response;
@@ -191,7 +189,6 @@ class HttpieService implements Httpie{
       {Map<String, String> headers = const {},
       body,
       Encoding encoding,
-//      bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     String jsonBody = json.encode(body);
 
@@ -202,18 +199,15 @@ class HttpieService implements Httpie{
         headers: jsonHeaders,
         body: jsonBody,
         encoding: encoding,
-     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
   Future<HttpieResponse> get(url,
       {Map<String, String> headers,
       Map<String, dynamic> queryParameters,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var finalHeaders = getHeadersWithConfig(
         headers: headers,
-     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     if (queryParameters != null && queryParameters.keys.length > 0) {
@@ -242,7 +236,6 @@ class HttpieService implements Httpie{
         headers: headers,
         body: body,
         encoding: encoding,
-   //     appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -250,14 +243,12 @@ class HttpieService implements Httpie{
       {Map<String, String> headers,
       Map<String, dynamic> body,
       Encoding encoding,
-  //    bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PATCH',
         headers: headers,
         body: body,
         encoding: encoding,
-       // appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -265,14 +256,12 @@ class HttpieService implements Httpie{
       {Map<String, String> headers,
       Map<String, dynamic> body,
       Encoding encoding,
-   //   bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     return _multipartRequest(url,
         method: 'PUT',
         headers: headers,
         body: body,
         encoding: encoding,
-     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -281,13 +270,11 @@ class HttpieService implements Httpie{
       String method,
       Map<String, dynamic> body,
       Encoding encoding,
-    //  bool appendLanguageHeader,
       bool appendAuthorizationToken}) async {
     var request = new http.MultipartRequest(method, Uri.parse(url));
 
     var finalHeaders = getHeadersWithConfig(
         headers: headers ?? {},
-      //  appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
 
     request.headers.addAll(finalHeaders);
@@ -342,7 +329,6 @@ class HttpieService implements Httpie{
 
   Map<String, String> getHeadersWithConfig(
       {Map<String, String> headers = const {},
-     // bool appendLanguageHeader,
       bool appendAuthorizationToken}) {
     headers = headers ?? {};
 
