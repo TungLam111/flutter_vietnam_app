@@ -7,6 +7,9 @@ import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_tour.dart';
+import 'package:flutter_vietnam_app/services/locator.dart';
+import 'package:flutter_vietnam_app/services/service.dart';
+import 'package:flutter_vietnam_app/services/service_impl.dart';
 import 'package:http/http.dart';
 import 'dart:async';
 import 'dart:io';
@@ -25,11 +28,12 @@ class _HomeScreenState extends State<HomeScreen> {
   TextTheme textTheme;
   List<PopularTourModel> popularTourModels = new List();
   List<CountryModel> country = new List();
-  
+  List<Location> placeList = [];
+  Service _userService;
   File _image;
   String _error;
   final picker = ImagePicker();
-
+  bool status = false;
   bool isReply = false;
   //pick image from camera
   Future getImage() async {
@@ -109,17 +113,34 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     
   }
+  
+  void getLocations() async {
+    setStatus(false);
+     List<Location> temp = await _userService.getCategories();
+     setState((){
+       placeList = temp;
+     });
+     setStatus(true);
+     print("huhu");
+  }
+
+  void setStatus(bool sta){
+    setState(() {
+      status = sta;
+    });
+  }
   @override
   void initState() {
+    super.initState();
+    _userService = Service();
     country = getCountrys();
     popularTourModels = getPopularTours();
-
-    super.initState();
+    getLocations();
   }
   @override 
   Widget build(BuildContext context){
     textTheme = Theme.of(context).textTheme;
-
+    
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -127,9 +148,12 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Center(child: Text("VietTravel", style: textTheme.headline6
               .copyWith(fontWeight: FontWeight.bold, color: Color(0xff139157)),)),
           backgroundColor: Colors.white,
-          leading: Icon(Icons.menu, color: Color(0xff139157)),
+          leading: GestureDetector(child: Icon(Icons.menu, color: Color(0xff139157)),
+          onTap: (){
+            print(placeList[4].name);
+          }),
           actions: [
-            Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
+           const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
           ],
         ),
         body: Container(
@@ -144,11 +168,11 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHeader(),
           const SizedBox(height: 30),
           _buildSearchs(),
-          Text("Current search"),
+          const Text("Current search"),
 
           const SizedBox(height: 30),
-          Text("Popular crossy tours"),
-          Text("Tours in region"),
+          const Text("Popular crossy tours"),
+          const Text("Tours in region"),
            Container(
                 height: 240,
                 child: ListView.builder(
@@ -168,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               ),
           const SizedBox(height: 30),
-          Text("Popular tours"),
+          const Text("Popular tours"),
            Container(
              child:   ListView.builder(
                   shrinkWrap: true,
@@ -185,13 +209,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   }),
                 
            ),
-                  const SizedBox(height: 30),
-          Text("Lastest news"),
+          const SizedBox(height: 30),
+          const Text("Lastest news"),
           _buildScrollSlider(),
           const SizedBox(height: 30),
-          Text("Categories"),
+          const Text("Categories"),
           _buildCategoriesBar(),
-          _buildStaggredItems(),
+         (!status) ?  Container(): _buildStaggredItems(),
           const SizedBox(height: 30),
 
         ],),))
@@ -297,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildStaggredItems(){
-    return Container(
+    return  Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       child: StaggeredGridView.countBuilder(
         shrinkWrap: true,
@@ -308,7 +332,7 @@ class _HomeScreenState extends State<HomeScreen> {
         itemCount: placeList.length,
         staggeredTileBuilder: (int index) =>
       new StaggeredTile.fit(2),
-        itemBuilder: (context, index) => PlaceItem(index: index),
+        itemBuilder: (context, index) => PlaceItem(location: placeList[index]),
       ),
     );
 
@@ -316,41 +340,45 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 class PlaceItem extends StatelessWidget {
-  final int index;
-  const PlaceItem({this.index});
+  final Location location;
+  const PlaceItem({this.location});
 
   @override 
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print(location.image);
       },
       child:  Card(
-      child: new Column(
+      child:  Column(
         children: <Widget>[
-          new Stack(
+           Stack(
             children: <Widget>[
               //new Center(child: new CircularProgressIndicator()),
-              new Center(
-                child: Image.asset(
-                  placeList[index].image,
-                ),
+               Center(
+                child: CachedNetworkImage(
+        imageUrl: location.image[0],
+        progressIndicatorBuilder: (context, url, downloadProgress) => 
+                CircularProgressIndicator(value: downloadProgress.progress),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+     ),
               ),
             ],
           ),
-          new Padding(
+           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: new Column(
+            child:  Column(
               children: <Widget>[
-                new Text(
-                  'Image number $index',
+                 Text(
+                  'Image number ${location.name}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
-                new Text(
-                  placeList[index].itemName,
+                 Text(
+                  location.origin,
                   style: const TextStyle(color: Colors.grey),
                 ),
-                new Text(
-              placeList[index].location,
+                 Text(
+              location.voice,
                   style: const TextStyle(color: Colors.grey),
                 ),
               ],
@@ -378,21 +406,6 @@ class Category {
 
   const Category({this.color, this.name});
 }
-
-List<Item> placeList = [
-  Item(image: "assets/images/img1.jpg", itemName: "Destination 1" ,location: "Location 1"),
-  Item(image: "assets/images/img2.png", itemName: "Destination 2" ,location: "Location 2"),
-  Item(image: "assets/images/img3.jpg", itemName: "Destination 3" ,location: "Location 3"),
-  Item(image: "assets/images/img4.jpg",itemName: "Destination 4" ,location: "Location 4"),
-  Item(image: "assets/images/img5.jpg", itemName: "Destination 5" ,location: "Location 5"),
-  Item(image: "assets/images/img6.png", itemName: "Destination 6" ,location: "Location 6"),
-  Item(image: "assets/images/img7.jpg", itemName: "Destination 7" ,location: "Location 7" ),
-  Item(image: "assets/images/img8.png", itemName: "Destination 8" ,location: "Location 8"),
-  Item(image: "assets/images/img9.jpg", itemName: "Destination 9" ,location: "Location 9" ),
-  Item(image: "assets/images/img10.jpg", itemName: "Destination 10" ,location: "Location 10"),
-  Item(image: "assets/images/img11.jpg",itemName: "Destination 11" ,location: "Location 11" ),
-  Item(image: "assets/images/img12.jpg", itemName: "Destination 12" ,location: "Location 12"),
-];
 
 class CountryListTile extends StatelessWidget {
   final String label;

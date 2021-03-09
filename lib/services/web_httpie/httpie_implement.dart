@@ -181,7 +181,6 @@ class HttpieService implements Httpie{
         headers: jsonHeaders,
         body: jsonBody,
         encoding: encoding,
-     //   appendLanguageHeader: appendLanguageHeader,
         appendAuthorizationToken: appendAuthorizationToken);
   }
 
@@ -333,14 +332,9 @@ class HttpieService implements Httpie{
     headers = headers ?? {};
 
     Map<String, String> finalHeaders = Map.from(headers);
-
-   // appendLanguageHeader = appendLanguageHeader ?? true;
     appendAuthorizationToken = appendAuthorizationToken ?? false;
-
-   // if (appendLanguageHeader) finalHeaders['Accept-Language'] = _getLanguage();
-
     if (appendAuthorizationToken && authorizationToken != null) {
-      finalHeaders['Authorization'] = 'Token $authorizationToken';
+      finalHeaders['Authorization'] = '$authorizationToken';
     }
 
     if (magicHeaderName != null && magicHeaderValue != null) {

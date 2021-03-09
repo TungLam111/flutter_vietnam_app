@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
 import 'package:flutter_vietnam_app/services/categories.dart/categories_service.dart';
+import 'package:flutter_vietnam_app/services/location/location_service.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/storage/storage_service.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
@@ -17,6 +19,7 @@ class Service implements ServiceMain {
   final Store  _userStorage = serviceLocator<Store>();
   final Auth _authApiService = serviceLocator<Auth>();
   final Httpie _httpieService = serviceLocator<Httpie>();
+  final LocationService _locationService = serviceLocator<LocationService>();
 
   var _loggedInUser;
   
@@ -122,5 +125,25 @@ class Service implements ServiceMain {
 
   User makeLoggedInUser(String userData) {
     return User.fromJson(json.decode(userData), storeInSessionCache: true);
+  }
+
+  Future<List<Location>> getAllLocations() async {
+    HttpieResponse response = await _locationService.getAllLocations();
+    return LocationList.fromJson(json.decode(response.body)["data"]).categories ;
+  }
+  
+   Future<List<Location>> getCategories() async {
+    final result = await _locationService.getCategories();
+    return LocationList.fromJson(result["data"]).categories;
+  }
+
+  Future<Location> getLocationByName({@required String locationName}) async{
+    HttpieResponse response = await _locationService.getLocationByName(locationName: locationName );
+    return Location.fromJSON((json.decode(response.body)["data"])) ;
+  }
+
+  Future<List<Location>> getLocationsByList(List<String> listLocation) async{
+    HttpieResponse response = await _locationService.getLocationsByList(listLocation);
+    return LocationList.fromJson(json.decode(response.body)["data"]).categories ;
   }
 }

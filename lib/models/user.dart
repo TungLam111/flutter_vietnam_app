@@ -4,9 +4,8 @@ class User extends UpdatableModel<User> {
    int id;
    String uuid;
    String username;
-   String phonenumber;
-   String email;
-  User({this.id,  this.email,this.uuid, this.username,this.phonenumber});
+   String name;
+  User({this.id, this.uuid, this.username,this.name});
    
      static final navigationUsersFactory = UserFactory(
       cache:
@@ -44,17 +43,15 @@ class User extends UpdatableModel<User> {
     return {
       'id': id,
       'uuid': uuid,
-      'email': email,
       'username': username,
-      'phonenumber' :phonenumber
+      'name' :name
     };
   }
 
   void updateFromJson(Map json) {
     if (json.containsKey('username')) username = json['username'];
     if (json.containsKey('uuid')) uuid = json['uuid'];
-    if (json.containsKey('email')) uuid = json['email'];
-    if (json.containsKey('phonenumber')) uuid = json['phonenumber'];
+    if (json.containsKey('name')) uuid = json['name'];
   }
 
 }
@@ -68,8 +65,8 @@ class UserFactory extends UpdatableModelFactory<User> {
     return User(
         id: json['id'],
         uuid: json['uuid'],
-        email: json['email'],
-        username: json['username']
+        username: json['username'],
+        name: json['name']
     );
   }
 }

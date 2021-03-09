@@ -8,7 +8,7 @@ import 'auth_service.dart';
 
 class AuthApiService implements Auth {
   
-  static const String apiURL = 'https://murmuring-sierra-28458.herokuapp.com';
+  static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
   static const CHECK_USERNAME_PATH = 'api/auth/username-check/';
   static const CHECK_EMAIL_PATH = 'api/auth/email-check/';
   static const UPDATE_EMAIL_PATH = 'api/auth/user/settings/';
