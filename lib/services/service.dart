@@ -16,6 +16,8 @@ abstract class ServiceMain {
 
   Future<void> loginWithAuthToken(String authToken) ;
 
+  Future<void> signUpWithCredientials({@required String username, @required String email, @required String password});
+
   Future<void> setAuthToken(String authToken) ;
 
   Future<User> refreshUser();

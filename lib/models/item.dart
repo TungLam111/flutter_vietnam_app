@@ -27,9 +27,9 @@ class Location extends UpdatableModel<Location>{
    String description;
    List categories;
    List related;
-   List image;
+   List images;
   
-  Location({this.image,this.name, this.origin, this.voice, this.description, this.categories, this.related});
+  Location({this.images,this.name, this.origin, this.voice, this.description, this.categories, this.related});
     static final factory = LocationFactory();
 
   factory Location.fromJSON(Map<String, dynamic> json) {
@@ -45,7 +45,7 @@ class Location extends UpdatableModel<Location>{
       'description': description,
       'categories': categories,
       'related': related,
-      'image': image
+      'images': images
     };
   }
 
@@ -73,8 +73,8 @@ class Location extends UpdatableModel<Location>{
     if (json.containsKey('related')) {
       related = json['related'];
     }
-    if (json.containsKey('image')) {
-      image = json['image'];
+    if (json.containsKey('images')) {
+      images = json['images'];
     }
   }
 }
@@ -87,7 +87,7 @@ class LocationFactory extends UpdatableModelFactory<Location> {
   @override
   Location makeFromJson(Map json) {
     return Location(
-      image: json['image'],
+      images: json['images'],
       name: json['name'],
       origin: json['origin'],
       description: json['description'],

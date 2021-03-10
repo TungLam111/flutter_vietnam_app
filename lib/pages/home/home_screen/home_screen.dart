@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_vietnam_app/common/widgets/pages/page_product.dart';
 import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -29,7 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<PopularTourModel> popularTourModels = new List();
   List<CountryModel> country = new List();
   List<Location> placeList = [];
-  Service _userService;
+  final ServiceMain _userService = serviceLocator<ServiceMain>();
   File _image;
   String _error;
   final picker = ImagePicker();
@@ -116,9 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
   
   void getLocations() async {
     setStatus(false);
-     List<Location> temp = await _userService.getCategories();
+     List<Location> temp = await _userService.getAllLocations();
      setState((){
        placeList = temp;
+       print(temp[2].name);
      });
      setStatus(true);
      print("huhu");
@@ -132,7 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _userService = Service();
     country = getCountrys();
     popularTourModels = getPopularTours();
     getLocations();
@@ -150,7 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.white,
           leading: GestureDetector(child: Icon(Icons.menu, color: Color(0xff139157)),
           onTap: (){
-            print(placeList[4].name);
           }),
           actions: [
            const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
@@ -347,7 +347,10 @@ class PlaceItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        print(location.image);
+         Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => DescriptionProduct(location: location,)),
+  );
       },
       child:  Card(
       child:  Column(
@@ -357,7 +360,7 @@ class PlaceItem extends StatelessWidget {
               //new Center(child: new CircularProgressIndicator()),
                Center(
                 child: CachedNetworkImage(
-        imageUrl: location.image[0],
+        imageUrl: location.images[0],
         progressIndicatorBuilder: (context, url, downloadProgress) => 
                 CircularProgressIndicator(value: downloadProgress.progress),
         errorWidget: (context, url, error) => Icon(Icons.error),

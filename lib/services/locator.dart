@@ -1,5 +1,7 @@
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
 import 'package:flutter_vietnam_app/services/location/location_service_impl.dart';
+import 'package:flutter_vietnam_app/services/service.dart';
+import 'package:flutter_vietnam_app/services/service_impl.dart';
 import 'package:get_it/get_it.dart';
 
 import 'storage/storage_service.dart';
@@ -21,6 +23,7 @@ void setupServiceLocator() {
   serviceLocator.registerLazySingleton<Store>(() => SystemPreferencesStorage());
   serviceLocator.registerLazySingleton<Auth>(()=> AuthApiService());
   serviceLocator.registerLazySingleton<LocationService>(() => LocationApiService());
+  serviceLocator.registerLazySingleton<ServiceMain>(() => Service());
   // view models
   //serviceLocator.registerFactory<CalculateScreenViewModel>(() => CalculateScreenViewModel());
   //serviceLocator.registerFactory<FavoriteViewModel>(() => FavoriteViewModel());

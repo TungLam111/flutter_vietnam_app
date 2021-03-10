@@ -23,7 +23,8 @@ class AuthApiService implements Auth {
   static const GET_AUTHENTICATED_USER_PATH = 'api/auth/user/';
   static const UPDATE_AUTHENTICATED_USER_PATH = 'api/auth/user/';
   static const GET_USERS_PATH = 'api/auth/users/';
-  static const LOGIN_PATH = '/user/login';
+  static const LOGIN_PATH = 'auth/Login';
+  static const SIGNUP_PATH = 'user/register';//auth/RegsiterUser';
   static const REQUEST_RESET_PASSWORD_PATH = 'api/auth/password/reset/';
   static const VERIFY_RESET_PASSWORD_PATH = 'api/auth/password/verify/';
   static const AUTHENTICATED_USER_NOTIFICATIONS_SETTINGS_PATH =
@@ -34,9 +35,9 @@ class AuthApiService implements Auth {
 
   Future<HttpieResponse> loginWithCredentials(
       {@required String username, @required String password}) {
-
+Map<String, dynamic> body = {'username': username, 'password': password};
     return this._httpService.postJSON('$apiURL$LOGIN_PATH',
-        body: {'username': username, 'password': password});
+        body: body);
   }
 
     Future<HttpieResponse> getUserWithAuthToken(String authToken) {
@@ -45,4 +46,14 @@ class AuthApiService implements Auth {
     return _httpService.get('$apiURL$GET_AUTHENTICATED_USER_PATH',
         headers: headers);
   }
+
+    Future<HttpieResponse> signupWithCredentials({@required String email, @required String username, @required String password}){
+      Map<String, dynamic> body = {
+        "email": email,
+        "username": username,
+        "password": password
+      };
+      return _httpService.postJSON('$apiURL$SIGNUP_PATH',
+      body: body);
+    }
 }

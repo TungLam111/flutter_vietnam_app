@@ -1,7 +1,10 @@
 //this page is for showing the detail of product (for image recognition)
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_product_2.dart';
+import 'package:flutter_vietnam_app/models/item.dart';
 class DescriptionProduct extends StatefulWidget {
+  final Location location;
+  const DescriptionProduct({this.location});
   @override
   _DescriptionProductState createState() => _DescriptionProductState();
 }
@@ -12,8 +15,8 @@ class _DescriptionProductState extends State<DescriptionProduct> {
     return Scaffold(
       body: PageView(
         children: [
-          NewWidget(),
-          CloneBooking()
+          NewWidget(location: widget.location,),
+          CloneBooking(location: widget.location)
         ],
         scrollDirection: Axis.vertical,
       ),
@@ -23,12 +26,13 @@ class _DescriptionProductState extends State<DescriptionProduct> {
 }
 
 class NewWidget extends StatefulWidget {
+  final Location location;
+  const NewWidget({this.location});
  @override
-  _NewWidgetState createState() => _NewWidgetState();
+_NewWidgetState createState() => _NewWidgetState();
 }
 
 class _NewWidgetState extends State<NewWidget> {
-  int _numOfImage = 4;
   final PageController _pageController = PageController(initialPage: 0, keepPage: true);
   int _currentPage = 0;
   @override
@@ -38,47 +42,26 @@ class _NewWidgetState extends State<NewWidget> {
       body: Stack(
         children:[
           
-          PageView(
-            onPageChanged: (value){
+          PageView.builder(
+             onPageChanged: (value){
         setState(() {
           _currentPage = value;  
         });
       },
       controller: _pageController,
-            children: [
-            Container(
+      itemCount: widget.location.images.length,
+      itemBuilder :(context,index ){
+        return   Container(
       decoration: BoxDecoration(
       image:DecorationImage(
-        image:AssetImage('assets/images/img1_2.jpg'),
+        image: NetworkImage(widget.location.images[index]),
         fit:BoxFit.cover,
       )
           ),
-          ),
-          Container(
-      decoration: BoxDecoration(
-      image:DecorationImage(
-        image:AssetImage('assets/images/img2.png'),
-        fit:BoxFit.cover,
-      )
-          ),
-          ),
-          Container(
-      decoration: BoxDecoration(
-      image:DecorationImage(
-        image:AssetImage('assets/images/img3 (2).jpg'),
-        fit:BoxFit.cover,
-      )
-          ),
-          ),
-          Container(
-      decoration: BoxDecoration(
-      image:DecorationImage(
-        image:AssetImage('assets/images/img1_2.jpg'),
-        fit:BoxFit.cover,
-      )
-          ),
-          )
-          ],),
+          );
+      }
+      
+        ,),
           
           Container(
       decoration: BoxDecoration(
@@ -150,21 +133,22 @@ class _NewWidgetState extends State<NewWidget> {
                    })
                 ],),
                 SizedBox(height: 10,),
-                Text('Find new places',
+                Text(widget.location.name,
                 style:TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize:30,
                 )),
                 SizedBox(height: 10,),
-                Text('Quang Nam province',
+                Text(widget.location.origin,
                 style:TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize:15,
                 )),
                 SizedBox(height: 10,),
-                Text('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...',
+                Text(widget.location.description,
+                maxLines: 3,
                 style:TextStyle(
                   color: Colors.white,
                   fontSize:15,

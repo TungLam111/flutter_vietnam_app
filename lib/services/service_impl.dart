@@ -34,9 +34,11 @@ class Service implements ServiceMain {
         print("HOHO");
     HttpieResponse response = await _authApiService.loginWithCredentials(
         username: username, password: password);
-    if (response.isOk()) {
-      var parsedResponse = response.parseJsonBody();
-      var authToken = parsedResponse['token'];
+    if (response.isOk() || response.isAccepted()) {
+      print(response);
+      //var parsedResponse = response.parseJsonBody();
+      //var authToken = parsedResponse['token'];
+      var authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MTUzMjAzMjcsInVzZXJuYW1lIjoia29rb2tva28ifQ.qSoggxBZ2z2RCNII-KwYEPmhmYIfoyB0N-be82wTPUQ";
       print(authToken);
       await loginWithAuthToken(authToken);
     } else if (response.isUnauthorized()) {
@@ -49,8 +51,22 @@ class Service implements ServiceMain {
   Future<void> loginWithAuthToken(String authToken) async {
     await setAuthToken(authToken);
     print("lololo");
-    await refreshUser();
+   // await refreshUser();
   //  print("momo");
+  }
+
+  Future<void> signUpWithCredientials({@required String username, @required String email, @required String password})async {
+    HttpieResponse  response = await _authApiService.signupWithCredentials(email: email, username: username, password: password);
+    if (response.isOk()){
+      var parsedResponse = response.parseJsonBody();
+      var message = parsedResponse['msg'];
+      print(message);
+    }else if (response.isUnauthorized()) {
+      throw CredentialsMismatchError('The provided credentials do not match.');
+    } else {
+      throw HttpieRequestError(response);
+    }
+
   }
 
   Future<void> setAuthToken(String authToken) async {
@@ -129,7 +145,7 @@ class Service implements ServiceMain {
 
   Future<List<Location>> getAllLocations() async {
     HttpieResponse response = await _locationService.getAllLocations();
-    return LocationList.fromJson(json.decode(response.body)["data"]).categories ;
+    return LocationList.fromJson(json.decode(response.body)).categories ;
   }
   
    Future<List<Location>> getCategories() async {

@@ -7,4 +7,6 @@ abstract class Auth {
       {@required String username, @required String password});
 
   Future<HttpieResponse> getUserWithAuthToken(String authToken);
+
+  Future<HttpieResponse> signupWithCredentials({@required String email, @required String username, @required String password});
 }

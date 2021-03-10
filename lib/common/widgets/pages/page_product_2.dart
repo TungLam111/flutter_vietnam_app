@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/models/item.dart';
 
 class CloneBooking extends StatelessWidget {
+  final Location location;
+  const CloneBooking({this.location});
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -13,7 +17,7 @@ class CloneBooking extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("assets/images/img1_2.jpg"),
+                    image: NetworkImage(location.images[0]),
                     fit: BoxFit.cover)),
           ),
           Opacity(
@@ -28,7 +32,7 @@ class CloneBooking extends StatelessWidget {
   Widget _buildCard(BuildContext context) {
     return Container(
         margin: EdgeInsets.all(20),
-        height: MediaQuery.of(context).size.height - 110,
+        //height: MediaQuery.of(context).size.height - 110,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -51,7 +55,7 @@ class CloneBooking extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Che Khuc Bach",
+                          Text(location.name,
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,
@@ -64,24 +68,94 @@ class CloneBooking extends StatelessWidget {
                           height: 250,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Origin")]),
+                        //  mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(color: Colors.red[100]),
+                              child: Text("Origin"), padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10)),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                Icon(Icons.add_a_photo_outlined),
+                                SizedBox(width: 10),
+                                Expanded(child: Text(location.origin),)
+                              ],)
+                          ]),
+                          const SizedBox(
+                        height: 10,
+                      ),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Voice")]),
+                          children: [Container(
+                              decoration: BoxDecoration(color: Colors.blue[100]),
+                              child: Text("Voice"), padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10)),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                Icon(Icons.add_a_photo_outlined),
+                                SizedBox(width: 10),
+                                Expanded(child: Text(location.voice),)
+                              ],)]),
+                              const SizedBox(
+                        height: 10,
+                      ),
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Description")]),
-                          Column(
+                          children: [Container(
+                              decoration: BoxDecoration(color: Colors.green[100]),
+                              child: Text("Description"), padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10)),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                Icon(Icons.add_a_photo_outlined),
+                                SizedBox(width: 10),
+                                Expanded(child: Text(location.description),)
+                              ],)]),
+                              const SizedBox(
+                        height: 10,
+                      ),
+                      Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Categories")]),
-                          Column(
+                          children: [Container(
+                              decoration: BoxDecoration(color: Colors.orange[100]),
+                              child: Text("Categories"), padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10)),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                Icon(Icons.add_a_photo_outlined),
+                                SizedBox(width: 10),
+                                Expanded(child: Wrap(
+                                  direction: Axis.horizontal,
+                                  children: [
+                                  ///////////////////////////////////////////////////////////
+                                ],))
+                              ],)]),
+                              const SizedBox(
+                        height: 10,
+                      ),
+                    
+                      Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [Text("Description")])
+                          children: [Container(
+                              decoration: BoxDecoration(color: Colors.yellow[100]),
+                              child: Text("Related"), padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10)),
+                              const SizedBox(height: 10.0),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                Icon(Icons.add_a_photo_outlined),
+                                SizedBox(width: 10),
+                                Expanded(child: Text(location.related[0]),)
+                              ],)])
                     ],
                   ),
                 ))));
