@@ -8,6 +8,7 @@ import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_tour.dart';
+import 'package:flutter_vietnam_app/pages/home/home_screen/subpages/image_query_result_screen.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/service_impl.dart';
@@ -36,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final picker = ImagePicker();
   bool status = false;
   bool isReply = false;
+
   //pick image from camera
   Future getImage() async {
     String error;
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<Null> _cropImage() async {
+  Future _cropImage() async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: _image.path,
         aspectRatioPresets: Platform.isAndroid
@@ -112,9 +114,19 @@ class _HomeScreenState extends State<HomeScreen> {
         if (croppedFile != null) 
           _image = croppedFile;
       });
+      _navigateToImageQuery();
     
   }
-  
+
+  void _navigateToImageQuery(){
+    if (_image != null){
+       Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => ImageQuery(image: _image)),
+  );
+    }
+  }
+
   void getLocations() async {
     setStatus(false);
      List<Location> temp = await _userService.getAllLocations();
@@ -168,6 +180,9 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHeader(),
           const SizedBox(height: 30),
           _buildSearchs(),
+           const Text("Lastest news"),
+          _buildScrollSlider(),
+          const SizedBox(height: 30),
           const Text("Current search"),
 
           const SizedBox(height: 30),
@@ -209,9 +224,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   }),
                 
            ),
-          const SizedBox(height: 30),
-          const Text("Lastest news"),
-          _buildScrollSlider(),
           const SizedBox(height: 30),
           const Text("Categories"),
           _buildCategoriesBar(),
@@ -373,7 +385,7 @@ class PlaceItem extends StatelessWidget {
             child:  Column(
               children: <Widget>[
                  Text(
-                  'Image number ${location.name}',
+                  '${location.name}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                  Text(
@@ -381,7 +393,8 @@ class PlaceItem extends StatelessWidget {
                   style: const TextStyle(color: Colors.grey),
                 ),
                  Text(
-              location.voice,
+              location.description,
+              maxLines: 2,
                   style: const TextStyle(color: Colors.grey),
                 ),
               ],

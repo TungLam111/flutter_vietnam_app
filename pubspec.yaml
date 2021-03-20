@@ -55,6 +55,9 @@ dependencies:
   barcode: ^1.17.1
   barcode_widget: ^1.5.0
   gradient_widgets: ^0.5.2
+  sliding_up_panel:
+    git:
+      url: git://github.com/Adem68/sliding_up_panel.git
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   #cupertino_icons: ^1.0.2
@@ -80,6 +83,7 @@ flutter:
      - assets/images/food/
      - assets/data/
      - assets/data/food (1).json
+     - assets/data/destination_respone.json
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -15,7 +15,7 @@ import 'httpie_implement.dart';
 export 'package:http/http.dart';
 
 class HttpieService implements Httpie{
-  UtilsService _utilsService;
+  final UtilsService _utilsService = UtilsService();
   String authorizationToken;
   String magicHeaderName;
   String magicHeaderValue;
@@ -45,7 +45,7 @@ class HttpieService implements Httpie{
   }
 
   void setUtilsService(UtilsService utilsService) {
-    _utilsService = utilsService;
+  //  _utilsService = utilsService;
   }
 
   void setMagicHeader(String name, String value) {
@@ -270,6 +270,7 @@ class HttpieService implements Httpie{
       Map<String, dynamic> body,
       Encoding encoding,
       bool appendAuthorizationToken}) async {
+        print(body);
     var request = new http.MultipartRequest(method, Uri.parse(url));
 
     var finalHeaders = getHeadersWithConfig(
@@ -281,9 +282,11 @@ class HttpieService implements Httpie{
     List<Future> fileFields = [];
 
     List<String> bodyKeys = body.keys.toList();
-
+    print(bodyKeys);
     for (final String key in bodyKeys) {
       dynamic value = body[key];
+      print("++++++++++++++");
+      print(value);
       if (value is String || value is bool) {
         request.fields[key] = value.toString();
       } else if (value is List) {

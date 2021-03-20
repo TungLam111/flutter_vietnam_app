@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/detail.dart';
 
 class DetailCard extends StatelessWidget {
-  final Detail detail;
-  DetailCard({this.detail});
+  final Destination detail;
+  const DetailCard({this.detail});
   @override
   Widget build(BuildContext context) {
     return Container(

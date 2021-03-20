@@ -530,6 +530,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliding_up_panel:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: e2f6d10ceef01af350402f1cf82531421a64f470
+      url: "git://github.com/Adem68/sliding_up_panel.git"
+    source: git
+    version: "1.0.2"
   source_span:
     dependency: transitive
     description:

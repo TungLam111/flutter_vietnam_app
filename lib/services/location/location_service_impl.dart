@@ -23,9 +23,9 @@ class LocationApiService implements LocationService {
     return this._httpService.get('$apiURL$GET_ALL_LOCATION', appendAuthorizationToken: true);
   }
   
-  Future<dynamic> getCategories() async {
+  Future<dynamic> getLocal() async {
     String data =
-        await rootBundle.loadString('assets/data/food (1).json');
+        await rootBundle.loadString('assets/data/destination_respone.json');
     return json.decode(data.toString());
   }
   

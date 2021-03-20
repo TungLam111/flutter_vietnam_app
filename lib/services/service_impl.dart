@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/models/detail.dart';
 import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
-import 'package:flutter_vietnam_app/services/categories.dart/categories_service.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
+import 'package:flutter_vietnam_app/services/media/media.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/storage/storage_service.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
@@ -20,6 +22,7 @@ class Service implements ServiceMain {
   final Auth _authApiService = serviceLocator<Auth>();
   final Httpie _httpieService = serviceLocator<Httpie>();
   final LocationService _locationService = serviceLocator<LocationService>();
+  final MediaService _mediaService = serviceLocator<MediaService>();
 
   var _loggedInUser;
   
@@ -38,7 +41,7 @@ class Service implements ServiceMain {
       print(response);
       //var parsedResponse = response.parseJsonBody();
       //var authToken = parsedResponse['token'];
-      var authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MTUzMjAzMjcsInVzZXJuYW1lIjoia29rb2tva28ifQ.qSoggxBZ2z2RCNII-KwYEPmhmYIfoyB0N-be82wTPUQ";
+      var authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MTYwODkzNjcsInVzZXJuYW1lIjoidHVuZ2xhbTIyMiJ9.0JXL2a8wPuDwutnGO2F5FqtA3-DaGdIPNXZvsps1vHA";
       print(authToken);
       await loginWithAuthToken(authToken);
     } else if (response.isUnauthorized()) {
@@ -147,11 +150,6 @@ class Service implements ServiceMain {
     HttpieResponse response = await _locationService.getAllLocations();
     return LocationList.fromJson(json.decode(response.body)).categories ;
   }
-  
-   Future<List<Location>> getCategories() async {
-    final result = await _locationService.getCategories();
-    return LocationList.fromJson(result["data"]).categories;
-  }
 
   Future<Location> getLocationByName({@required String locationName}) async{
     HttpieResponse response = await _locationService.getLocationByName(locationName: locationName );
@@ -161,5 +159,24 @@ class Service implements ServiceMain {
   Future<List<Location>> getLocationsByList(List<String> listLocation) async{
     HttpieResponse response = await _locationService.getLocationsByList(listLocation);
     return LocationList.fromJson(json.decode(response.body)["data"]).categories ;
+  }
+
+  Future<DestinationList> getLocal() async{
+    var response = await _locationService.getLocal();
+    print(response["data"]);
+    return DestinationList.fromJson(response["data"]);
+  }
+
+  Future<void> sendImage({@required String username, @required File file}) async{
+    HttpieStreamedResponse response = await _mediaService.sendImage(username : username, file: file);
+    if (response.isOk() || response.isAccepted()){
+      response.readAsString().then((value) => print(value));
+      print("Response is oke");
+    } else if (response.isUnauthorized()) {
+      throw CredentialsMismatchError('The provided credentials do not match.');
+    } else {
+      throw HttpieRequestError(response);
+    }
+    
   }
 }

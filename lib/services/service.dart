@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/models/detail.dart';
 import 'package:flutter_vietnam_app/models/item.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
-import 'package:flutter_vietnam_app/services/categories.dart/categories_service.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
@@ -52,7 +53,9 @@ abstract class ServiceMain {
 
   Future<List<Location>> getLocationsByList(List<String> listLocation);
 
-   Future<List<Location>> getCategories() ;
+   Future<DestinationList> getLocal();
+
+  Future<void> sendImage({@required String username, @required File file}) ;
 }
 
 class CredentialsMismatchError implements Exception {

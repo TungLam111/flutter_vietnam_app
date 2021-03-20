@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/common/widgets/pages/page_item.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_product.dart';
 import 'package:flutter_vietnam_app/pages/auth/page_view.dart';
+import 'package:flutter_vietnam_app/pages/home/home_screen/chat/chat_screen.dart';
+import 'package:flutter_vietnam_app/pages/home/recommendation_screen/recommendation_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'home_screen/chat/chat_room.dart';
@@ -19,9 +22,9 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Widget> _page = <Widget>[
     HomeScreen(),
     SearchScreen(),
+    DestinationDetail(),
     PageViewAnother(),
-   // ChatPage(),
-    DescriptionProduct()
+   // RecommendationScreen(),
   ];
   @override
   void initState() {
