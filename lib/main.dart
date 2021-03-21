@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_item.dart';
 import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
+import 'package:flutter_vietnam_app/pages/auth/page_view.dart';
 import 'package:flutter_vietnam_app/pages/auth/signup_screen.dart';
 import 'package:flutter_vietnam_app/pages/description/struct_two.dart';
 import 'package:flutter_vietnam_app/pages/home/home_page.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
 
-      home: Login(),
+      home: PageViewAnother(),
     );
   }
 }

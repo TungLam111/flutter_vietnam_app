@@ -4,5 +4,7 @@ class StructLocation{
   String address;
   String province='None';
   String tags;
+  String city='None';
   RangeValues range;
+  String description;
 }

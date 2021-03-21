@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_vietnam_app/pages/auth/signup_screen.dart';
 import 'package:flutter_vietnam_app/pages/home/home_page.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
@@ -257,7 +258,12 @@ class _LoginState extends State<Login> {
                        
                       ),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SignUpScreen()),
+  );
+                        },
                         child: Text("SignUp",
                             style: TextStyle(
                                 color: Color(0xFF5d74e3),

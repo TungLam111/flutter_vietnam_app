@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
 
 const Map<int, Color> _color = {0: Colors.green, 1: Colors.orange, 2: Colors.amber, 3: Colors.red };
 class PageViewAnother extends StatefulWidget {
@@ -26,7 +27,7 @@ class _PageViewAnotherState extends State<PageViewAnother> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: _color[_currentPage].withOpacity(0.4),
+        backgroundColor: _color[_currentPage].withOpacity(0.9),
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
          //   color: Colors.red,
@@ -87,6 +88,12 @@ class _PageViewAnotherState extends State<PageViewAnother> {
          mainAxisAlignment: MainAxisAlignment.center,
          children: [
              GestureDetector(
+               onTap: () {
+                 Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => Login()),
+  );
+               },
        child: Container(
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
          decoration: BoxDecoration(
@@ -101,6 +108,7 @@ class _PageViewAnotherState extends State<PageViewAnother> {
        mainAxisAlignment: MainAxisAlignment.spaceBetween,
        children: [
        GestureDetector(
+
        child: Container(
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
          decoration: BoxDecoration(
@@ -109,7 +117,13 @@ class _PageViewAnotherState extends State<PageViewAnother> {
          child: Text("GET STARTED",style: TextStyle(color: _color[_currentPage].withOpacity(0.7)))
        ),),
        GestureDetector(
+         onTap: (){
+           setState(() {
+            _currentPage = (_currentPage < 3) ? _currentPage+1 : _currentPage;
+           });
+         },
        child: Container(
+         
                   padding: EdgeInsets.symmetric(vertical: 15, horizontal: 40),
          decoration: BoxDecoration(
            borderRadius: BorderRadius.all(Radius.circular(20)),

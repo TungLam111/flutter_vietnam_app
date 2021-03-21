@@ -1,4 +1,10 @@
 class HardcoredData {
+  static List<String> cities=[
+    'TP Hồ Chí Minh',
+    'Nha Trang',
+    'Đà Nẵng',
+    'Long Xuyên'
+  ];
   static List<String> provinces = [
     'None',
     'An Giang',
