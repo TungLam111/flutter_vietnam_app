@@ -8,31 +8,27 @@ import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 
 class MediaServiceImpl implements MediaService{
   final Httpie _httpService = serviceLocator<Httpie>();
-  final StringTemplateService _stringTemplateService = StringTemplateService();
 
-  static const String apiURL = "";
-    static const SEND_IMAGE_PATH =
-      'api/media/{username}/images/';
+  static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
 
-  Future<HttpieStreamedResponse> sendImage({@required String username, @required File file}) async{
-    List<File> files = [];
-    files.add(file);
-    print(files);
+  Future<HttpieStreamedResponse> sendImage({@required File file}) async{
+
     Map<String, dynamic> body = {"image": file}; 
 
-    return _httpService.putMultiform("http://10.0.2.2:3000/upload-images",
+    return _httpService.postMultiform("https://shielded-depths-44788.herokuapp.com/image/upload",
         body: body,
         appendAuthorizationToken: false);
   }
 
-  /* String _makePath(String username) {
-    return _stringTemplateService
-        .parse(SEND_IMAGE_PATH, {'username': username});
-  }
+   Future<HttpieResponse> getPredictions({@required String file}) async{
+     Map<String, dynamic> body = {"image_name": file};
+     return _httpService.postJSON("", body: body, appendAuthorizationToken: false );
+   }
 
-  String _makeApiUrl(String string) {
-    return '$apiURL$string';
-  }*/
+   Future<HttpieResponse> getRecommendations() async {
+     Map<String, dynamic> body = {};
+     return _httpService.postJSON("", body: body, appendAuthorizationToken: false);
+   }
 }
 
 class StringTemplateService {

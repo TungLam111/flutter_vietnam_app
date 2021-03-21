@@ -24,7 +24,7 @@ class AuthApiService implements Auth {
   static const UPDATE_AUTHENTICATED_USER_PATH = 'api/auth/user/';
   static const GET_USERS_PATH = 'api/auth/users/';
   static const LOGIN_PATH = 'auth/Login';
-  static const SIGNUP_PATH = 'user/register';//auth/RegsiterUser';
+  static const SIGNUP_PATH = 'auth/Register';
   static const REQUEST_RESET_PASSWORD_PATH = 'api/auth/password/reset/';
   static const VERIFY_RESET_PASSWORD_PATH = 'api/auth/password/verify/';
   static const AUTHENTICATED_USER_NOTIFICATIONS_SETTINGS_PATH =
@@ -41,15 +41,15 @@ Map<String, dynamic> body = {'username': username, 'password': password};
   }
 
     Future<HttpieResponse> getUserWithAuthToken(String authToken) {
-    Map<String, String> headers = {'Authorization': 'Token $authToken'};
+    Map<String, String> headers = {'Authorization': '$authToken'};
 
     return _httpService.get('$apiURL$GET_AUTHENTICATED_USER_PATH',
         headers: headers);
   }
 
-    Future<HttpieResponse> signupWithCredentials({@required String email, @required String username, @required String password}){
+    Future<HttpieResponse> signupWithCredentials({@required String name, @required String username, @required String password}){
       Map<String, dynamic> body = {
-        "email": email,
+        "name": name,
         "username": username,
         "password": password
       };

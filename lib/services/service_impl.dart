@@ -39,9 +39,8 @@ class Service implements ServiceMain {
         username: username, password: password);
     if (response.isOk() || response.isAccepted()) {
       print(response);
-      //var parsedResponse = response.parseJsonBody();
-      //var authToken = parsedResponse['token'];
-      var authToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MTYwODkzNjcsInVzZXJuYW1lIjoidHVuZ2xhbTIyMiJ9.0JXL2a8wPuDwutnGO2F5FqtA3-DaGdIPNXZvsps1vHA";
+      var parsedResponse = response.parseJsonBody();
+      var authToken = parsedResponse['token'];
       print(authToken);
       await loginWithAuthToken(authToken);
     } else if (response.isUnauthorized()) {
@@ -58,11 +57,11 @@ class Service implements ServiceMain {
   //  print("momo");
   }
 
-  Future<void> signUpWithCredientials({@required String username, @required String email, @required String password})async {
-    HttpieResponse  response = await _authApiService.signupWithCredentials(email: email, username: username, password: password);
-    if (response.isOk()){
+  Future<void> signUpWithCredientials({@required String username, @required String name, @required String password})async {
+    HttpieResponse  response = await _authApiService.signupWithCredentials(name:name, username: username, password: password);
+    if (response.isOk() || response.isAccepted()){
       var parsedResponse = response.parseJsonBody();
-      var message = parsedResponse['msg'];
+      var message = parsedResponse['message'];
       print(message);
     }else if (response.isUnauthorized()) {
       throw CredentialsMismatchError('The provided credentials do not match.');
@@ -156,10 +155,16 @@ class Service implements ServiceMain {
     return Location.fromJSON((json.decode(response.body)["data"])) ;
   }
 
-  Future<List<Location>> getLocationsByList(List<String> listLocation) async{
+  Future<List<Location>> getLocationsByList(List listLocation) async{
     HttpieResponse response = await _locationService.getLocationsByList(listLocation);
-    return LocationList.fromJson(json.decode(response.body)["data"]).categories ;
+    return LocationList.fromJson(json.decode(response.body)).categories ;
   }
+  
+  Future<List<Location>> getLocationsByCategory({String category}) async {
+    HttpieResponse response = await _locationService.getLocationsByCategory(category: category);
+    print(json.decode(response.body));
+    return LocationList.fromJson(json.decode(response.body)).categories ;
+    }
 
   Future<DestinationList> getLocal() async{
     var response = await _locationService.getLocal();
@@ -167,16 +172,27 @@ class Service implements ServiceMain {
     return DestinationList.fromJson(response["data"]);
   }
 
-  Future<void> sendImage({@required String username, @required File file}) async{
-    HttpieStreamedResponse response = await _mediaService.sendImage(username : username, file: file);
+  Future<String> sendImage({@required File file}) async{
+    HttpieStreamedResponse response = await _mediaService.sendImage(file: file);
     if (response.isOk() || response.isAccepted()){
-      response.readAsString().then((value) => print(value));
+      var parsed = await response.readAsString();
       print("Response is oke");
+      print(json.decode(parsed)["url"]);
+      return json.decode(parsed)["url"];
+
     } else if (response.isUnauthorized()) {
       throw CredentialsMismatchError('The provided credentials do not match.');
     } else {
       throw HttpieRequestError(response);
     }
     
+  }
+
+  Future<dynamic> getPredictions({@required String file}) async {
+    HttpieResponse response = await _mediaService.getPredictions(file: file);
+
+    if (response.isAccepted() || response.isOk()){
+      return json.decode(response.body)["data"];
+    }
   }
 }

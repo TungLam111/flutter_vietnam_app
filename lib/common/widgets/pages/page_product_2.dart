@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/item.dart';
+import 'package:flutter_vietnam_app/pages/home/home_screen/home_screen.dart';
 
 class CloneBooking extends StatelessWidget {
   final Location location;
@@ -135,9 +136,21 @@ class CloneBooking extends StatelessWidget {
                                 SizedBox(width: 10),
                                 Expanded(child: Wrap(
                                   direction: Axis.horizontal,
-                                  children: [
-                                  ///////////////////////////////////////////////////////////
-                                ],))
+                                  children:location.categories.map((e){
+                                    return Container(
+                                      padding: const EdgeInsets.symmetric(horizontal:20,vertical:10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius: BorderRadius.circular(20)
+                                      ),
+                                      child: Text(e,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15
+                                      ),),
+                                    );
+                                  }).toList(),))
                               ],)]),
                               const SizedBox(
                         height: 10,
@@ -154,7 +167,43 @@ class CloneBooking extends StatelessWidget {
                                 children: [
                                 Icon(Icons.add_a_photo_outlined),
                                 SizedBox(width: 10),
-                                Expanded(child: Text(location.related[0]),)
+                                Flexible(
+                                  //padding: const EdgeInsets.all(10),
+                                  //width: double.infinity,
+                                  child:ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: const EdgeInsets.all(5),
+                                    itemCount: location.related.length,
+                                    itemBuilder: (context,index){
+                                      return GestureDetector(
+                                        onTap:(){
+                                          
+                                        },
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                                padding: const EdgeInsets.symmetric(horizontal:20,vertical:10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green,
+                                                  borderRadius: BorderRadius.circular(20)
+                                                ),
+                                                child: Text(location.related[index],
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15
+                                                ),),
+                                              ),
+                                            SizedBox(height: 5),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  )
+                                  
+                                )
+                                //Expanded(child: Text(location.related[0]),)
                               ],)])
                     ],
                   ),

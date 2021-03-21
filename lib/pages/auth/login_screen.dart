@@ -179,7 +179,7 @@ class _LoginState extends State<Login> {
                                 print(_usernameController.text);
                                 _submitForm();
                               },
-                              child: _loginInProgress ? _getLoadingIndicator(Colors.blue) : Center(
+                              child: _loginInProgress ? Center(child: _getLoadingIndicator(Colors.blue)) : Center(
                                 child: Text("SIGNIN",
                                     style: TextStyle(
                                         color: Colors.white,
@@ -348,8 +348,8 @@ class _LoginState extends State<Login> {
 
    Widget _getLoadingIndicator(Color color) {
     return SizedBox(
-      height: 18.0,
-      width: 18.0,
+      height: 15.0,
+      width: 15.0,
       child: CircularProgressIndicator(
           strokeWidth: 2.0, valueColor: AlwaysStoppedAnimation<Color>(color)),
     );

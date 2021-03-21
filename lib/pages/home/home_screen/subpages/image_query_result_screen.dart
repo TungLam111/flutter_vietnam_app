@@ -17,6 +17,8 @@ class ImageQuery extends StatefulWidget {
 class _ImageQueryState extends State<ImageQuery> {
   bool _status = false;
   LocationList _locationList ;
+  String imageName = "";
+  var result;
   final ServiceMain _userService = serviceLocator<ServiceMain>();
 
   void setStatus(bool status){
@@ -25,10 +27,23 @@ class _ImageQueryState extends State<ImageQuery> {
     });
   }
 
-  void _startQuery()async{
+  void _startQuery() async {
     setStatus(false);
-    print("huhu");
-    await _userService.sendImage(username: "huhu", file: widget.image);
+    String temp = await _userService.sendImage(file: widget.image);
+    setState(() {
+       imageName = temp;
+    });
+    print("Parse image to server");
+    setStatus(true);
+  }
+  
+  void _startPredict() async {
+        setStatus(false);
+
+    var temp = await _userService.getPredictions(file: imageName);
+    setState(() {
+    result = temp; 
+});
     setStatus(true);
   }
 
@@ -38,6 +53,7 @@ class _ImageQueryState extends State<ImageQuery> {
       bottomNavigationBar: GestureDetector(
         onTap: (){
           _startQuery();
+        //  _startPredict();
         },
         child: Container(
         margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -46,7 +62,7 @@ class _ImageQueryState extends State<ImageQuery> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          Text("Search", style: TextStyle(color: Colors.white))
+      (_status) ? Text("Search", style: TextStyle(color: Colors.white))  :Container(height: 3, width: 30, child:  Center(child: CircularProgressIndicator()),)
         ],)),),
       body: 
       Container(

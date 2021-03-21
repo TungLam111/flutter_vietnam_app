@@ -17,7 +17,7 @@ abstract class ServiceMain {
 
   Future<void> loginWithAuthToken(String authToken) ;
 
-  Future<void> signUpWithCredientials({@required String username, @required String email, @required String password});
+  Future<void> signUpWithCredientials({@required String username, @required String name, @required String password});
 
   Future<void> setAuthToken(String authToken) ;
 
@@ -51,11 +51,15 @@ abstract class ServiceMain {
 
   Future<Location> getLocationByName({@required String locationName});
 
-  Future<List<Location>> getLocationsByList(List<String> listLocation);
+  Future<List<Location>> getLocationsByCategory({@required String category});
+
+  Future<List<Location>> getLocationsByList(List listLocation);
 
    Future<DestinationList> getLocal();
 
-  Future<void> sendImage({@required String username, @required File file}) ;
+  Future<String> sendImage({@required File file}) ;
+
+  Future<dynamic> getPredictions({@required String file});
 }
 
 class CredentialsMismatchError implements Exception {

@@ -138,6 +138,28 @@ class _HomeScreenState extends State<HomeScreen> {
      print("huhu");
   }
 
+  void getLocationsByCategory({String category}) async {
+    setStatus(false);
+    List<Location> temp = (category == "All")? await _userService.getLocationsByCategory(category: category) : await _userService.getAllLocations();
+    setState(() {
+      placeList = temp;
+      print(placeList);
+      print(temp[1].name);
+    });
+    setStatus(true);
+  }
+  
+  void getLocationsByList() async {
+    setStatus(false);
+    List<Location> temp = await _userService.getLocationsByList(["Bánh mì","Bánh bèo"]);
+    setState(() {
+      placeList = temp;
+      print(placeList);
+      print(temp[1].name);
+    });
+    setStatus(true);
+  }
+
   void setStatus(bool sta){
     setState(() {
       status = sta;
@@ -149,8 +171,11 @@ class _HomeScreenState extends State<HomeScreen> {
     country = getCountrys();
     popularTourModels = getPopularTours();
     getLocations();
+    //getLocationsByList();
+    //getLocationsByCategory(category: "Food");
   }
   @override 
+
   Widget build(BuildContext context){
     textTheme = Theme.of(context).textTheme;
     
@@ -180,14 +205,20 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHeader(),
           const SizedBox(height: 30),
           _buildSearchs(),
-           const Text("Lastest news"),
+           const Text("Lastest news",style: TextStyle(
+             fontSize: 15,
+             fontWeight: FontWeight.bold
+           ),),
           _buildScrollSlider(),
-          const SizedBox(height: 30),
-          const Text("Current search"),
 
           const SizedBox(height: 30),
-          const Text("Popular crossy tours"),
-          const Text("Tours in region"),
+          const Text("Popular crossy tours",style: TextStyle(
+             fontSize: 15,
+             fontWeight: FontWeight.bold)),
+          SizedBox(height:5),
+          const Text("Tours in region",style: TextStyle(
+             fontSize: 15,
+             fontWeight: FontWeight.bold)),
            Container(
                 height: 240,
                 child: ListView.builder(
@@ -207,7 +238,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     }),
               ),
           const SizedBox(height: 30),
-          const Text("Popular tours"),
+          const Text("Popular tours",style: TextStyle(
+             fontSize: 15,
+             fontWeight: FontWeight.bold)),
+          const SizedBox(height:10),
            Container(
              child:   ListView.builder(
                   shrinkWrap: true,
@@ -225,9 +259,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 
            ),
           const SizedBox(height: 30),
-          const Text("Categories"),
+          const Text("Categories",style: TextStyle(
+             fontSize: 15,
+             fontWeight: FontWeight.bold)),
           _buildCategoriesBar(),
-         (!status) ?  Container(): _buildStaggredItems(),
+         (!status) ? Center(
+           child: CircularProgressIndicator(),
+         ): _buildStaggredItems(),
           const SizedBox(height: 30),
 
         ],),))
@@ -268,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           )
         )),
-        SizedBox(height: 5,),
+        SizedBox(height: 10,),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -277,16 +315,17 @@ class _HomeScreenState extends State<HomeScreen> {
               getImage();
             } ,
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 75),
               decoration: BoxDecoration(color: Colors.grey[200] , borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Icon(Icons.add_a_photo_outlined, size:30),)
           ),
-           GestureDetector(
+          SizedBox(width:5),
+          GestureDetector(
              onTap: ()  {
                getFromGallery();
                },
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 80),
+              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 75),
               decoration: BoxDecoration(color: Colors.grey[200] , borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Icon(Icons.photo_camera_back, size: 30),)
           )
@@ -312,7 +351,10 @@ class _HomeScreenState extends State<HomeScreen> {
       itemCount: categories.length,
       itemBuilder: (context, index){
         return  GestureDetector(
-         onTap: (){},
+         onTap: (){
+           
+            getLocationsByCategory(category: categories[index].name);
+                    },
          child: Container(
            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
            margin: const EdgeInsets.only(right: 15),

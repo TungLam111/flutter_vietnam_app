@@ -46,120 +46,124 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body:Container(
-          child:Container(
+      body:SingleChildScrollView(
+          child:Column(
+            children:[
+              Container(
             padding: const EdgeInsets.all(10),
             child: Form(        
               key:_formKey,
               child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 10,),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text('Register',style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),),
-                    ),
-                    SizedBox(height: 20,),
-                    Text('User Name'),
-                    SizedBox(height: 5,),
-                    AnotherTextField(
-                      validator: (value){
-                        if(value.isEmpty)
-                          return "Please input your user name";
-                        else{
-                          print(value);
-                          setState(() {
-                            usr.userName=value;                              
-                          });}
-                          return null;
-                      },
-                    ),
-                    SizedBox(height: 5,),
-                    Text('Email Address'),
-                    SizedBox(height: 5,),
-                    AnotherTextField(
-                      validator:(value){
-                        if(value.isEmpty)
-                            return "Please input your email address";
-                        else if(!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value))
-                            return "It is not an email, please try again";
-                        else{
+                child:  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 10,),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Image.asset("assets/images/image_01.png")),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Text('Register',style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                      ),
+                      SizedBox(height: 20,),
+                      Text('Username'),
+                      SizedBox(height: 5,),
+                      AnotherTextField(
+                        validator: (value){
+                          if(value.isEmpty)
+                            return "Please input your user name";
+                          else{
                             print(value);
                             setState(() {
-                              usr.name=value;                              
+                              usr.userName=value;                              
                             });}
-                          return null;
-                      },
-                    ),
-                    SizedBox(height: 5,),
-                    Text('Password'),
-                    SizedBox(height: 5,),
-                    AnotherTextField(
-                      validator: (value){
-                        if(value.isEmpty)
-                          return "Please input your password";
-                        else{
-                          print(value);
-                          setState(() {
-                              usr.passWord=value;                              
-                            });}
-                          return null;
-                      },
-                      obscureText: true,
-                    ),
-                    SizedBox(height: 5,),
-                    Text('Confirm Password'),
-                    SizedBox(height: 5,),
-                    AnotherTextField(
-                      validator: (value){
-                        if(value.isEmpty)
-                          return "Please input your password";
-                        else if(value.length<8)
-                          return "Password must be more than 8 characters";
-                        else if(usr.passWord!=value)
-                          return "Password not match! Please try again";
-                        else{
-                          print(value);
-                          setState(() {
-                              usr.passWord=value;                              
-                            });}
-                          return null;
-                      },
-                      obscureText: true,
-                    ),
-                    SizedBox(height: 50),
-                    Align(
-                      alignment: Alignment.center,
-                      child: TextButton(
-                        onPressed: (){
-                          _submitForm();
+                            return null;
                         },
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
-                          decoration: BoxDecoration(
-                            color: Colors.red[600],
-                            border: Border.all(width: 0),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child:Text('Sign Up',style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white
-                          ),)
-                        ),
                       ),
-                    )
-                  ],
+                      SizedBox(height: 5,),
+                      Text('Full name'),
+                      SizedBox(height: 5,),
+                      AnotherTextField(
+                        validator:(value){
+                          if(value.isEmpty)
+                              return "Please input your full name";
+                          else{
+                              print(value);
+                              setState(() {
+                                usr.name=value;                              
+                              });}
+                            return null;
+                        },
+                      ),
+                      SizedBox(height: 5,),
+                      Text('Password'),
+                      SizedBox(height: 5,),
+                      AnotherTextField(
+                        validator: (value){
+                          if(value.isEmpty)
+                            return "Please input your password";
+                          else{
+                            print(value);
+                            setState(() {
+                                usr.passWord=value;                              
+                              });}
+                            return null;
+                        },
+                        obscureText: true,
+                      ),
+                      SizedBox(height: 5,),
+                      Text('Confirm Password'),
+                      SizedBox(height: 5,),
+                      AnotherTextField(
+                        validator: (value){
+                          if(value.isEmpty)
+                            return "Please input your password";
+                          else if(value.length<8)
+                            return "Password must be more than 8 characters";
+                          else if(usr.passWord!=value)
+                            return "Password not match! Please try again";
+                          else{
+                            print(value);
+                            setState(() {
+                                usr.passWord=value;                              
+                              });}
+                            return null;
+                        },
+                        obscureText: true,
+                      ),
+                      SizedBox(height: 50),
+                
+                    ],
+                  
                 ),
               ),
             ),
-          )
+          ),
+           Align(
+                        alignment: Alignment.center,
+                        child: TextButton(
+                          onPressed: (){
+                            _submitForm();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+                            decoration: BoxDecoration(
+                              color: Colors.indigo,
+                              border: Border.all(width: 0),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child:Text('Sign Up',style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                            ),)
+                          ),
+                        ),
+                      )])
         ),
     );
   }
@@ -175,11 +179,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _setLoginInProgress(true);
     String username = usr.userName;
     String password = usr.passWord;
-    String email = usr.name;
+    String name = usr.name;
     try {
       print("huhu");
       await _userService.signUpWithCredientials(
-        email: email,
+        name: name,
         username: username, 
         password: password);
           print("kkk");
@@ -249,7 +253,7 @@ class AnotherTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(width: 2),
+          border: Border.all(width: 0),
           borderRadius: BorderRadius.circular(5),),
         child:Container(
           padding: EdgeInsets.only(left: 10),

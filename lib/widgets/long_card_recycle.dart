@@ -30,7 +30,7 @@ class CardSlideRecognition extends StatelessWidget{
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8)),
                     color: Colors.green[700],),
-                  child: Text("Accuracy predition 90 %", style: TextStyle(color: Colors.white)),)
+                  child: Text("Accuracy prediction 90%", style: TextStyle(color: Colors.white,fontSize: 13)),)
             ],),),
             Icon(Icons.arrow_forward_ios_rounded, size: 15)
         ],)

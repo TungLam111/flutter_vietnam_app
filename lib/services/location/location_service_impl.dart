@@ -13,14 +13,15 @@ class LocationApiService implements LocationService {
   
   static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
   static const GET_ALL_LOCATION = 'speciality/ReadAllSpeciality';
-  static const GET_LOCATION_BY_NAME = "";
-  static const GET_LOCATIONS_BY_LIST = "";
+  static const GET_LOCATION_BY_NAME = "speciality/ReadSpeciality";
+  static const GET_LOCATIONS_BY_LIST = "speciality/ReadListSpecialityByListName";
+  static const GET_LOCATIONS_BY_CATEGORY = "speciality/ReadListSpecialityByCategories";
 
   Httpie _httpService = serviceLocator<Httpie>();
 
 
   Future<HttpieResponse> getAllLocations() {
-    return this._httpService.get('$apiURL$GET_ALL_LOCATION', appendAuthorizationToken: true);
+    return this._httpService.post('$apiURL$GET_ALL_LOCATION', appendAuthorizationToken: true);
   }
   
   Future<dynamic> getLocal() async {
@@ -31,11 +32,17 @@ class LocationApiService implements LocationService {
   
   Future<HttpieResponse> getLocationByName({@required String locationName}) {
     Map<String, dynamic> body = {"name" : locationName};
-    return _httpService.post('$apiURL$GET_LOCATION_BY_NAME', body: body, appendAuthorizationToken: true);
+    return this._httpService.post('$apiURL$GET_LOCATION_BY_NAME', body: body, appendAuthorizationToken: true);
   }
 
-  Future<HttpieResponse> getLocationsByList(List<String> listLocation){
-    Map<String, dynamic> body = {"names": listLocation};
-    return _httpService.post('$apiURL$GET_LOCATIONS_BY_LIST', body: body, appendAuthorizationToken: true);
+  Future<HttpieResponse> getLocationsByList(List listLocation){
+    Map<String, dynamic> body = {"name": listLocation};
+    return this._httpService.postJSON('$apiURL$GET_LOCATIONS_BY_LIST', body: body, appendAuthorizationToken: true);
   }
+
+   Future<HttpieResponse> getLocationsByCategory({String category}){
+     Map body = {"categories": category};
+
+    return this._httpService.postJSON('$apiURL$GET_LOCATIONS_BY_CATEGORY', body: body, appendAuthorizationToken: true);
+   }
 }

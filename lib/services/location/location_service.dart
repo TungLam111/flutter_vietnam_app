@@ -7,7 +7,9 @@ abstract class LocationService {
 
   Future<HttpieResponse> getLocationByName({@required String locationName});
 
-  Future<HttpieResponse> getLocationsByList(List<String> listLocation);
+  Future<HttpieResponse> getLocationsByList(List listLocation);
   
   Future<dynamic> getLocal();
+
+  Future<HttpieResponse> getLocationsByCategory({String category});
 }

@@ -2,7 +2,7 @@
 class ValidationService{
 
    static const int USERNAME_MAX_LENGTH = 30;
-   static const int PASSWORD_MIN_LENGTH = 10;
+   static const int PASSWORD_MIN_LENGTH = 8;
    static const int PASSWORD_MAX_LENGTH = 100;
     String validateUserUsername(String username) {
     assert(username != null);
