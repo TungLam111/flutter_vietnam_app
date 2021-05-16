@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_item.dart';
-import 'package:flutter_vietnam_app/common/widgets/pages/page_product.dart';
-import 'package:flutter_vietnam_app/pages/auth/page_view.dart';
-import 'package:flutter_vietnam_app/pages/description/struct_two.dart';
-import 'package:flutter_vietnam_app/pages/home/home_screen/chat/chat_screen.dart';
-import 'package:flutter_vietnam_app/pages/home/recommendation_screen/recommendation_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
-import 'home_screen/chat/chat_room.dart';
 import 'home_screen/home_screen.dart';
 import 'home_screen/subpages/search_screen.dart';
 // 3 bottom bars
@@ -24,7 +18,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomeScreen(),
     SearchScreen(),
     DestinationDetail(),
-    StructTwo(),
+    DestinationDetail(),
   ];
   @override
   void initState() {

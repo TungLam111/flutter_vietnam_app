@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/widgets/detail_card.dart';
-import 'package:flutter_vietnam_app/widgets/long_card_recycle.dart';
+import 'package:flutter_vietnam_app/common/widgets/detail_card.dart';
+import 'package:flutter_vietnam_app/common/widgets/long_card_recycle.dart';
 class SearchScreen extends StatefulWidget {
   @override
   _SearchScreenState createState() => _SearchScreenState();
