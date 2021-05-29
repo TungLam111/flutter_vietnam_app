@@ -52,12 +52,15 @@ dependencies:
   file_picker: 2.0.7
   get_it: ^5.0.3
   provider: ^4.3.2+3
-  barcode: ^1.17.1
-  barcode_widget: ^1.5.0
-  gradient_widgets: ^0.5.2
   sliding_up_panel:
     git:
       url: git://github.com/Adem68/sliding_up_panel.git
+  rxdart: ^0.24.1 
+  firebase_core: ^0.4.0+9
+  firebase_analytics: ^5.0.2
+  firebase_auth : ^0.15.2 
+  google_sign_in: ^4.0.4
+  cloud_firestore: ^0.13.0+1
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   #cupertino_icons: ^1.0.2

@@ -10,6 +10,8 @@ import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 import 'Widgets/FormCard.dart';
 import 'Widgets/SocialIcons.dart';
 import 'Widgets/CustomIcons.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -17,8 +19,8 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  TextEditingController _usernameController ;
-  TextEditingController _passwordController ;
+  TextEditingController _usernameController;
+  TextEditingController _passwordController;
 
   bool _isSelected = false;
   final _formKey = GlobalKey<FormState>();
@@ -31,17 +33,20 @@ class _LoginState extends State<Login> {
 
   ValidationService _validationService;
   final ServiceMain _userService = serviceLocator<ServiceMain>();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  String errorMessage = '';
+  String successMessage = '';
 
   void _radio() {
     setState(() {
       _isSelected = !_isSelected;
     });
   }
-  
-  @override 
-  void initState(){
+
+  @override
+  void initState() {
     super.initState();
-     _passwordFocusNode = FocusNode();
+    _passwordFocusNode = FocusNode();
     _loginInProgress = false;
     _isSubmitted = false;
     _passwordIsVisible = false;
@@ -52,6 +57,7 @@ class _LoginState extends State<Login> {
     _usernameController.addListener(_validateForm);
     _passwordController.addListener(_validateForm);
   }
+
   Widget radioButton(bool isSelected) => Container(
         width: 16.0,
         height: 16.0,
@@ -82,8 +88,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     _validationService = ValidationService();
     ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
-    ScreenUtil.instance =
-        ScreenUtil(allowFontScaling: true);
+    ScreenUtil.instance = ScreenUtil(allowFontScaling: true);
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
@@ -126,15 +131,14 @@ class _LoginState extends State<Login> {
                     height: ScreenUtil().setHeight(180),
                   ),
                   FormCard(
-                    formKey: _formKey,
-                    userNameController: _usernameController, 
-                    passwordController: _passwordController,
-                    togglePasswordVisibility: _togglePasswordVisibility,
-                    passwordIsVisible: _passwordIsVisible,
-                    //usernameValidate: _validateUsername,
-                    passwordValidate: _validatePassword,
-                    passwordFocusNode : _passwordFocusNode
-                    ),
+                      formKey: _formKey,
+                      userNameController: _usernameController,
+                      passwordController: _passwordController,
+                      togglePasswordVisibility: _togglePasswordVisibility,
+                      passwordIsVisible: _passwordIsVisible,
+                      //usernameValidate: _validateUsername,
+                      passwordValidate: _validatePassword,
+                      passwordFocusNode: _passwordFocusNode),
                   SizedBox(height: ScreenUtil().setHeight(40)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,9 +155,7 @@ class _LoginState extends State<Login> {
                           SizedBox(
                             width: 8.0,
                           ),
-                          Text("Remember me",
-                              style: TextStyle(
-                                  fontSize: 12))
+                          Text("Remember me", style: TextStyle(fontSize: 12))
                         ],
                       ),
                       InkWell(
@@ -176,17 +178,41 @@ class _LoginState extends State<Login> {
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: () {
+                                String _emailId = _usernameController.text;
+                                String _password = _passwordController.text;
 
-                                print(_usernameController.text);
-                                _submitForm();
+                                print(_emailId);
+                                print(_password);
+
+                                signIn(_emailId, _password).then((user) {
+                                  if (user != null) {
+                                    print(
+                                        'Logged in successfully with $_emailId and $_password');
+                                    setState(() {
+                                      successMessage =
+                                          'Logged in successfully.\nYou can now navigate to Home Page.';
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MyHomePage()));
+                                    });
+                                  //  _submitForm();
+                                  } else {
+                                    print('Error while Login.');
+                                  }
+                                });
                               },
-                              child: _loginInProgress ? Center(child: _getLoadingIndicator(Colors.blue)) : Center(
-                                child: Text("SIGNIN",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        letterSpacing: 1.0)),
-                              ),
+                              child: _loginInProgress
+                                  ? Center(
+                                      child: _getLoadingIndicator(Colors.blue))
+                                  : Center(
+                                      child: Text("SIGNIN",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              letterSpacing: 1.0)),
+                                    ),
                             ),
                           ),
                         ),
@@ -200,9 +226,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       horizontalLine(),
-                      Text("Social Login",
-                          style: TextStyle(
-                              fontSize: 16.0)),
+                      Text("Social Login", style: TextStyle(fontSize: 16.0)),
                       horizontalLine()
                     ],
                   ),
@@ -255,19 +279,19 @@ class _LoginState extends State<Login> {
                     children: <Widget>[
                       Text(
                         "New User? ",
-                       
                       ),
                       InkWell(
                         onTap: () {
                           Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => SignUpScreen()),
-  );
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpScreen()),
+                          );
                         },
                         child: Text("SignUp",
                             style: TextStyle(
-                                color: Color(0xFF5d74e3),
-                               )),
+                              color: Color(0xFF5d74e3),
+                            )),
                       )
                     ],
                   )
@@ -279,15 +303,16 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
-   Future<void> _submitForm() async {
+  
+  
+  Future<void> _submitForm() async {
     _isSubmitted = true;
     if (_validateForm()) {
       await _login(context);
     }
   }
 
- Future<void> _login(BuildContext context) async {
+  Future<void> _login(BuildContext context) async {
     _setLoginInProgress(true);
     String username = _usernameController.text;
     String password = _passwordController.text;
@@ -295,30 +320,61 @@ class _LoginState extends State<Login> {
       print("huhu");
       await _userService.loginWithCredentials(
           username: username, password: password);
-          print("kkk");
-      Navigator.pop(context); 
-     Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => MyHomePage()),
-  );
-    } on CredentialsMismatchError {
-      _setLoginFeedback(
-        "auth login credentials mismatch error"
+      print("kkk");
+      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage()),
       );
+    } on CredentialsMismatchError {
+      _setLoginFeedback("auth login credentials mismatch error");
     } on HttpieRequestError {
-      _setLoginFeedback(
-          "auth login server error");
+      _setLoginFeedback("auth login server error");
     } on HttpieConnectionRefusedError {
-      _setLoginFeedback(
-         "auth login connection error");
+      _setLoginFeedback("auth login connection error");
     }
     _setLoginInProgress(false);
+  }
 
+  //for sign in by default email and password
+  Future<String> signIn(String email, String password) async {
+    try {
+      FirebaseUser user = (await auth.signInWithEmailAndPassword(
+              email: email, password: password))
+          .user;
+
+      assert(user != null);
+      assert(await user.getIdToken() != null);
+
+      final FirebaseUser currentUser = await auth.currentUser();
+      assert(user.uid == currentUser.uid);
+      return user.uid;
+    } catch (e) {
+      handleError(e);
+      return null;
+    }
+  }
+
+  handleError(PlatformException error) {
+    print(error);
+    switch (error.code) {
+      case 'ERROR_USER_NOT_FOUND':
+        setState(() {
+          errorMessage = 'User Not Found!!!';
+        });
+        break;
+      case 'ERROR_WRONG_PASSWORD':
+        setState(() {
+          errorMessage = 'Wrong Password!!!';
+        });
+        break;
+    }
   }
 
   String _validateUsername(String value) {
     if (!_isSubmitted) return null;
-    return _validationService.validateUserUsername(value.trim());
+    return _validationService.validateUserUsername(value);
+    // return _validationService.validateUserUsername(value.trim());
   }
 
   String _validatePassword(String value) {
@@ -352,7 +408,7 @@ class _LoginState extends State<Login> {
     });
   }
 
-   Widget _getLoadingIndicator(Color color) {
+  Widget _getLoadingIndicator(Color color) {
     return SizedBox(
       height: 15.0,
       width: 15.0,

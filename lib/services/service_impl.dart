@@ -147,6 +147,7 @@ class Service implements ServiceMain {
 
   Future<List<Location>> getAllLocations() async {
     HttpieResponse response = await _locationService.getAllLocations();
+    print(response.statusCode);
     return LocationList.fromJson(json.decode(response.body)).categories ;
   }
 

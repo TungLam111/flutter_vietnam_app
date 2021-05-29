@@ -21,7 +21,7 @@ class LocationApiService implements LocationService {
 
 
   Future<HttpieResponse> getAllLocations() {
-    return this._httpService.post('$apiURL$GET_ALL_LOCATION', appendAuthorizationToken: true);
+    return this._httpService.postJSON('$apiURL$GET_ALL_LOCATION', appendAuthorizationToken: true);
   }
   
   Future<dynamic> getLocal() async {
