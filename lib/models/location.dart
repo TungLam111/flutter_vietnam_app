@@ -1,7 +1,8 @@
-
 import 'package:dcache/dcache.dart';
 import 'package:flutter_vietnam_app/models/updateable_model.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_vietnam_app/pages/home/home_screen/home_screen.dart';
 
 class LocationList {
   final List<Location> categories;
@@ -25,16 +26,26 @@ class Location extends UpdatableModel<Location>{
    String origin;
    String voice;
    String description;
-   List categories;
-   List related;
-   List images;
-  
-  Location({this.images,this.name, this.origin, this.voice, this.description, this.categories, this.related});
-    static final factory = LocationFactory();
+   List<String> categories;
+   List<String> related;
+   List<String> images;
+   
+   DocumentReference reference;
 
+  Location({this.images,this.name, this.origin, this.voice, this.description, this.categories, this.related, this.reference});
+    static final factory = LocationFactory();
+  
+  // a factory constructor to create Location instance from json
   factory Location.fromJSON(Map<String, dynamic> json) {
     if (json == null) return null;
     return factory.makeFromJson(json);
+  }
+  
+  // a factory constructor to create a Location from a Firestore DocumentSnapshot
+  factory Location.fromSnapshot(DocumentSnapshot snapshot) {
+    Location newPet = Location.fromJSON(snapshot.data);
+    newPet.reference = snapshot.reference;
+    return newPet;
   }
 
   Map<String, dynamic> toJson() {
@@ -43,9 +54,9 @@ class Location extends UpdatableModel<Location>{
       'origin': origin,
       'voice': voice,
       'description': description,
-      'categories': categories,
-      'related': related,
-      'images': images
+      'categories': categories?.map((String e) => e)?.toList(),
+      'related': related?.map((String e) => e)?.toList(),
+      'images': images?.map((String e) => e)?.toList()
     };
   }
 
@@ -68,13 +79,15 @@ class Location extends UpdatableModel<Location>{
     }
 
     if (json.containsKey('categories')) {
-      categories = json['categories'];
+      categories = factory.parseCategories(json['categories']);
     }
+
     if (json.containsKey('related')) {
-      related = json['related'];
+      related = factory.parseRelateds(json['related']);
     }
+
     if (json.containsKey('images')) {
-      images = json['images'];
+      images = factory.parseImages(json['images']);
     }
   }
 }
@@ -87,14 +100,38 @@ class LocationFactory extends UpdatableModelFactory<Location> {
   @override
   Location makeFromJson(Map json) {
     return Location(
-      images: json['images'],
+      images: parseImages(json['images']),
       name: json['name'],
       origin: json['origin'],
       description: json['description'],
-      related: json['related'],
+      related: parseRelateds(json['related']),
       voice: json['voice'],
-      categories: json['categories']
+      categories: parseCategories(json['categories'])
     );
+  }
+
+  List<String> parseCategories(List categoriesFromJson){
+    if (categoriesFromJson == null) return null;
+    List<String> categories = categoriesFromJson
+        .map((categoryJson) => categoryJson.toString())
+        .toList();
+    return categories;
+  }
+  
+  List<String> parseRelateds(List related){
+    if (related == null) return null;
+    List<String> categories = related
+        .map((categoryJson) => categoryJson.toString())
+        .toList();
+    return categories;
+  }
+
+  List<String> parseImages(List images){
+    if (images == null) return null;
+    List<String> categories = images
+        .map((categoryJson) => categoryJson.toString())
+        .toList();
+    return categories;
   }
 }
 

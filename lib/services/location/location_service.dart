@@ -11,5 +11,7 @@ abstract class LocationService {
   
   Future<dynamic> getLocal();
 
+  Future<dynamic> getLocation();
+
   Future<HttpieResponse> getLocationsByCategory({String category});
 }

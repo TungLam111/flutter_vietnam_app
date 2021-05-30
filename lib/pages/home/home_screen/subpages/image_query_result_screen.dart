@@ -2,7 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/models/item.dart';
+import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 

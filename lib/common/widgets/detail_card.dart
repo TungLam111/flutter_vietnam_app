@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/models/detail.dart';
+import 'package:flutter_vietnam_app/models/destination.dart';
 
 class DetailCard extends StatelessWidget {
   final Destination detail;

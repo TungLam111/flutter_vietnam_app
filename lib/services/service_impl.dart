@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/models/detail.dart';
-import 'package:flutter_vietnam_app/models/item.dart';
+import 'package:flutter_vietnam_app/models/destination.dart';
+import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
@@ -16,6 +16,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Service implements ServiceMain {
   final Store  _userStorage = serviceLocator<Store>();
@@ -23,6 +24,8 @@ class Service implements ServiceMain {
   final Httpie _httpieService = serviceLocator<Httpie>();
   final LocationService _locationService = serviceLocator<LocationService>();
   final MediaService _mediaService = serviceLocator<MediaService>();
+  final CollectionReference collection = Firestore.instance.collection('pets');
+  final CollectionReference collectionLocation = Firestore.instance.collection('speciality');
 
   var _loggedInUser;
   
@@ -31,6 +34,18 @@ class Service implements ServiceMain {
   static const STORAGE_KEY_USER_DATA = 'data';
 
   String _authToken; 
+  
+  Stream<QuerySnapshot> getStreamSpeciality() {
+    return collectionLocation.snapshots();
+  }
+
+  Future<DocumentReference> addLocation(Location location) {
+    return collectionLocation.add(location.toJson());
+  }
+
+  updateLocation(Location location) async {
+      await collectionLocation.document(location.reference.documentID).updateData(location.toJson());
+  }
 
   Future<void> loginWithCredentials(
       {@required String username, @required String password}) async {
@@ -173,6 +188,11 @@ class Service implements ServiceMain {
     return DestinationList.fromJson(response["data"]);
   }
 
+   Future<LocationList> getLocation() async{
+    var response = await _locationService.getLocation();
+    return LocationList.fromJson(response["data"]);
+  }
+
   Future<String> sendImage({@required File file}) async{
     HttpieStreamedResponse response = await _mediaService.sendImage(file: file);
     if (response.isOk() || response.isAccepted()){
@@ -196,4 +216,5 @@ class Service implements ServiceMain {
       return json.decode(response.body)["data"];
     }
   }
+  
 }

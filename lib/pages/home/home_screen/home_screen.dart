@@ -4,21 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_product.dart';
-import 'package:flutter_vietnam_app/models/item.dart';
+import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_tour.dart';
 import 'package:flutter_vietnam_app/pages/home/home_screen/subpages/image_query_result_screen.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
-import 'package:flutter_vietnam_app/services/service_impl.dart';
-import 'package:http/http.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:edge_alert/edge_alert.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -30,13 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
   TextTheme textTheme;
   List<PopularTourModel> popularTourModels = new List();
   List<CountryModel> country = new List();
-  List<Location> placeList = [];
   final ServiceMain _userService = serviceLocator<ServiceMain>();
   File _image;
   String _error;
   final picker = ImagePicker();
   bool status = false;
   bool isReply = false;
+  final DataRepository repository = DataRepository();
 
   //pick image from camera
   Future getImage() async {
@@ -127,50 +126,42 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void getLocations() async {
-    setStatus(false);
-     List<Location> temp = await _userService.getAllLocations();
-     setState((){
-       placeList = temp;
-       print(temp[2].name);
-     });
-     setStatus(true);
-     print("huhu");
-  }
-
-  void getLocationsByCategory({String category}) async {
-    setStatus(false);
-    List<Location> temp = (category == "All")? await _userService.getLocationsByCategory(category: category) : await _userService.getAllLocations();
-    setState(() {
-      placeList = temp;
-      print(placeList);
-      print(temp[1].name);
-    });
-    setStatus(true);
-  }
+  // void getLocationsByCategory({String category}) async {
+  //   setStatus(false);
+  //   List<Location> temp = (category == "All")? await _userService.getLocationsByCategory(category: category) : await _userService.getAllLocations();
+  //   setState(() {
+  //     placeList = temp;
+  //     print(placeList);
+  //     print(temp[1].name);
+  //   });
+  //   setStatus(true);
+  // }
   
-  void getLocationsByList() async {
-    setStatus(false);
-    List<Location> temp = await _userService.getLocationsByList(["Bánh mì","Bánh bèo"]);
-    setState(() {
-      placeList = temp;
-      print(placeList);
-      print(temp[1].name);
-    });
-    setStatus(true);
-  }
+  // void getLocationsByList() async {
+  //   setStatus(false);
+  //   List<Location> temp = await _userService.getLocationsByList(["Bánh mì","Bánh bèo"]);
+  //   setState(() {
+  //     placeList = temp;
+  //     print(placeList);
+  //     print(temp[1].name);
+  //   });
+  //   setStatus(true);
+  // }
 
   void setStatus(bool sta){
     setState(() {
       status = sta;
     });
   }
+ 
+ 
+ 
   @override
   void initState() {
     super.initState();
     country = getCountrys();
     popularTourModels = getPopularTours();
-    getLocations();
+   // getLocations();
     //getLocationsByList();
     //getLocationsByCategory(category: "Food");
   }
@@ -179,98 +170,102 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context){
     textTheme = Theme.of(context).textTheme;
     
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar : AppBar(
-          title: Center(child: Text("VietTravel", style: textTheme.headline6
-              .copyWith(fontWeight: FontWeight.bold, color: Color(0xff139157)),)),
-          backgroundColor: Colors.white,
-          leading: GestureDetector(child: Icon(Icons.menu, color: Color(0xff139157)),
-          onTap: (){
-          }),
-          actions: [
-           const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
-          ],
-        ),
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 15),
-          child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            
-          const SizedBox(height: 30),
-          _buildHeader(),
-          const SizedBox(height: 30),
-          _buildSearchs(),
-           const Text("Lastest news",style: TextStyle(
-             fontSize: 15,
-             fontWeight: FontWeight.bold
-           ),),
-          _buildScrollSlider(),
-
-          const SizedBox(height: 30),
-          const Text("Popular crossy tours",style: TextStyle(
-             fontSize: 15,
-             fontWeight: FontWeight.bold)),
-          SizedBox(height:5),
-          const Text("Tours in region",style: TextStyle(
-             fontSize: 15,
-             fontWeight: FontWeight.bold)),
-           Container(
-                height: 240,
-                child: ListView.builder(
-                    
-                    itemCount: country.length,
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return CountryListTile(
-                        label: country[index].label,
-                        countryName: country[index].countryName,
-                        noOfTours: country[index].noOfTours,
-                        rating: country[index].rating,
-                        imgUrl: country[index].imgUrl,
-                      );
-                    }),
-              ),
-          const SizedBox(height: 30),
-          const Text("Popular tours",style: TextStyle(
-             fontSize: 15,
-             fontWeight: FontWeight.bold)),
-          const SizedBox(height:10),
-           Container(
-             child:   ListView.builder(
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemCount: popularTourModels.length,
-                  itemBuilder: (context, index) {
-                    return PopularTours(
-                      desc: popularTourModels[index].desc,
-                      imgUrl: popularTourModels[index].imgUrl,
-                      title: popularTourModels[index].title,
-                      price: popularTourModels[index].price,
-                      rating: popularTourModels[index].rating,
-                    );
-                  }),
+    return StreamBuilder<QuerySnapshot>(
+      stream:  repository.getStreamSpeciality(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return Center(
+               child: CircularProgressIndicator(),
+             );
+        return SafeArea(
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar : AppBar(
+              title: Center(child: Text("VietTravel", style: textTheme.headline6
+                  .copyWith(fontWeight: FontWeight.bold, color: Color(0xff139157)),)),
+              backgroundColor: Colors.white,
+              leading: GestureDetector(child: Icon(Icons.menu, color: Color(0xff139157)),
+              onTap: (){
+              }),
+              actions: [
+               const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
+              ],
+            ),
+            body: Container(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 
-           ),
-          const SizedBox(height: 30),
-          const Text("Categories",style: TextStyle(
-             fontSize: 15,
-             fontWeight: FontWeight.bold)),
-          _buildCategoriesBar(),
-         (!status) ? Center(
-           child: CircularProgressIndicator(),
-         ): _buildStaggredItems(),
-          const SizedBox(height: 30),
+              const SizedBox(height: 30),
+              _buildHeader(),
+              const SizedBox(height: 30),
+              _buildSearchs(),
+               const Text("Lastest news",style: TextStyle(
+                 fontSize: 15,
+                 fontWeight: FontWeight.bold
+               ),),
+              _buildScrollSlider(),
 
-        ],),))
+              const SizedBox(height: 30),
+              const Text("Popular crossy tours",style: TextStyle(
+                 fontSize: 15,
+                 fontWeight: FontWeight.bold)),
+              SizedBox(height:5),
+              const Text("Tours in region",style: TextStyle(
+                 fontSize: 15,
+                 fontWeight: FontWeight.bold)),
+               Container(
+                    height: 240,
+                    child: ListView.builder(
+                        
+                        itemCount: country.length,
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return CountryListTile(
+                            label: country[index].label,
+                            countryName: country[index].countryName,
+                            noOfTours: country[index].noOfTours,
+                            rating: country[index].rating,
+                            imgUrl: country[index].imgUrl,
+                          );
+                        }),
+                  ),
+              const SizedBox(height: 30),
+              const Text("Popular tours",style: TextStyle(
+                 fontSize: 15,
+                 fontWeight: FontWeight.bold)),
+              const SizedBox(height:10),
+               Container(
+                 child:   ListView.builder(
+                      shrinkWrap: true,
+                      physics: ClampingScrollPhysics(),
+                      itemCount: popularTourModels.length,
+                      itemBuilder: (context, index) {
+                        return PopularTours(
+                          desc: popularTourModels[index].desc,
+                          imgUrl: popularTourModels[index].imgUrl,
+                          title: popularTourModels[index].title,
+                          price: popularTourModels[index].price,
+                          rating: popularTourModels[index].rating,
+                        );
+                      }),
+                    
+               ),
+              const SizedBox(height: 30),
+              const Text("Categories",style: TextStyle(
+                 fontSize: 15,
+                 fontWeight: FontWeight.bold)),
+              _buildCategoriesBar(),
+              _buildList(context, snapshot.data.documents),
+              const SizedBox(height: 30),
 
-     ));
+            ],),))
+
+         )); });
   }
 
   Widget _buildHeader(){
@@ -353,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return  GestureDetector(
          onTap: (){
            
-            getLocationsByCategory(category: categories[index].name);
+          //  getLocationsByCategory(category: categories[index].name);
                     },
          child: Container(
            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
@@ -374,23 +369,24 @@ class _HomeScreenState extends State<HomeScreen> {
   );
   }
 
-  Widget _buildStaggredItems(){
-    return  Container(
-      padding: EdgeInsets.symmetric(horizontal: 15),
-      child: StaggeredGridView.countBuilder(
-        shrinkWrap: true,
-        primary: false,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: 4,
-        itemCount: placeList.length,
-        staggeredTileBuilder: (int index) =>
-      new StaggeredTile.fit(2),
-        itemBuilder: (context, index) => PlaceItem(location: placeList[index]),
-      ),
-    );
+  Widget _buildList(BuildContext context,List<DocumentSnapshot> snapshot ){
 
+      return Container(
+          padding: EdgeInsets.symmetric(horizontal: 15),
+          child: StaggeredGridView.countBuilder(
+            shrinkWrap: true,
+            primary: false,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            crossAxisCount: 4,
+            itemCount: snapshot.length,
+            staggeredTileBuilder: (int index) =>
+          new StaggeredTile.fit(2),
+            itemBuilder: (context, index) => PlaceItem(location: Location.fromSnapshot(snapshot[index])),
+          ),
+        );
   }
+  
 }
 
 class PlaceItem extends StatelessWidget {
@@ -399,6 +395,7 @@ class PlaceItem extends StatelessWidget {
 
   @override 
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
          Navigator.push(

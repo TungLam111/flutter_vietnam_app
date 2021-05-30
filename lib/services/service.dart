@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/models/detail.dart';
-import 'package:flutter_vietnam_app/models/item.dart';
+import 'package:flutter_vietnam_app/models/destination.dart';
+import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
-
+import 'package:flutter_vietnam_app/services/fake_try/homelist.dart';
 void main() {
   setupServiceLocator();
   runApp(MyApp());
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
 
-      home: Login(),
+      home: HomeList(),
     );
   }
 }

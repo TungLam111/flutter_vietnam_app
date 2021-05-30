@@ -26,10 +26,16 @@ class LocationApiService implements LocationService {
   
   Future<dynamic> getLocal() async {
     String data =
-        await rootBundle.loadString('assets/data/destination_respone.json');
+        await rootBundle.loadString('assets/data/destination_response.json');
     return json.decode(data.toString());
   }
   
+  Future<dynamic> getLocation() async {
+    String data =
+        await rootBundle.loadString('assets/data/food-1.json');
+    return json.decode(data.toString());
+  }
+
   Future<HttpieResponse> getLocationByName({@required String locationName}) {
     Map<String, dynamic> body = {"name" : locationName};
     return this._httpService.post('$apiURL$GET_LOCATION_BY_NAME', body: body, appendAuthorizationToken: true);

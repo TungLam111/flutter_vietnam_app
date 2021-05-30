@@ -2,8 +2,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/models/detail.dart';
-import 'package:flutter_vietnam_app/models/item_parent.dart';
+import 'package:flutter_vietnam_app/models/destination.dart';
+import 'package:flutter_vietnam_app/models/item_destination.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';

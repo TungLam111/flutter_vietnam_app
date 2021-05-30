@@ -1,6 +1,6 @@
 // this page is for showing the detail of tour
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_vietnam_app/models/item.dart';
+import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter/material.dart';
 
 class Details extends StatefulWidget {
