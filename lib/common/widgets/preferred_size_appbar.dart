@@ -1,77 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-class ChatDetailPageAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  @override
-  Widget build(BuildContext context) {
-    String name = "Phan Dam Tung Lam";
-    return AppBar(
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.white,
-      flexibleSpace: SafeArea(
-        child: Container(
-          padding: EdgeInsets.only(right: 16),
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.grey,
-                ),
-              ),
-              SizedBox(
-                width: 2,
-              ),
-              CircleAvatar(
-                backgroundImage: AssetImage("assets/image/lll.jpg"),
-                maxRadius: 20,
-              ),
-              SizedBox(
-                width: 12,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      (name.length > 15) ? "${name.substring(0, 14)}" : "$name",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 6,
-                    ),
-                    Text(
-                      "Online",
-                      style: TextStyle(color: Colors.green, fontSize: 12),
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                  icon: Icon(Icons.phone, color: Colors.deepPurple),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(Icons.video_call, color: Colors.deepPurple),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(Icons.more_vert, color: Colors.deepPurple),
-                  onPressed: () {})
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight);
-}
+import 'package:google_fonts/google_fonts.dart';
 
 /// A navigation bar that uses the current theme colours
 class OBThemedNavigationBar extends StatelessWidget
@@ -81,10 +10,15 @@ class OBThemedNavigationBar extends StatelessWidget
   final Widget trailing;
   final String previousPageTitle;
   final Widget middle;
-  final Widget logo;
-
   final double height;
-  final AnimationController animation;
+  final bool checkTimeline;
+  final Function ontabTimeline;
+  final Color bgColor;
+  final String textButton;
+  final Color colorButton;
+  final Widget overlayWidget;
+  final bool autoLeading;
+  final EdgeInsetsDirectional padding;
 
   OBThemedNavigationBar(
       {this.leading,
@@ -92,68 +26,68 @@ class OBThemedNavigationBar extends StatelessWidget
       this.title,
       this.trailing,
       this.middle,
-      this.logo,
-      this.height ,
-      this.animation});
+      this.height = 80,
+      this.checkTimeline,
+      this.ontabTimeline,
+      this.bgColor,
+      this.textButton,
+      this.colorButton,
+      this.overlayWidget,
+      this.autoLeading = false,
+      this.padding});
 
   @override
   Widget build(BuildContext context) {
+       Color actionsForegroundColor = Colors.white;
+        return Column(
+          children: [
+            !autoLeading ? Container(
+              decoration: BoxDecoration(color: bgColor),
+              padding: EdgeInsets.only(left: 20, top: 10, bottom:10),
+              child: middle
+            ) :  Container(
+              child: CupertinoNavigationBar(
 
-        return Container(
-          padding: EdgeInsets.only(top: 20),
-          height: height,
-          color: Colors.transparent,
-          child: Column(
-            children: [
-              CupertinoNavigationBar(
-                padding: EdgeInsetsDirectional.only(
-                    bottom: 0, start: 16, end: 16, top: 0),
-                border: null,
-                middle: middle ??
-                    (title != null
-                        ? Text(
-                            title,
-                          )
-                        : logo != null
-                            ? logo
-                            : const SizedBox()),
-                transitionBetweenRoutes: false,
-                trailing: trailing,
-                leading: leading,
-              ),
-              if (animation != null)
-                Semantics(
-                  button: true,
-                  child: ScaleTransition(
-                    scale: animation,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.orange[200],
-                      ),
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      height: 30,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.add,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Thêm tin nhắn mới',
-                            style: TextStyle(color: Colors.white),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                )
-            ],
-          ),
-        
-    );
+                  padding: padding ??
+                      EdgeInsetsDirectional.only(
+                          bottom: 0, start: 15, end: 15, top: 0),
+                  border: null,
+                  actionsForegroundColor: actionsForegroundColor != null
+                      ? actionsForegroundColor
+                      : Colors.black,
+                  middle: middle != null
+                      ? middle
+                      : (title != null
+                          ? Text(title,
+                              style:  GoogleFonts.montserrat(
+                                  color: Color(0xff0E6085),
+                                  fontSize: 25 ))
+                          : const SizedBox(width: 0)),
+                  transitionBetweenRoutes: false,
+                  backgroundColor: bgColor != null
+                      ? bgColor
+                      : Colors.white,
+                  trailing: trailing ?? const SizedBox(width: 0),
+                  leading: (leading != null)
+                      ? leading
+                      : autoLeading
+                          ? GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: SizedBox(
+                                width: 20,
+                                child: Icon(
+                                  Icons.arrow_back_ios_rounded, color: Colors.blueGrey
+                                ),
+                              ),
+                            )
+                          : null,
+                  automaticallyImplyLeading: autoLeading,
+                ),
+            ),
+             
+            if (overlayWidget != null) overlayWidget,
+          ],
+        );
   }
 
   /// True if the navigation bar's background color has no transparency.
@@ -162,37 +96,11 @@ class OBThemedNavigationBar extends StatelessWidget
 
   @override
   Size get preferredSize {
-    return const Size.fromHeight(110);
+    return Size.fromHeight(48);
   }
 
   @override
   bool shouldFullyObstruct(BuildContext context) {
     return true;
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return new Container(
-     
-      color: Colors.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
   }
 }

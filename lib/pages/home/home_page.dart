@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_item.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
-import 'home_screen/home_screen.dart';
-import 'home_screen/subpages/search_screen.dart';
+import 'package:flutter_vietnam_app/pages/home/home_screen/home_screen.dart';
+import 'package:flutter_vietnam_app/pages/home/home_screen/wall_screen.dart';
+
 // 3 bottom bars
 class MyHomePage extends StatefulWidget {
   @override
@@ -16,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static List<Widget> _page = <Widget>[
     HomeScreen(),
-    SearchScreen(),
+    WallScreen(),
     DestinationDetail(),
     DestinationDetail(),
   ];
@@ -70,18 +71,22 @@ class _MyHomePageState extends State<MyHomePage> {
                       duration: Duration(milliseconds: 400),
                       tabBackgroundColor: Colors.grey[100],
                       tabs: [
+                        //home - location
                         GButton(
                           icon: LineIcons.home,
                           text: 'Home',
                         ),
+                        //sharing corner
                         GButton(
                           icon: LineIcons.heart,
                           text: 'Likes',
                         ),
+                        //destination
                         GButton(
                           icon: LineIcons.search,
                           text: 'Search',
                         ),
+                        //personal + recommendation
                         GButton(
                           icon: LineIcons.user,
                           text: 'Profile',

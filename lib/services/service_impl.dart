@@ -157,7 +157,7 @@ class Service implements ServiceMain {
   }
 
   User makeLoggedInUser(String userData) {
-    return User.fromJson(json.decode(userData), storeInSessionCache: true);
+    return User.fromJson(json.decode(userData));
   }
 
   Future<List<Location>> getAllLocations() async {

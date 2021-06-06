@@ -15,6 +15,9 @@ import 'package:flutter_vietnam_app/models/comment.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart' as Path; 
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Pets {
   Pets._();
@@ -46,6 +49,8 @@ class _HomeListState extends State<HomeList> {
   final DataRepository repository = DataRepository();
   final Service _userService = Service();
   
+  bool uploadingImage;
+  var _uploadedFileURL;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +79,7 @@ class _HomeListState extends State<HomeList> {
     );
   }
   
+  //upload for asset
   Future saveImage(List<Asset> asset) async {
     StorageUploadTask uploadTask;
     List<String> linkImage = [];
@@ -91,6 +97,25 @@ class _HomeListState extends State<HomeList> {
     }
     return linkImage;
   }
+
+  //up load for file
+  Future uploadPic(File image) async {
+  setState(() {
+    uploadingImage = true;
+  });
+  StorageReference storageReference =
+      FirebaseStorage.instance.ref().child(Path.basename(image.path));
+  StorageUploadTask uploadTask = storageReference.putFile(image);
+  await uploadTask.onComplete.then((taskSnapshot) async {
+    _uploadedFileURL = await taskSnapshot.ref.getDownloadURL();
+    print("Successfully uploaded profile picture");
+  }).catchError((e) {
+    print("Failed to upload profile picture");
+  });
+  setState(() {
+    uploadingImage = false;
+  });
+}
 
   void _addPet() async {
   
@@ -196,7 +221,9 @@ class _AlertDialogWidgetState extends State<AlertDialogWidget> {
           selectCircleStrokeColor: "#000000",
         ),
       );
-    } on Exception catch (e) {}
+    } on Exception catch (e) {
+      print(e.toString());
+    }
     if (!mounted) return;
     setState(() {
       widget.assets = resultList;

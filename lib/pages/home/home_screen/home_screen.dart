@@ -1,14 +1,9 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_product.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
-import 'package:flutter_vietnam_app/common/widgets/scroll_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_vietnam_app/common/widgets/pages/page_tour.dart';
-import 'package:flutter_vietnam_app/pages/home/home_screen/subpages/image_query_result_screen.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'dart:async';
@@ -18,6 +13,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_vietnam_app/common/widgets/preferred_size_appbar.dart';
+import 'package:flutter_vietnam_app/common/widgets/scaffold.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final _firestore = Firestore.instance;
+FirebaseUser loggedInUser;
 
 class HomeScreen extends StatefulWidget {
 
@@ -25,7 +27,7 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin{
   TextTheme textTheme;
   List<PopularTourModel> popularTourModels = new List();
   List<CountryModel> country = new List();
@@ -36,7 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
   bool status = false;
   bool isReply = false;
   final DataRepository repository = DataRepository();
-
+  TabController _tabController;
+  final _auth = FirebaseAuth.instance;
+  
   //pick image from camera
   Future getImage() async {
     String error;
@@ -113,263 +117,138 @@ class _HomeScreenState extends State<HomeScreen> {
         if (croppedFile != null) 
           _image = croppedFile;
       });
-      _navigateToImageQuery();
-    
   }
 
-  void _navigateToImageQuery(){
-    if (_image != null){
-       Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => ImageQuery(image: _image)),
-  );
+  void setStatus(bool statusLoading){
+    setState(() {
+      status = statusLoading;
+    });
+  }
+
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
-  // void getLocationsByCategory({String category}) async {
-  //   setStatus(false);
-  //   List<Location> temp = (category == "All")? await _userService.getLocationsByCategory(category: category) : await _userService.getAllLocations();
-  //   setState(() {
-  //     placeList = temp;
-  //     print(placeList);
-  //     print(temp[1].name);
-  //   });
-  //   setStatus(true);
-  // }
-  
-  // void getLocationsByList() async {
-  //   setStatus(false);
-  //   List<Location> temp = await _userService.getLocationsByList(["Bánh mì","Bánh bèo"]);
-  //   setState(() {
-  //     placeList = temp;
-  //     print(placeList);
-  //     print(temp[1].name);
-  //   });
-  //   setStatus(true);
-  // }
-
-  void setStatus(bool sta){
-    setState(() {
-      status = sta;
-    });
-  }
- 
- 
- 
   @override
   void initState() {
     super.initState();
     country = getCountrys();
     popularTourModels = getPopularTours();
-   // getLocations();
-    //getLocationsByList();
-    //getLocationsByCategory(category: "Food");
+    _tabController = TabController(length: 6, vsync: this);
+    getCurrentUser();
   }
-  @override 
 
+  @override 
   Widget build(BuildContext context){
     textTheme = Theme.of(context).textTheme;
-    
     return StreamBuilder<QuerySnapshot>(
       stream:  repository.getStreamSpeciality(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return Center(
                child: CircularProgressIndicator(),
              );
-        return SafeArea(
-          child: Scaffold(
+        return OBCupertinoPageScaffold(
             resizeToAvoidBottomInset: false,
-            appBar : AppBar(
-              title: Center(child: Text("VietTravel", style: textTheme.headline6
-                  .copyWith(fontWeight: FontWeight.bold, color: Color(0xff139157)),)),
-              backgroundColor: Colors.white,
-              leading: GestureDetector(child: Icon(Icons.menu, color: Color(0xff139157)),
-              onTap: (){
-              }),
-              actions: [
-               const Padding(padding: EdgeInsets.symmetric(horizontal: 10), child: Icon(Icons.settings, color:Color(0xff139157)))
-              ],
+            navigationBar : OBThemedNavigationBar( 
+              middle: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                Text("I love banana",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                  fontSize: 25))
+              ],)
             ),
-            body: Container(
+            child: Container(
               padding: EdgeInsets.symmetric(horizontal: 15),
-              child: SingleChildScrollView(
-              physics: BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                
-              const SizedBox(height: 30),
-              _buildHeader(),
-              const SizedBox(height: 30),
-              _buildSearchs(),
-               const Text("Lastest news",style: TextStyle(
-                 fontSize: 15,
-                 fontWeight: FontWeight.bold
-               ),),
-              _buildScrollSlider(),
+                  Container(
+                height: 40,
+                child: TabBar(
+                isScrollable: true,
+                controller: _tabController,
+                indicatorColor: Colors.grey,
+                labelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w600),
+                labelColor: Colors.grey,
+                onTap: (value) {
+                   if (value == 0 ){
 
-              const SizedBox(height: 30),
-              const Text("Popular crossy tours",style: TextStyle(
-                 fontSize: 15,
-                 fontWeight: FontWeight.bold)),
-              SizedBox(height:5),
-              const Text("Tours in region",style: TextStyle(
-                 fontSize: 15,
-                 fontWeight: FontWeight.bold)),
-               Container(
-                    height: 240,
-                    child: ListView.builder(
-                        
-                        itemCount: country.length,
-                        shrinkWrap: true,
-                        physics: ClampingScrollPhysics(),
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return CountryListTile(
-                            label: country[index].label,
-                            countryName: country[index].countryName,
-                            noOfTours: country[index].noOfTours,
-                            rating: country[index].rating,
-                            imgUrl: country[index].imgUrl,
-                          );
-                        }),
-                  ),
-              const SizedBox(height: 30),
-              const Text("Popular tours",style: TextStyle(
-                 fontSize: 15,
-                 fontWeight: FontWeight.bold)),
-              const SizedBox(height:10),
-               Container(
-                 child:   ListView.builder(
-                      shrinkWrap: true,
-                      physics: ClampingScrollPhysics(),
-                      itemCount: popularTourModels.length,
-                      itemBuilder: (context, index) {
-                        return PopularTours(
-                          desc: popularTourModels[index].desc,
-                          imgUrl: popularTourModels[index].imgUrl,
-                          title: popularTourModels[index].title,
-                          price: popularTourModels[index].price,
-                          rating: popularTourModels[index].rating,
-                        );
-                      }),
+                  }
+                  else if (value == 2) {
+                  
+                  }
+                  else if (value == 3) {
+
+                  }
+                  else if (value == 1) {
+
+                  }
+                   else if (value == 4) {
                     
-               ),
-              const SizedBox(height: 30),
-              const Text("Categories",style: TextStyle(
-                 fontSize: 15,
-                 fontWeight: FontWeight.bold)),
-              _buildCategoriesBar(),
-              _buildList(context, snapshot.data.documents),
-              const SizedBox(height: 30),
+                  }
+                   else if (value == 5) {
+                    
+                  }
 
-            ],),))
+                },
+                tabs: [
+                  Tab(
+                    child: Text("All", style: TextStyle(fontSize: 13))
+                  ),
+                  Tab(
+                    child: Text("Cuisine", style: TextStyle(fontSize: 13))
+                  ),
+                  Tab(
+                    child: Text("Sightseeing", style: TextStyle(fontSize: 13))
+                  ),
+                  Tab(
+                    child: Text("Culture", style: TextStyle(fontSize: 13))
+                  ),
+                  Tab(
+                    child: Text("History", style: TextStyle(fontSize: 13))
+                  ),
+                  Tab( 
+                    child: Text("Ethnicity", style: TextStyle(fontSize: 13))
+                  )
+                ],
+              ),
+              ),
+              Expanded( 
+                child: Padding(
+            padding: EdgeInsets.only(top: 5),
+            child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              children: [
+                _buildList(context, snapshot.data.documents),
 
-         )); });
-  }
-
-  Widget _buildHeader(){
-    String name = "Lam";
-    TextStyle style = TextStyle(fontWeight: FontWeight.bold, fontSize: 25);
-    return Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Hello $name", style: style),
-          Text("Explore Viet Nam with us", style: style)
-      ],)
-    );
-  }
-
-   Widget _buildSearchs() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-        GestureDetector(child: Container(
-          height: 30,
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          decoration: BoxDecoration(color: Colors.grey[200], borderRadius: BorderRadius.all(Radius.circular(10))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-               Text("Looking for place ...", style: TextStyle(color: Colors.grey[700])),
-               Icon(Icons.search, color: Colors.grey[700])
-            ],
-          )
-        )),
-        SizedBox(height: 10,),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-          GestureDetector(
-            onTap:() {
-              getImage();
-            } ,
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 75),
-              decoration: BoxDecoration(color: Colors.grey[200] , borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Icon(Icons.add_a_photo_outlined, size:30),)
+                Container(),
+                Container(),
+                Container(),
+                Container(),
+                Container()
+              ],
+            ),
           ),
-          SizedBox(width:5),
-          GestureDetector(
-             onTap: ()  {
-               getFromGallery();
-               },
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 15, horizontal: 75),
-              decoration: BoxDecoration(color: Colors.grey[200] , borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Icon(Icons.photo_camera_back, size: 30),)
-          )
-        ],)
-      ],)
-    );
+              ),
+        //      const SizedBox(height: 30),
+        //      const SizedBox(height: 30),
+            ],),)
+
+         ); });
   }
 
-  Widget _buildScrollSlider(){
-    return Container(
-      margin: const EdgeInsets.only(top: 10),
-      child: BoardingScreen())
-      ;
-  }
-  Widget _buildCategoriesBar(){
-    return 
-  Container(
-    height: 60,
-    margin: EdgeInsets.only(top: 10),
-    child:   ListView.builder(
-      padding: EdgeInsets.only(bottom: 15),
-      scrollDirection: Axis.horizontal,
-      itemCount: categories.length,
-      itemBuilder: (context, index){
-        return  GestureDetector(
-         onTap: (){
-           
-          //  getLocationsByCategory(category: categories[index].name);
-                    },
-         child: Container(
-           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-           margin: const EdgeInsets.only(right: 15),
-           child: Text(categories[index].name),
-           decoration: BoxDecoration(
-             color: Colors.white,
-             boxShadow: [
-              BoxShadow(
-                  color: categories[index].color,
-                  blurRadius: 3.0,
-                  offset: Offset(3, 3))
-            ]
-           ),
-           ),);
-      },
-      )
-  );
-  }
-
-  Widget _buildList(BuildContext context,List<DocumentSnapshot> snapshot ){
+  Widget _buildList(BuildContext context,List<DocumentSnapshot> snapshotDataDocument ){
 
       return Container(
           padding: EdgeInsets.symmetric(horizontal: 15),
@@ -379,10 +258,10 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
             crossAxisCount: 4,
-            itemCount: snapshot.length,
+            itemCount: snapshotDataDocument.length,
             staggeredTileBuilder: (int index) =>
           new StaggeredTile.fit(2),
-            itemBuilder: (context, index) => PlaceItem(location: Location.fromSnapshot(snapshot[index])),
+            itemBuilder: (context, index) => PlaceItem(location: Location.fromSnapshot(snapshotDataDocument[index])),
           ),
         );
   }
@@ -445,247 +324,3 @@ class PlaceItem extends StatelessWidget {
   }
 }
 
-List <Category> categories = [
-  Category(color: Colors.grey, name: "All"),
-  Category(color: Colors.green, name: "Food"),
-  Category(color: Colors.blue, name: "Destination"),
-  Category(color: Colors.red, name: "History"),
-  Category(color: Colors.orange, name: "Music"),
-  Category(color: Colors.yellow, name: "Heritage"),
-  Category(color: Colors.purple, name: "Languague"),
-];
-
-class Category {
-  final String name;
-  final Color color;
-
-  const Category({this.color, this.name});
-}
-
-class CountryListTile extends StatelessWidget {
-  final String label;
-  final String countryName;
-  final int noOfTours;
-  final double rating;
-  final String imgUrl;
-  CountryListTile(
-      {@required this.countryName,
-      @required this.label,
-      @required this.noOfTours,
-      @required this.rating,
-      @required this.imgUrl});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(right: 8),
-      child: Stack(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(16),
-            child: CachedNetworkImage(
-              imageUrl: imgUrl,
-              height: 220,
-              width: 150,
-              fit: BoxFit.cover,
-            ),
-          ),
-          Container(
-            height: 200,
-            width: 150,
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Container(
-                        margin: EdgeInsets.only(left: 8, top: 8),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 6, horizontal: 8),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.white38),
-                        child: Text(
-                          label ?? "New",
-                          style: TextStyle(color: Colors.white),
-                        ))
-                  ],
-                ),
-                Spacer(),
-                Row(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(bottom: 10, left: 8, right: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            child: Text(
-                              "Thailand",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 16),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 3,
-                          ),
-                          Text(
-                            "18 Tours",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 13),
-                          )
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    Container(
-                        margin: EdgeInsets.only(bottom: 10, right: 8),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 3, vertical: 7),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            color: Colors.white38),
-                        child: Column(
-                          children: [
-                            Text(
-                              "4.5",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13),
-                            ),
-                            SizedBox(
-                              height: 2,
-                            ),
-                            Icon(
-                              Icons.star,
-                              color: Colors.white,
-                              size: 20,
-                            )
-                          ],
-                        ))
-                  ],
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-
-class PopularTours extends StatelessWidget {
-  final String imgUrl;
-  final String title;
-  final String desc;
-  final String price;
-  final double rating;
-  PopularTours(
-      {@required this.imgUrl,
-      @required this.rating,
-      @required this.desc,
-      @required this.price,
-      @required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Details(
-                      imgUrl: imgUrl,
-                      placeName: title,
-                      rating: rating,
-                    )));
-      },
-      child: Container(
-        margin: EdgeInsets.only(bottom: 8),
-        decoration: BoxDecoration(
-            color: Color(0xffE9F4F9), borderRadius: BorderRadius.circular(20)),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20)),
-              child: CachedNetworkImage(
-                imageUrl: imgUrl,
-                width: 110,
-                height: 90,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff4E6059)),
-                  ),
-                  SizedBox(
-                    height: 3,
-                  ),
-                  Text(
-                    desc,
-                    style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xff89A097)),
-                  ),
-                  SizedBox(
-                    height: 6,
-                  ),
-                  Text(
-                    price,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff4E6059)),
-                  )
-                ],
-              ),
-            ),
-            Container(
-                margin: EdgeInsets.only(bottom: 10, right: 8),
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 12),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Color(0xff139157)),
-                child: Column(
-                  children: [
-                    Text(
-                      "$rating",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12),
-                    ),
-                    SizedBox(
-                      height: 2,
-                    ),
-                    Icon(
-                      Icons.star,
-                      color: Colors.white,
-                      size: 20,
-                    )
-                  ],
-                ))
-          ],
-        ),
-      ),
-    );
-  }
-}

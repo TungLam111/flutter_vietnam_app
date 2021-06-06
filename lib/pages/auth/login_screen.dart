@@ -184,6 +184,7 @@ class _LoginState extends State<Login> {
                                 print(_emailId);
                                 print(_password);
 
+                                _setLoginInProgress(true);
                                 signIn(_emailId, _password).then((user) {
                                   if (user != null) {
                                     print(
@@ -202,6 +203,7 @@ class _LoginState extends State<Login> {
                                     print('Error while Login.');
                                   }
                                 });
+                                _setLoginInProgress(false);
                               },
                               child: _loginInProgress
                                   ? Center(

@@ -1,28 +1,26 @@
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:flutter_vietnam_app/models/updateable_model.dart';
 import 'package:dcache/dcache.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CommentList{
-  final List<Comment> comments;
+  final List<Comment> categories;
   CommentList({
-    this.comments
+    this.categories
   });
    factory CommentList.fromJson(List<dynamic> parsedJson) {
-    List<Comment> comments = parsedJson
+    List<Comment> categories = parsedJson
         .map((categoryJson) => Comment.fromJSON(categoryJson))
         .toList();
 
     return new CommentList(
-      comments: comments,
+      categories: categories,
     );
   }
 }
 class Comment extends UpdatableModel<Comment> {
   String sender;
   String comment;
-  int rating;
+  int rating; //rating of sender towards that locations
   List<String> images;
   DateTime time;
   String location;
@@ -34,7 +32,7 @@ class Comment extends UpdatableModel<Comment> {
     this.rating,
     this.time,
     this.images,
-    this.location,
+    this.location, // or location post
     this.reference
   });
   
@@ -74,7 +72,6 @@ class Comment extends UpdatableModel<Comment> {
   @override
   void updateFromJson(Map json) {
     
-    // name o
     if (json.containsKey('sender')) {
       sender = json['sender'];
     }
@@ -82,7 +79,7 @@ class Comment extends UpdatableModel<Comment> {
     if (json.containsKey('location')) {
       location = json['location'];
     }
-    //district 
+    //content of that comment 
     if (json.containsKey('comment')) {
       comment = json['comment'];
     }
@@ -97,9 +94,7 @@ class Comment extends UpdatableModel<Comment> {
     // list images about that destination
     if (json.containsKey('images')) {
       images = factory.parseImages(json['images']);
-    }
-  
-    
+    } 
   }
 }
 

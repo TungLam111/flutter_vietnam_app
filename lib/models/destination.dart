@@ -26,25 +26,25 @@ class DestinationList {
 class Destination extends UpdatableModel<Destination>{
    String name;
    String address;
-   String district; //this
-   String description; //thís
-   String province; //this
-   int maxPrice; //this
-   int minPrice; //this
-   int avgPrice; //this
-   double avgRatings; // plus
-   int countRatings; //plus
-   int countComments; //plus
-   CommentList comments ; //considering
+   String district; //
+   String description; //
+   String province; //
+   int maxPrice; //
+   int minPrice; //
+   int avgPrice; //
+   double avgRatings; //
+   int countRatings; //
+   int countComments; //
+   CommentList comments ; //
    DestinationList nearby; 
-   DestinationList relatedNearby; //this
-   DestinationList related; //this
+   DestinationList relatedNearby; //
+   DestinationList related; //
    ItemList items; //
    
    List<String> images;
-   List<String> tags; //this
-   String types; //currently support 1 types (place for drink, place for wedding, ...)
-   List<String> functionalities; //this
+   List<String> tags; 
+   String types; // currently support 1 types (place for drink, place for wedding, ...)
+   List<String> functionalities; // for eating, bonding,...
 
   Destination({
     this.name,
@@ -91,7 +91,7 @@ class Destination extends UpdatableModel<Destination>{
     "countRatings": countRatings,
     "types": types,
 
-    "comments": comments?.comments?.map((Comment comment) => comment.toJson())?.toList(),
+    "comments": comments?.categories?.map((Comment comment) => comment.toJson())?.toList(),
     "nearby": nearby?.categories?.map((Destination destination) => destination.toJson())?.toList(),
     "related": related?.categories?.map((Destination destination) => destination.toJson())?.toList(),
     "relatedNearby": relatedNearby?.categories?.map((Destination destination) => destination.toJson())?.toList(),
