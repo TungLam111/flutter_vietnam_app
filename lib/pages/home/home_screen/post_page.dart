@@ -87,7 +87,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
         scoreInAnimationController.forward(from: 0.0);
     }
     increment(null); // Take care of tap
-   // holdTimer = new Timer.periodic(duration, increment); // Takes care of hold
+    //holdTimer = new Timer.periodic(duration, increment); // Takes care of hold
   }
 
   void onTapUp(TapUpDetails tap) {
@@ -97,7 +97,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
       scoreOutAnimationController.forward(from: 0.0);
       _scoreWidgetStatus = ScoreWidgetStatus.BECOMING_INVISIBLE;
     });
-    holdTimer.cancel();
+    //holdTimer.cancel();
     print("hold timer canel");
   }
 
@@ -182,6 +182,13 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
             );
           var user = snapshot.data.documents[0];
           return Scaffold(
+            bottomNavigationBar: SizedBox(
+height: 60,
+child: Row(children: [
+
+],)
+            ),
+
               floatingActionButton: new Padding(
           padding: new EdgeInsets.only(right: 20.0),
           child: new Stack(
@@ -223,7 +230,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                           padding: EdgeInsets.only(bottom: 10),
                           child: 
                           Text("Vietcetera (vietcetera.com) là một nền tảng nội dung với hàng triệu độc giả mỗi tháng từ khắp Việt Nam. Nay với ứng dụng điện thoại, người dùng có cập nhật nội dung của Vietcetera một cách tiện lợi và nhanh chóng.",
-                          style: TextStyle(color: Colors.grey)
+                          style: TextStyle(color: Colors.grey, )
                           )
                         ),
                         Padding( 
@@ -242,7 +249,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                         ),
                         Padding(
                           padding: EdgeInsets.only(bottom: 20),
-                          child: Text(widget.post.content, style: TextStyle(color: Colors.blueGrey))
+                          child: Text(widget.post.content, style: TextStyle(color: Colors.blueGrey, fontSize: 18))
                         ),
                         Padding(
                              padding: EdgeInsets.only(bottom: 10),
@@ -261,6 +268,56 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                   );
                                 }).toList(),
                               ),
+                           ),
+                           Padding(
+                             padding: EdgeInsets.only(bottom: 0.0), 
+                             child: ListView.separated(
+                               shrinkWrap: true,
+                               primary: false,
+                               separatorBuilder: (BuildContext context, int index) => Divider(), 
+                               itemCount: widget.post.comments.categories.length,
+                               itemBuilder: (context, index){
+                                 Comment comment = widget.post.comments.categories[index];
+                                   var data_comment = _firestore
+                                         .collection("users")
+                                         .where('email', isEqualTo: comment.sender);
+                                 return StreamBuilder<QuerySnapshot>(
+                                   stream: data_comment.snapshots(),
+                                   builder: (context, snapshot) {
+                                        if (!snapshot.hasData) return Center(
+                                            child: CircularProgressIndicator(),
+                                                 );
+                                        var user_comment = snapshot.data.documents[0];
+                                     return Container(
+                                       child: Column(
+                                         children: [
+                                           Row(
+                                             children: [
+                                               CircleAvatar(
+                                                 backgroundImage: NetworkImage(user_comment["photoUrl"].toString()),
+                                               ),
+                                               SizedBox(width: 20),
+                                               Expanded( child: Text(comment.comment.toString()),)
+                                             ],
+                                           ),
+                                            if (comment.images.length > 0) imageGridView(comment.images),
+                                             Row(
+                                             mainAxisAlignment: MainAxisAlignment.end,
+                                             children: [
+                                              Text(
+                                    DateFormat('dd/MM/yyyy')
+                                        .format(comment.time),
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                  fontSize: 13))
+                                           ],)
+                                         ],
+                                       )
+                                     );
+                                   }
+                                 );
+                               },
+                               )
                            )
                      ],)
                    ),
@@ -269,6 +326,19 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
             ),
           );
         });
+  }
+    //TODO: Image product holder
+  Widget imageGridView(List<String> listImages) {
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      children: listImages.map((e) {
+        return Padding(
+          padding: EdgeInsets.all(5),
+          child: Image.network(e.toString())
+        );
+      }).toList()
+    );
   }
 }
 enum ScoreWidgetStatus {
