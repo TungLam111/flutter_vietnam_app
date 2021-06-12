@@ -28,13 +28,12 @@ class Post extends UpdatableModel<Post>{
    List<String> images;
    int countLike;
    int countComment;
-   CommentList comments;
    String category;
    List<String> tags;
 
    DocumentReference reference;
 
-  Post({this.poster,this.content, this.title, this.postTime, this.images, this.countLike, this.countComment, this.comments, this.reference, this.category, this.tags});
+  Post({this.poster,this.content, this.title, this.postTime, this.images, this.countLike, this.countComment, this.reference, this.category, this.tags});
     static final factory = PostFactory();
   
   // a factory constructor to create Location instance from json
@@ -61,7 +60,7 @@ class Post extends UpdatableModel<Post>{
       'images': images?.map((String e) => e)?.toList(),
       'tags': tags.map((String e) => e)?.toList(),
       'category': category,
-      'comments': comments?.categories?.map((Comment comment) => comment.toJson())?.toList(),
+      //'comments': comments?.categories?.map((Comment comment) => comment.toJson())?.toList(),
 
     };
   }
@@ -103,10 +102,6 @@ class Post extends UpdatableModel<Post>{
     if (json.containsKey('tags')) {
       tags = factory.parseTags(json['tags']);
     }
-
-    if (json.containsKey('comments')) {
-      comments = factory.parseComments(json['comments']);
-    }
   }
 }
 
@@ -127,7 +122,6 @@ class PostFactory extends UpdatableModelFactory<Post> {
       title : json['title'],
       category: json['category'],
       tags: parseTags(json['tags']),
-      comments: parseComments(json['comments'])
       
     );
   }

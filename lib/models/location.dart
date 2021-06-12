@@ -22,6 +22,7 @@ class LocationList {
   }
 }
 class Location extends UpdatableModel<Location>{
+   String location_id;
    String name;
    String origin;
    String voice;
@@ -29,10 +30,9 @@ class Location extends UpdatableModel<Location>{
    List<String> categories;
    List<String> related;
    List<String> images;
-   
    DocumentReference reference;
 
-  Location({this.images,this.name, this.origin, this.voice, this.description, this.categories, this.related, this.reference});
+  Location({this.location_id,this.images,this.name, this.origin, this.voice, this.description, this.categories, this.related, this.reference});
     static final factory = LocationFactory();
   
   // a factory constructor to create Location instance from json
@@ -45,6 +45,7 @@ class Location extends UpdatableModel<Location>{
   factory Location.fromSnapshot(DocumentSnapshot snapshot) {
     Location newPet = Location.fromJSON(snapshot.data);
     newPet.reference = snapshot.reference;
+    newPet.location_id = snapshot.documentID;
     return newPet;
   }
 

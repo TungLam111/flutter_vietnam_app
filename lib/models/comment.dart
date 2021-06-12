@@ -20,7 +20,7 @@ class CommentList{
 class Comment extends UpdatableModel<Comment> {
   String sender;
   String comment;
-  int rating; //rating of sender towards that locations
+  double rating; //rating of sender towards that locations
   List<String> images;
   DateTime time;
   String location;
@@ -110,7 +110,7 @@ class CommentFactory extends UpdatableModelFactory<Comment> {
       location: json['location'],
       comment: json['comment'],
       time: parseDateJoined(json['time']),
-      rating: json['functionalities'],
+      rating: json['rating'].toDouble(),
       images: parseImages(json['images']),
     );
   }

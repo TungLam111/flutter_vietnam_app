@@ -277,10 +277,11 @@ class PlaceItem extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-         Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => DescriptionProduct(location: location,)),
-  );
+        print(location.location_id);
+  //        Navigator.push(
+  //   context,
+  //   MaterialPageRoute(builder: (context) => DescriptionProduct(location: location,)),
+  // );
       },
       child:  Card(
       child:  Column(
