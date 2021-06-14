@@ -21,8 +21,9 @@ class PostList {
   }
 }
 class Post extends UpdatableModel<Post>{
+   String subtitle;
    String poster; 
-   String content;
+   List<Map<String, dynamic>> content;
    String title;
    DateTime postTime;
    List<String> images;
@@ -33,7 +34,7 @@ class Post extends UpdatableModel<Post>{
 
    DocumentReference reference;
 
-  Post({this.poster,this.content, this.title, this.postTime, this.images, this.countLike, this.countComment, this.reference, this.category, this.tags});
+  Post({this.subtitle, this.poster,this.content, this.title, this.postTime, this.images, this.countLike, this.countComment, this.reference, this.category, this.tags});
     static final factory = PostFactory();
   
   // a factory constructor to create Location instance from json
@@ -51,8 +52,9 @@ class Post extends UpdatableModel<Post>{
 
   Map<String, dynamic> toJson() {
     return {
+      'subtitle' : subtitle,
       'poster': poster,
-      'content': content,
+      'content': content?.map((Map e) => e)?.toList(),
       'title' : title,
       'count_like': countLike,
       'count_comment': countComment,
@@ -67,12 +69,17 @@ class Post extends UpdatableModel<Post>{
 
   @override
   void updateFromJson(Map json) {
+
+    if (json.containsKey('subtitle')) {
+      subtitle = json['subtitle'];
+    }
+
     if (json.containsKey('poster')) {
       poster = json['poster'];
     }
 
     if (json.containsKey('content')) {
-      content = json['content'];
+      content = factory.parseContent(json['content']);
     }
 
     if (json.containsKey('title')) {
@@ -113,17 +120,26 @@ class PostFactory extends UpdatableModelFactory<Post> {
   @override
   Post makeFromJson(Map json) {
     return Post(
+      subtitle: json['subtitle'],
       images: parseImages(json['images']),
       poster: json['poster'],
       postTime: parseDateJoined(json['post_time']),
       countLike: json['count_like'],
       countComment: json['count_comment'],
-      content : json['content'],
+      content :parseContent(json['content']),
       title : json['title'],
       category: json['category'],
       tags: parseTags(json['tags']),
       
     );
+  }
+ 
+ List<Map<String, dynamic>> parseContent(List content){
+    if (content == null) return null;
+    List<Map<String, dynamic>> categories = content
+        .map((categoryJson) => Map<String, dynamic>.from(categoryJson))
+        .toList();
+    return categories;
   }
 
   List<String> parseImages(List images){
