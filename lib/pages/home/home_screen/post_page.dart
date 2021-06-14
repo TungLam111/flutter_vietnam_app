@@ -273,8 +273,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                       body: Material(
                           child: OBCupertinoPageScaffold(
                         resizeToAvoidBottomInset: true,
-                        navigationBar: OBThemedNavigationBar(
-                            autoLeading: true, title: "Your reading"),
+                       
                         child: Padding(
                           padding: EdgeInsets.only(left: 15, right: 15, bottom: 25),
                           child: SingleChildScrollView(
@@ -305,7 +304,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                               Padding(
                                   padding: EdgeInsets.only(bottom: 10),
                                   child: Text(
-                                      "Vietcetera (vietcetera.com) là một nền tảng nội dung với hàng triệu độc giả mỗi tháng từ khắp Việt Nam. Nay với ứng dụng điện thoại, người dùng có cập nhật nội dung của Vietcetera một cách tiện lợi và nhanh chóng.",
+                                      post.subtitle,
                                       style: TextStyle(
                                         color: Colors.grey,
                                       ))),
@@ -341,7 +340,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                       child: Column(
                                         children: [
                                           (e["type"] == "text") ? Text(e["value"].toString(), style: TextStyle(
-                                          color: Colors.blueGrey, fontSize: 17)) : Image.network(e["value"].toString()),
+                                          color: Colors.black, fontSize: 17)) : Image.network(e["value"].toString()),
                                           SizedBox(height: 10),
                                           (e["type"] == "image") ? Text(e["title"].toString(), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)) : SizedBox()
                                         ])
@@ -422,8 +421,14 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                     ),
                                                     SizedBox(width: 20),
                                                     Expanded(
-                                                      child: Text(comment.comment
-                                                          .toString()),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text("@${userComment['displayName']}", style: TextStyle(color: Colors.green[900], fontWeight: FontWeight.bold)),
+                                                          Text(comment.comment
+                                                              .toString()),
+                                                        ],
+                                                      ),
                                                     )
                                                   ],
                                                 ),

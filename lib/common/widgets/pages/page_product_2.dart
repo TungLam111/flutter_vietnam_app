@@ -102,7 +102,7 @@ class CloneBooking extends StatelessWidget {
                                 children: [
                                 Icon(Icons.add_a_photo_outlined),
                                 SizedBox(width: 10),
-                                Expanded(child: Text(location.voice),)
+                                Expanded(child: Text(location.videoCode),)
                               ],)]),
                               const SizedBox(
                         height: 10,

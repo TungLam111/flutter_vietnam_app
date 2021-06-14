@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
 
-      home: YoutubePlayerDemoApp(),
+      home: Login(),
     );
   }
 }
@@ -58,7 +58,7 @@ class YoutubePlayerDemoApp extends StatelessWidget {
           color: Colors.blueAccent,
         ),
       ),
-      home: MyHomePage(),
+      home: Login(),
     );
   }
 }

@@ -40,8 +40,9 @@ class _NewWidgetState extends State<NewWidget> {
     return StreamBuilder<Object>(
       stream: null,
       builder: (context, snapshot) {
-        return SafeArea(
-          child: Scaffold(
+        return Scaffold(
+                   resizeToAvoidBottomInset: true,
+                      resizeToAvoidBottomPadding: true,
           body: Stack(
             children:[
               
@@ -181,7 +182,7 @@ class _NewWidgetState extends State<NewWidget> {
           )
           )
             ])
-        ));
+        );
       }
     );
   }

@@ -22,17 +22,16 @@ class LocationList {
   }
 }
 class Location extends UpdatableModel<Location>{
-   String location_id;
-   String name;
-   String origin;
-   String voice;
+   String name; 
+   String videoCode; //video code intro
+   String origin; //place where this kind of location originates from 
    String description;
-   List<String> categories;
-   List<String> related;
-   List<String> images;
+   List<String> categories; // can belong to many categories
+   List<String> related; // tags
+   List<String> images; 
    DocumentReference reference;
 
-  Location({this.location_id,this.images,this.name, this.origin, this.voice, this.description, this.categories, this.related, this.reference});
+  Location({this.videoCode, this.images,this.name, this.origin, this.description, this.categories, this.related, this.reference});
     static final factory = LocationFactory();
   
   // a factory constructor to create Location instance from json
@@ -45,15 +44,14 @@ class Location extends UpdatableModel<Location>{
   factory Location.fromSnapshot(DocumentSnapshot snapshot) {
     Location newPet = Location.fromJSON(snapshot.data);
     newPet.reference = snapshot.reference;
-    newPet.location_id = snapshot.documentID;
     return newPet;
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'videoCode': videoCode,
       'name': name,
       'origin': origin,
-      'voice': voice,
       'description': description,
       'categories': categories?.map((String e) => e)?.toList(),
       'related': related?.map((String e) => e)?.toList(),
@@ -63,16 +61,16 @@ class Location extends UpdatableModel<Location>{
 
   @override
   void updateFromJson(Map json) {
+    if (json.containsKey('video_code')){
+      videoCode = json['video_code'];
+    }
+
     if (json.containsKey('name')) {
       name = json['name'];
     }
 
     if (json.containsKey('origin')) {
       origin = json['origin'];
-    }
-
-    if (json.containsKey('voice')) {
-      voice = json['voice'];
     }
 
     if (json.containsKey('description')) {
@@ -101,12 +99,12 @@ class LocationFactory extends UpdatableModelFactory<Location> {
   @override
   Location makeFromJson(Map json) {
     return Location(
+      videoCode: json['video_code'],
       images: parseImages(json['images']),
       name: json['name'],
       origin: json['origin'],
       description: json['description'],
       related: parseRelateds(json['related']),
-      voice: json['voice'],
       categories: parseCategories(json['categories'])
     );
   }
