@@ -50,6 +50,10 @@ class DataRepository {
     return collectionLocation.snapshots();
   }
 
+  Stream<QuerySnapshot> getStreamSpecialityByCategory(String filter){
+    return collectionLocation.where("categories",arrayContains: filter).snapshots();
+  }
+
   Future<DocumentReference> addLocation(Location location) {
     return collectionLocation.add(location.toJson());
   }

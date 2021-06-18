@@ -22,16 +22,18 @@ class LocationList {
   }
 }
 class Location extends UpdatableModel<Location>{
+  String subtitle;
    String name; 
    String videoCode; //video code intro
    String origin; //place where this kind of location originates from 
-   String description;
+   List<Map<String, dynamic>>  description;
    List<String> categories; // can belong to many categories
    List<String> related; // tags
    List<String> images; 
+   List<String> typeDish;
    DocumentReference reference;
 
-  Location({this.videoCode, this.images,this.name, this.origin, this.description, this.categories, this.related, this.reference});
+  Location({this.subtitle,this.typeDish, this.videoCode, this.images,this.name, this.origin, this.description, this.categories, this.related, this.reference});
     static final factory = LocationFactory();
   
   // a factory constructor to create Location instance from json
@@ -49,18 +51,28 @@ class Location extends UpdatableModel<Location>{
 
   Map<String, dynamic> toJson() {
     return {
-      'videoCode': videoCode,
+      'subtitle': subtitle,
+      'video_code': videoCode,
       'name': name,
       'origin': origin,
-      'description': description,
+      'description': description?.map((Map e) => e)?.toList(),
       'categories': categories?.map((String e) => e)?.toList(),
       'related': related?.map((String e) => e)?.toList(),
-      'images': images?.map((String e) => e)?.toList()
+      'images': images?.map((String e) => e)?.toList(),
+      'type_dish' : typeDish?.map((String e) => e)?.toList(),
     };
   }
 
   @override
   void updateFromJson(Map json) {
+    if (json.containsKey('subtitle')){
+      subtitle = json['subtitle'];
+    }
+    
+    if (json.containsKey('type_dish')){
+      typeDish = factory.parseTypeDish(json['type_dish']);
+    }
+
     if (json.containsKey('video_code')){
       videoCode = json['video_code'];
     }
@@ -74,7 +86,7 @@ class Location extends UpdatableModel<Location>{
     }
 
     if (json.containsKey('description')) {
-      description = json['description'];
+      description = factory.parseDescription(json['description']);
     }
 
     if (json.containsKey('categories')) {
@@ -99,16 +111,27 @@ class LocationFactory extends UpdatableModelFactory<Location> {
   @override
   Location makeFromJson(Map json) {
     return Location(
+      subtitle: json['subtitle'],
+      typeDish: parseTypeDish(json['type_dish']),
       videoCode: json['video_code'],
       images: parseImages(json['images']),
       name: json['name'],
       origin: json['origin'],
-      description: json['description'],
+      description: parseDescription(json['description']),
       related: parseRelateds(json['related']),
       categories: parseCategories(json['categories'])
     );
   }
-
+  
+   
+ List<Map<String, dynamic>> parseDescription(List content){
+    if (content == null) return null;
+    List<Map<String, dynamic>> categories = content
+        .map((categoryJson) => Map<String, dynamic>.from(categoryJson))
+        .toList();
+    return categories;
+  }
+  
   List<String> parseCategories(List categoriesFromJson){
     if (categoriesFromJson == null) return null;
     List<String> categories = categoriesFromJson
@@ -132,189 +155,12 @@ class LocationFactory extends UpdatableModelFactory<Location> {
         .toList();
     return categories;
   }
+
+    List<String> parseTypeDish(List typeDish){
+    if (typeDish == null) return null;
+    List<String> categories = typeDish
+        .map((categoryJson) => categoryJson.toString())
+        .toList();
+    return categories;
+  }
 }
-
-class CountryModel {
-  String label;
-  String countryName;
-  int noOfTours;
-  double rating;
-  String imgUrl;
-
-  CountryModel(
-      {this.countryName, this.label, this.noOfTours, this.rating, this.imgUrl});
-}
-
-class PopularTourModel {
-  String imgUrl;
-  String title;
-  String desc;
-  String price;
-  double rating;
-}
-
-
-List<CountryModel> getCountrys() {
-  List<CountryModel> country = new List();
-  CountryModel countryModel = new CountryModel();
-
-//1
-  countryModel.countryName = "Thailand";
-  countryModel.label = "New";
-  countryModel.noOfTours = 18;
-  countryModel.rating = 4.5;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  //1
-  countryModel.countryName = "Malaysia";
-  countryModel.label = "Sale";
-  countryModel.noOfTours = 12;
-  countryModel.rating = 4.3;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/1366919/pexels-photo-1366919.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  //1
-  countryModel.countryName = "Thailand";
-  countryModel.label = "New";
-  countryModel.noOfTours = 18;
-  countryModel.rating = 4.5;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/3568489/pexels-photo-3568489.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  //1
-  countryModel.countryName = "Thailand";
-  countryModel.label = "New";
-  countryModel.noOfTours = 18;
-  countryModel.rating = 4.5;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  //1
-  countryModel.countryName = "Thailand";
-  countryModel.label = "New";
-  countryModel.noOfTours = 18;
-  countryModel.rating = 4.5;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  //1
-  countryModel.countryName = "Thailand";
-  countryModel.label = "New";
-  countryModel.noOfTours = 18;
-  countryModel.rating = 4.5;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  //1
-  countryModel.countryName = "Thailand";
-  countryModel.label = "New";
-  countryModel.noOfTours = 18;
-  countryModel.rating = 4.5;
-  countryModel.imgUrl =
-      "https://images.pexels.com/photos/1659438/pexels-photo-1659438.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260";
-  country.add(countryModel);
-  countryModel = new CountryModel();
-
-  return country;
-}
-
-List<PopularTourModel> getPopularTours() {
-  List<PopularTourModel> popularTourModels = new List();
-  PopularTourModel popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Thailand";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.0;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Cuba";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 499.99";
-  popularTourModel.rating = 4.5;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/1477430/pexels-photo-1477430.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Dominican";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.2;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/1743165/pexels-photo-1743165.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Thailand";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.0;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Thailand";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.0;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Thailand";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.0;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Thailand";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.0;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-//1
-  popularTourModel.imgUrl =
-      "https://images.pexels.com/photos/358457/pexels-photo-358457.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500";
-  popularTourModel.title = "Thailand";
-  popularTourModel.desc = "10 nights for two/all inclusive";
-  popularTourModel.price = "\$ 245.50";
-  popularTourModel.rating = 4.0;
-  popularTourModels.add(popularTourModel);
-  popularTourModel = new PopularTourModel();
-
-  return popularTourModels;
-}
-

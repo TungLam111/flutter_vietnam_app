@@ -26,11 +26,7 @@ class WallScreen extends StatefulWidget {
 
 class _WallScreenState extends State<WallScreen> {
   TextTheme textTheme;
-  List<PopularTourModel> popularTourModels = new List();
-  List<CountryModel> country = new List();
   final ServiceMain _userService = serviceLocator<ServiceMain>();
-  File _image;
-  String _error;
   final picker = ImagePicker();
   bool status = false;
   bool isReply = false;
@@ -58,8 +54,6 @@ class _WallScreenState extends State<WallScreen> {
   @override
   void initState() {
     super.initState();
-    country = getCountrys();
-    popularTourModels = getPopularTours();
     _isOpen = false;
     getCurrentUser();
   }

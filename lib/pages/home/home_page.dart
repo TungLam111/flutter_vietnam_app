@@ -47,8 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   _page[0],
                   _page[1],
-                  _page[2],
-                  _page[3],
+               //   _page[2],
+               //   _page[3],
                 ],
               ),
             ),
@@ -63,34 +63,35 @@ class _MyHomePageState extends State<MyHomePage> {
                   child: GNav(
                       rippleColor: Colors.grey[300],
                       hoverColor: Colors.grey[100],
-                      gap: 8,
+                      gap: 20,
                       activeColor: Colors.black,
                       iconSize: 24,
                       padding:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                       duration: Duration(milliseconds: 400),
                       tabBackgroundColor: Colors.grey[100],
                       tabs: [
                         //home - location
                         GButton(
+                          
                           icon: LineIcons.home,
                           text: 'Home',
                         ),
                         //sharing corner
-                        GButton(
-                          icon: LineIcons.heart,
-                          text: 'Likes',
-                        ),
+                        // GButton(
+                        //   icon: LineIcons.heart,
+                        //   text: 'Likes',
+                        // ),
                         //destination
                         GButton(
                           icon: LineIcons.search,
                           text: 'Search',
                         ),
                         //personal + recommendation
-                        GButton(
-                          icon: LineIcons.user,
-                          text: 'Profile',
-                        ),
+                        // GButton(
+                        //   icon: LineIcons.user,
+                        //   text: 'Profile',
+                        // ),
                       ],
                       selectedIndex: _selectedIndex,
                       onTabChange: (index) {

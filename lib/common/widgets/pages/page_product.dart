@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/common/widgets/pages/page_product_2.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/pages/home/home_screen/youtube.dart';
-
+import 'package:flutter_vietnam_app/pages/home/home_screen/flip_card.dart';
 class DescriptionProduct extends StatefulWidget {
   final Location location;
   const DescriptionProduct({this.location});
@@ -17,10 +17,10 @@ class _DescriptionProductState extends State<DescriptionProduct> {
     return Scaffold(
       body: PageView(
         children: [
-          NewWidget(
+          ImageIntro(
             location: widget.location,
           ),
-          CloneBooking(location: widget.location)
+          Detail(location: widget.location)
         ],
         scrollDirection: Axis.vertical,
       ),
@@ -28,14 +28,14 @@ class _DescriptionProductState extends State<DescriptionProduct> {
   }
 }
 
-class NewWidget extends StatefulWidget {
+class ImageIntro extends StatefulWidget {
   final Location location;
-  const NewWidget({this.location});
+  const ImageIntro({this.location});
   @override
-  _NewWidgetState createState() => _NewWidgetState();
+  _ImageIntroState createState() => _ImageIntroState();
 }
 
-class _NewWidgetState extends State<NewWidget> {
+class _ImageIntroState extends State<ImageIntro> {
   final PageController _pageController =
       PageController(initialPage: 0, keepPage: true);
   int _currentPage = 0;
@@ -58,7 +58,7 @@ class _NewWidgetState extends State<NewWidget> {
                   itemCount: widget.location.images.length + 1,
                   itemBuilder: (context, index) {
                     if (index == widget.location.images.length)
-                      return Youtube();
+                      return Youtube(idLinkYoutube: widget.location.videoCode);
                     return Container(
                       decoration: BoxDecoration(
                           image: DecorationImage(
@@ -141,25 +141,24 @@ class _NewWidgetState extends State<NewWidget> {
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text(widget.location.name,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 30,
-                                    )),
+                                _buildFlip(),
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text(widget.location.origin,
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                                  color: Colors.black, 
+                                  child: Text(widget.location.origin,
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15,
-                                    )),
+                                    ))
+                                ),
                                 SizedBox(
                                   height: 10,
                                 ),
-                                Text(widget.location.description,
+                                Text(widget.location.subtitle ?? "",
                                     maxLines: 3,
                                     style: TextStyle(
                                       color: Colors.white,
@@ -176,7 +175,7 @@ class _NewWidgetState extends State<NewWidget> {
                                     child: Column(
                                       children: [
                                         Text(
-                                          'Xem thêm',
+                                          'See more',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
@@ -201,6 +200,9 @@ class _NewWidgetState extends State<NewWidget> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
+                            onTap: (){
+                              Navigator.of(context).pop();
+                            },
                               child: Container(
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.all(
@@ -209,15 +211,6 @@ class _NewWidgetState extends State<NewWidget> {
                                   padding: EdgeInsets.all(12),
                                   child: Icon(Icons.arrow_back_ios_rounded,
                                       size: 15))),
-                          GestureDetector(
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0)),
-                                      color: Colors.white),
-                                  padding: EdgeInsets.all(12),
-                                  child: Icon(Icons.favorite_outline_rounded,
-                                      size: 15)))
                         ],
                       ),
                     ],
@@ -225,5 +218,49 @@ class _NewWidgetState extends State<NewWidget> {
                 ))
               ]));
         });
+  }
+    Widget _buildFlip() {
+    return Column(
+      children: [
+        Container(
+       //   height: 50, width: 200,
+          child: FlipCard(
+            speed: 3000,
+            //   direction: _direction, // default
+            front: 
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade400,
+                  ),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child:  Text(
+                  widget.location.name.toString(),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600),
+                ),
+                ),
+              
+            back: 
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade200,),
+                    child:    Text(
+                  widget.location.name.toString(),
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w600),
+                ),
+                  
+                ),
+             
+             
+          ),
+        ),
+      ],
+    );
   }
 }

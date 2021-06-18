@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 
 
 class Youtube extends StatefulWidget {
+  final String idLinkYoutube;
+  const Youtube({this.idLinkYoutube});
   @override
   _YoutubeState createState() => _YoutubeState();
 }
@@ -30,7 +32,7 @@ class _YoutubeState extends State<Youtube> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: id,
+      initialVideoId: widget.idLinkYoutube ?? id,
       flags: const YoutubePlayerFlags(
         mute: false,
         autoPlay: true,
@@ -43,8 +45,8 @@ class _YoutubeState extends State<Youtube> {
     )..addListener(listener);
     _idController = TextEditingController();
     _seekToController = TextEditingController();
-    _videoMetaData = const YoutubeMetaData();
-    _playerState = PlayerState.unknown;
+    // _videoMetaData = const YoutubeMetaData();
+    // _playerState = PlayerState.unknown;
   }
 
   void listener() {
@@ -121,127 +123,7 @@ class _YoutubeState extends State<Youtube> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Expanded(child: player),
-                    // _space,
-                    // _text('Title', _videoMetaData.title),
-                    // _space,
-                    // _text('Channel', _videoMetaData.author),
-                    // _space,
-                    // _text('Video Id', _videoMetaData.videoId),
-                    // _space,
-                    // Row(
-                    //   children: [
-                    //     _text(
-                    //       'Playback Quality',
-                    //       _controller.value.playbackQuality ?? '',
-                    //     ),
-                    //     const Spacer(),
-                    //     _text(
-                    //       'Playback Rate',
-                    //       '${_controller.value.playbackRate}x  ',
-                    //     ),
-                    //   ],
-                    // ),
-               //     _space,
-                               
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //   children: [
-                    //     // IconButton(
-                    //     //   icon: const Icon(Icons.skip_previous),
-                    //     //   onPressed: _isPlayerReady
-                    //     //       ? () => _controller.load(_ids[
-                    //     //           (_ids.indexOf(_controller.metadata.videoId) -
-                    //     //                   1) %
-                    //     //               _ids.length])
-                    //     //       : null,
-                    //     // ),
-                    //     IconButton(
-                    //       icon: Icon(
-                    //         _controller.value.isPlaying
-                    //             ? Icons.pause
-                    //             : Icons.play_arrow,
-                    //       ),
-                    //       onPressed: _isPlayerReady
-                    //           ? () {
-                    //               _controller.value.isPlaying
-                    //                   ? _controller.pause()
-                    //                   : _controller.play();
-                    //               setState(() {});
-                    //             }
-                    //           : null,
-                    //     ),
-                    //     IconButton(
-                    //       icon: Icon(_muted ? Icons.volume_off : Icons.volume_up),
-                    //       onPressed: _isPlayerReady
-                    //           ? () {
-                    //               _muted
-                    //                   ? _controller.unMute()
-                    //                   : _controller.mute();
-                    //               setState(() {
-                    //                 _muted = !_muted;
-                    //               });
-                    //             }
-                    //           : null,
-                    //     ),
-                    //     FullScreenButton(
-                    //       controller: _controller,
-                    //       color: Colors.blueAccent,
-                    //     ),
-                    //     // IconButton(
-                    //     //   icon: const Icon(Icons.skip_next),
-                    //     //   onPressed: _isPlayerReady
-                    //     //       ? () => _controller.load(_ids[
-                    //     //           (_ids.indexOf(_controller.metadata.videoId) +
-                    //     //                   1) %
-                    //     //               _ids.length])
-                    //     //       : null,
-                    //     // ),
-                    //   ],
-                    // ),
-                 //   _space,
-                    // Row(
-                    //   children: <Widget>[
-                    //     const Text(
-                    //       "Volume",
-                    //       style: TextStyle(fontWeight: FontWeight.w300),
-                    //     ),
-                    //     Expanded(
-                    //       child: Slider(
-                    //         inactiveColor: Colors.transparent,
-                    //         value: _volume,
-                    //         min: 0.0,
-                    //         max: 100.0,
-                    //         divisions: 10,
-                    //         label: '${(_volume).round()}',
-                    //         onChanged: _isPlayerReady
-                    //             ? (value) {
-                    //                 setState(() {
-                    //                   _volume = value;
-                    //                 });
-                    //                 _controller.setVolume(_volume.round());
-                    //               }
-                    //             : null,
-                    //       ),
-                    //     ),
-                    //   ],
-                    // // ),
-                    // _space,
-                    // AnimatedContainer(
-                    //   duration: const Duration(milliseconds: 800),
-                    //   decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(20.0),
-                    //     color: _getStateColor(_playerState),
-                    //   ),
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: Text(
-                    //     _playerState.toString(),
-                    //     style: const TextStyle(
-                    //       fontWeight: FontWeight.w300,
-                    //       color: Colors.white,
-                    //     ),
-                    //     textAlign: TextAlign.center,
-                    //   ),
-                    // ),
+                   
                   ],
                 ),
               ),
@@ -251,70 +133,4 @@ class _YoutubeState extends State<Youtube> {
       
     );
   }
-
-  // Widget _text(String title, String value) {
-  //   return RichText(
-  //     text: TextSpan(
-  //       text: '$title : ',
-  //       style: const TextStyle(
-  //         color: Colors.blueAccent,
-  //         fontWeight: FontWeight.bold,
-  //       ),
-  //       children: [
-  //         TextSpan(
-  //           text: value,
-  //           style: const TextStyle(
-  //             color: Colors.blueAccent,
-  //             fontWeight: FontWeight.w300,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  // Color _getStateColor(PlayerState state) {
-  //   switch (state) {
-  //     case PlayerState.unknown:
-  //       return Colors.grey[700];
-  //     case PlayerState.unStarted:
-  //       return Colors.pink;
-  //     case PlayerState.ended:
-  //       return Colors.red;
-  //     case PlayerState.playing:
-  //       return Colors.blueAccent;
-  //     case PlayerState.paused:
-  //       return Colors.orange;
-  //     case PlayerState.buffering:
-  //       return Colors.yellow;
-  //     case PlayerState.cued:
-  //       return Colors.blue[900];
-  //     default:
-  //       return Colors.blue;
-  //   }
-  // }
-
-  // Widget get _space => const SizedBox(height: 10);
-
-
-  // void _showSnackBar(String message) {
-  //   Scaffold.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text(
-  //         message,
-  //         textAlign: TextAlign.center,
-  //         style: const TextStyle(
-  //           fontWeight: FontWeight.w300,
-  //           fontSize: 16.0,
-  //         ),
-  //       ),
-  //       backgroundColor: Colors.blueAccent,
-  //       behavior: SnackBarBehavior.floating,
-  //       elevation: 1.0,
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(50.0),
-  //       ),
-  //     ),
-  //   );
-  // }
 }
