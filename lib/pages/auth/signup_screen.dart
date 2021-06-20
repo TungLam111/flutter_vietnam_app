@@ -74,9 +74,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Align(
+                  Container(
+                      height: 200 ,
                       alignment: Alignment.center,
-                      child: Image.asset("assets/images/image_01.png")),
+                      child: Image.asset("assets/images/mua_roi_sqr-removebg-preview.png")),
                   Align(
                     alignment: Alignment.center,
                     child: Text(
@@ -166,6 +167,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: Colors.white),
                       )),
           ),
+        ),
+        GestureDetector( 
+          onTap: (){
+                  Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Login()),
+      );
+          },
+          child: Text("LogIn", style: TextStyle(color: Colors.blue))
         )
       ])),
     );

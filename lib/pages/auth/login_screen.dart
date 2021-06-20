@@ -98,9 +98,8 @@ class _LoginState extends State<Login> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top: 20.0),
-                child: Image.asset("assets/images/image_01.png"),
+              SizedBox(
+                child: Image.asset("assets/images/com_lang_vong_sqr-removebg-preview.png"),
               ),
               Expanded(
                 child: Container(),
@@ -110,26 +109,10 @@ class _LoginState extends State<Login> {
           ),
           SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 60.0),
+              padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 300.0),
               child: Column(
                 children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/images/logo.png",
-                        width: ScreenUtil().setWidth(110),
-                        height: ScreenUtil().setHeight(110),
-                      ),
-                      Text("LOGO",
-                          style: TextStyle(
-                              fontSize: ScreenUtil().setSp(46),
-                              letterSpacing: .6,
-                              fontWeight: FontWeight.bold))
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil().setHeight(180),
-                  ),
+              
                   FormCard(
                       formKey: _formKey,
                       userNameController: _usernameController,
@@ -141,23 +124,9 @@ class _LoginState extends State<Login> {
                       passwordFocusNode: _passwordFocusNode),
                   SizedBox(height: ScreenUtil().setHeight(40)),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          SizedBox(
-                            width: 12.0,
-                          ),
-                          GestureDetector(
-                            onTap: _radio,
-                            child: radioButton(_isSelected),
-                          ),
-                          SizedBox(
-                            width: 8.0,
-                          ),
-                          Text("Remember me", style: TextStyle(fontSize: 12))
-                        ],
-                      ),
+                   
                       InkWell(
                         child: Container(
                           width: ScreenUtil().setWidth(330),
@@ -177,7 +146,7 @@ class _LoginState extends State<Login> {
                           child: Material(
                             color: Colors.transparent,
                             child: InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 String _emailId = _usernameController.text;
                                 String _password = _passwordController.text;
 
@@ -185,7 +154,7 @@ class _LoginState extends State<Login> {
                                 print(_password);
 
                                 _setLoginInProgress(true);
-                                signIn(_emailId, _password).then((user) {
+                                await signIn(_emailId, _password).then((user) {
                                   if (user != null) {
                                     print(
                                         'Logged in successfully with $_emailId and $_password');
@@ -223,60 +192,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(
                     height: ScreenUtil().setHeight(40),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      horizontalLine(),
-                      Text("Social Login", style: TextStyle(fontSize: 16.0)),
-                      horizontalLine()
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(40),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SocialIcon(
-                        colors: [
-                          Color(0xFF102397),
-                          Color(0xFF187adf),
-                          Color(0xFF00eaf8),
-                        ],
-                        iconData: CustomIcons.facebook,
-                        onPressed: () {},
-                      ),
-                      SocialIcon(
-                        colors: [
-                          Color(0xFFff4f38),
-                          Color(0xFFff355d),
-                        ],
-                        iconData: CustomIcons.googlePlus,
-                        onPressed: () {},
-                      ),
-                      SocialIcon(
-                        colors: [
-                          Color(0xFF17ead9),
-                          Color(0xFF6078ea),
-                        ],
-                        iconData: CustomIcons.twitter,
-                        onPressed: () {},
-                      ),
-                      SocialIcon(
-                        colors: [
-                          Color(0xFF00c6fb),
-                          Color(0xFF005bea),
-                        ],
-                        iconData: CustomIcons.linkedin,
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil.getInstance().setHeight(30),
-                  ),
-                  Row(
+                  ),               Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
@@ -415,7 +331,7 @@ class _LoginState extends State<Login> {
       height: 15.0,
       width: 15.0,
       child: CircularProgressIndicator(
-          strokeWidth: 2.0, valueColor: AlwaysStoppedAnimation<Color>(color)),
+          strokeWidth: 2.0),
     );
   }
 }

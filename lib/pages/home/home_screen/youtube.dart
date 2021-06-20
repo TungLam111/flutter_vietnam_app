@@ -32,7 +32,7 @@ class _YoutubeState extends State<Youtube> {
   void initState() {
     super.initState();
     _controller = YoutubePlayerController(
-      initialVideoId: widget.idLinkYoutube ?? id,
+      initialVideoId: (widget.idLinkYoutube != "" && widget.idLinkYoutube != null) ? widget.idLinkYoutube : id,
       flags: const YoutubePlayerFlags(
         mute: false,
         autoPlay: true,
