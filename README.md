@@ -4,5 +4,4 @@ Reading
 
 CONTRIBUTORS : FLUTTER/FIREBASE 
 
-![1](images/Screenshot_1624203184.png){:height="300px" width="100px"}
-
+![test image size]<img src="https://github.com/TungLam111/flutter_vietnam_app/images/Screenshot_1624203184.png" width="400" height="790">
