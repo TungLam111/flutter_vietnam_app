@@ -4,5 +4,5 @@ Reading
 
 CONTRIBUTORS : FLUTTER/FIREBASE 
 
-![1](images/https://github.com/TungLam111/flutter_vietnam_app/blob/master/images/Screenshot_1624203184.png)
+![1](images/Screenshot_1624203184.png)
 
