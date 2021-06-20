@@ -4,5 +4,5 @@ Reading
 
 CONTRIBUTORS : FLUTTER/FIREBASE 
 
-![1](images/Screenshot_1624203184.png){:height="700px" width="400px"}
+![1](images/Screenshot_1624203184.png){:height="300px" width="100px"}
 
