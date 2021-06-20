@@ -14,6 +14,10 @@ import 'package:flutter_vietnam_app/pages/home/home_screen/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_vietnam_app/pages/home/home_screen/post_page.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'no_result.dart';
+import 'search_page.dart';
+import 'post_item.dart';
 
 final _firestore = Firestore.instance;
 FirebaseUser loggedInUser;
@@ -33,6 +37,8 @@ class _WallScreenState extends State<WallScreen> {
   bool _isOpen;
   //final DataRepository repository = DataRepository();
   final _auth = FirebaseAuth.instance;
+
+  String _currentFilter;
 
   void setStatus(bool statusLoading) {
     setState(() {
@@ -55,6 +61,7 @@ class _WallScreenState extends State<WallScreen> {
   void initState() {
     super.initState();
     _isOpen = false;
+    _currentFilter = "All";
     getCurrentUser();
   }
 
@@ -62,7 +69,9 @@ class _WallScreenState extends State<WallScreen> {
   Widget build(BuildContext context) {
     textTheme = Theme.of(context).textTheme;
     return StreamBuilder<QuerySnapshot>(
-        stream: repository.getStreamPost(),
+        stream: _currentFilter != "All"
+            ? repository.getStreamPostFilter(_currentFilter)
+            : repository.getStreamPost(),
         builder: (context, snapshot) {
           if (!snapshot.hasData)
             return Center(
@@ -74,15 +83,22 @@ class _WallScreenState extends State<WallScreen> {
               resizeToAvoidBottomInset: true,
               navigationBar: OBThemedNavigationBar(
                   bgColor: Colors.black,
-                  middle: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("I love banana",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 25))
-                    ],
+                  middle: Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 15),
+
+                                      child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("I love banana",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 25)),
+                        GestureDetector(
+                          onTap: () => _navigateToSearch(context),
+                          child: Icon(Icons.search, color: Colors.white))
+                      ],
+                    ),
                   )),
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
@@ -94,7 +110,7 @@ class _WallScreenState extends State<WallScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(height: 70),
-                          Container(child: _buildList(context, data)),
+                          Container(child: (data == null || data.length == 0) ? _buildNoList(context): _buildList(context, data) ),
                         ],
                       ),
                       Stack(
@@ -116,24 +132,34 @@ class _WallScreenState extends State<WallScreen> {
                                       )),
                                   child: ListView(
                                     children: [
+                                      "All",
                                       "Culture",
                                       "Tradition",
                                       "History",
                                       "Ethnicity",
                                       "SaiGon",
                                       "HaNoi",
-                                      "VietNam wars"
+                                      "VietNam wars",
+                                      "Humanity"
                                     ].map((e) {
-                                      return Container(
-                                        margin: EdgeInsets.only(
-                                            bottom: 10, left: 10, right: 10),
-                                        child: Text(e,
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                        padding: EdgeInsets.only(
-                                            top: 20, bottom: 20, left: 10),
-                                        decoration:
-                                            BoxDecoration(color: Colors.black),
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _currentFilter = e;
+                                            _isOpen = !_isOpen;
+                                          });
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.only(
+                                              bottom: 10, left: 10, right: 10),
+                                          child: Text(e,
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                          padding: EdgeInsets.only(
+                                              top: 20, bottom: 20, left: 10),
+                                          decoration: BoxDecoration(
+                                              color: Colors.black),
+                                        ),
                                       );
                                     }).toList(),
                                   )),
@@ -160,7 +186,7 @@ class _WallScreenState extends State<WallScreen> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              "Category filtering",
+                                              "Category filtering: $_currentFilter",
                                             ),
                                             RotateIcon(
                                                 close: _isOpen,
@@ -186,129 +212,31 @@ class _WallScreenState extends State<WallScreen> {
   }
 
   Widget _buildList(BuildContext context, List<DocumentSnapshot> data) {
-    return ListView.separated(
+    return AnimationLimiter(
+        child: ListView.separated(
       separatorBuilder: (BuildContext context, int index) => Divider(),
       shrinkWrap: true,
       primary: false,
       itemCount: data.length,
       itemBuilder: (context, index) {
-        return PostItem(post: Post.fromSnapshot(data[index]));
+        return AnimationConfiguration.staggeredList(
+            position: index,
+            duration: const Duration(milliseconds: 375),
+            child: SlideAnimation(
+                verticalOffset: 50.0,
+                child: FadeInAnimation(
+                    child: PostItem(post: Post.fromSnapshot(data[index])))));
       },
-    );
+    ));
+  }
+
+  Widget _buildNoList(BuildContext context){
+    return NoResultFoundScreen();
   }
 }
 
-class PostItem extends StatelessWidget {
-  final Post post;
-  const PostItem({this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    final DataRepository repository = DataRepository();
-    //  var data = _firestore.collection("users").where('email', isEqualTo: post.poster );
-    return StreamBuilder<QuerySnapshot>(
-        stream: repository.getStreamUser(post.poster),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-
-          List<DocumentSnapshot> users = snapshot.data.documents;
-          DocumentSnapshot user = users[0];
-
-          return GestureDetector(
-              onTap: () {
-                Navigator.push(
+void _navigateToSearch(BuildContext context) {
+       Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => PostPage(post: post)),
-                );
-                // _firestore.collection("users").document(loggedInUser.uid).setData({"displayName": "tunglamahihi", "phoneNumber": "0829976232", "photoUrl": "https://cdn.ibispaint.com/movie/728/965/728965653/image728965653.png"});
-              },
-              child: Container(
-                padding: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20))),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  CircleAvatar(
-                                      radius: 30,
-                                      backgroundImage: NetworkImage(
-                                          user["photoUrl"].toString())),
-                                  SizedBox(width: 20),
-                                  SizedBox(
-                                    width: 150,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text("${post.category}",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            )),
-                                        Text("@${user["displayName"]}",
-                                            style: TextStyle(
-                                                color: Colors.grey,
-                                                fontWeight: FontWeight.bold,
-                                                fontStyle: FontStyle.italic)),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Text(
-                                  DateFormat('dd/MM/yyyy')
-                                      .format(post.postTime),
-                                  style: TextStyle(
-                                      color: Colors.grey,
-                                      fontStyle: FontStyle.italic))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Image.network(
-                            "${post.images[0]}",
-                            fit: BoxFit.fitWidth,
-                            width: 400,
-                            height: 200,
-                          ),
-                          Text("${post.title}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25)),
-                          Wrap(
-                            children: post.tags.map((e) {
-                              return Container(
-                                child: Text("#${e.toString()}",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontStyle: FontStyle.italic)),
-                                decoration:
-                                    BoxDecoration(color: Colors.blueGrey),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                margin: EdgeInsets.only(left: 10, bottom: 5),
-                              );
-                            }).toList(),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ));
-        });
-  }
-}
+                  MaterialPageRoute(builder: (context) => SearchPage() ),
+                );}

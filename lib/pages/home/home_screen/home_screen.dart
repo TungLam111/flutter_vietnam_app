@@ -95,7 +95,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildFlip(),
                     Container(
                       height: 40,
                       child: TabBar(

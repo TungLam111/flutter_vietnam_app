@@ -29,7 +29,7 @@ class Post extends UpdatableModel<Post>{
    List<String> images;
    int countLike;
    int countComment;
-   String category;
+   List<String> category;
    List<String> tags;
 
    DocumentReference reference;
@@ -61,8 +61,7 @@ class Post extends UpdatableModel<Post>{
       "post_time": postTime?.toString(),
       'images': images?.map((String e) => e)?.toList(),
       'tags': tags.map((String e) => e)?.toList(),
-      'category': category,
-      //'comments': comments?.categories?.map((Comment comment) => comment.toJson())?.toList(),
+      'category': category?.map((String e) => e)?.toList(),
 
     };
   }
@@ -103,7 +102,7 @@ class Post extends UpdatableModel<Post>{
     }
 
     if (json.containsKey('category')) {
-      category = json['category'];
+      category = factory.parseCategory(json['category']);
     }
 
     if (json.containsKey('tags')) {
@@ -128,7 +127,7 @@ class PostFactory extends UpdatableModelFactory<Post> {
       countComment: json['count_comment'],
       content :parseContent(json['content']),
       title : json['title'],
-      category: json['category'],
+      category: parseCategory(json['category']),
       tags: parseTags(json['tags']),
       
     );
@@ -151,6 +150,14 @@ class PostFactory extends UpdatableModelFactory<Post> {
   }
 
   List<String> parseTags(List tags){
+    if (tags == null) return null;
+    List<String> categories = tags
+        .map((categoryJson) => categoryJson.toString())
+        .toList();
+    return categories;
+  }
+  
+  List<String> parseCategory(List tags){
     if (tags == null) return null;
     List<String> categories = tags
         .map((categoryJson) => categoryJson.toString())

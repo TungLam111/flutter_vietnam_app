@@ -61,7 +61,7 @@ class OBThemedNavigationBar extends StatelessWidget
                           ? Text(title,
                               style:  GoogleFonts.montserrat(
                                   color: Color(0xff0E6085),
-                                  fontSize: 25 ))
+                                  fontSize: 20 ))
                           : const SizedBox(width: 0)),
                   transitionBetweenRoutes: false,
                   backgroundColor: bgColor != null

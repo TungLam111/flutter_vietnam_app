@@ -1,6 +1,6 @@
 //this page is for showing the detail of product (for image recognition)
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/common/widgets/pages/page_product_2.dart';
+import 'package:flutter_vietnam_app/common/widgets/pages/detail.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/pages/home/home_screen/youtube.dart';
 import 'package:flutter_vietnam_app/pages/home/home_screen/flip_card.dart';

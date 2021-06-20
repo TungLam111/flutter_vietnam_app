@@ -20,6 +20,10 @@ class DataRepository {
   Stream<QuerySnapshot> getStreamPost() {
     return collectionPost.snapshots();
   }
+
+  Stream<QuerySnapshot> getStreamPostFilter(String filter) {
+    return collectionPost.where("category",arrayContains: filter).snapshots();
+  }
   
   Future<DocumentReference> addPost(Post post) {
     return collectionPost.add(post.toJson());
@@ -43,8 +47,12 @@ class DataRepository {
       await collection.document(pet.reference.documentID).updateData(pet.toJson());
   }
 
-  
-  
+  Stream<QuerySnapshot> getSuggestion(String suggestion) {
+   return Firestore.instance.collection('post')
+      .orderBy('title')
+      .startAt([suggestion])
+      .endAt([suggestion + '\uf8ff']).snapshots();
+  }
   
   Stream<QuerySnapshot> getStreamSpeciality() {
     return collectionLocation.snapshots();
@@ -52,6 +60,10 @@ class DataRepository {
 
   Stream<QuerySnapshot> getStreamSpecialityByCategory(String filter){
     return collectionLocation.where("categories",arrayContains: filter).snapshots();
+  }
+
+  Stream<QuerySnapshot> getStreamSpecialityByType(String filter){
+    return collectionLocation.where("type_dish", arrayContains: filter).snapshots();
   }
 
   Future<DocumentReference> addLocation(Location location) {

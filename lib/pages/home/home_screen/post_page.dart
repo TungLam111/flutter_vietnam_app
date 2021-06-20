@@ -44,10 +44,16 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
       scoreOutAnimationController,
       scoreSizeAnimationController;
   Animation scoreOutPositionAnimation;
-  List<Asset> assetList ;
+  List<Asset> assetList;
+
+  int _currentPage;
+
+  PageController _pageController;
   void initState() {
     super.initState();
     getCurrentUser();
+    _currentPage = 0;
+    _pageController = new PageController(initialPage: 0);
     assetList = [];
     _counter = widget.post.countLike;
     _ratingController = TextEditingController(text: '');
@@ -87,7 +93,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
     scoreOutAnimationController.dispose();
     super.dispose();
   }
-  
+
   void getCurrentUser() async {
     try {
       final user = await _auth.currentUser();
@@ -104,7 +110,10 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
     setState(() {
       _counter++;
     });
-     _firestore.collection("post").document(widget.post.reference.documentID).updateData({"count_like": _counter });
+    _firestore
+        .collection("post")
+        .document(widget.post.reference.documentID)
+        .updateData({"count_like": _counter});
   }
 
   void onTapDown(TapDownDetails tap) {
@@ -137,7 +146,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
     //holdTimer.cancel();
     print("hold timer canel");
   }
- 
+
   Widget getScoreButton(int value) {
     var scorePosition = 0.0;
     var scoreOpacity = 0.0;
@@ -167,7 +176,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                 ),
                 child: new Center(
                     child: new Text(
-               "+" + value.toString(),
+                  "+" + value.toString(),
                   style: new TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -206,7 +215,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
         ));
   }
 
-    //upload for asset
+  //upload for asset
   Future saveImage(List<Asset> asset) async {
     StorageUploadTask uploadTask;
     List<String> linkImage = [];
@@ -224,15 +233,18 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
     }
     return linkImage;
   }
-   
+
   @override
   Widget build(BuildContext context) {
-     var data = _firestore
+    var data = _firestore
         .collection("users")
         .where('email', isEqualTo: widget.post.poster);
-    var postStream = _firestore.collection("post").document(widget.post.reference.documentID);
+    var postStream = _firestore
+        .collection("post")
+        .document(widget.post.reference.documentID);
     var comments = _firestore
-        .collection("comment").where('location', isEqualTo: widget.post.reference.documentID);
+        .collection("comment")
+        .where('location', isEqualTo: widget.post.reference.documentID);
     return StreamBuilder<QuerySnapshot>(
         stream: data.snapshots(),
         builder: (context, snapshot) {
@@ -249,284 +261,431 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                   return Center(child: CircularProgressIndicator());
                 List<DocumentSnapshot> commens_post = snap.data.documents;
                 return StreamBuilder(
-                  stream: postStream.snapshots(),
-                  builder: (context, snapShot) {
+                    stream: postStream.snapshots(),
+                    builder: (context, snapShot) {
                       if (!snapShot.hasData)
-                  return Center(child: CircularProgressIndicator());
-                  Post post = Post.fromSnapshot(snapShot.data);
-                //  print(post.countLike);
-                 // print(snapshot.data);
-                    return Scaffold(
-                      resizeToAvoidBottomInset: true,
-                      resizeToAvoidBottomPadding: true,
-                      //    bottomNavigationBar: ,
-                      floatingActionButton: new Padding(
-                          padding: new EdgeInsets.only(right: 20.0),
-                          child: new Stack(
-                            alignment: FractionalOffset.center,
-                            overflow: Overflow.visible,
-                            children: <Widget>[
-                              getScoreButton(post.countLike),
-                              getClapButton(),
-                            ],
-                          )),
-                      body: Material(
-                          child: OBCupertinoPageScaffold(
+                        return Center(child: CircularProgressIndicator());
+                      Post post = Post.fromSnapshot(snapShot.data);
+                      //  print(post.countLike);
+                      // print(snapshot.data);
+                      return Scaffold(
                         resizeToAvoidBottomInset: true,
-                       
-                        child: Padding(
-                          padding: EdgeInsets.only(left: 15, right: 15, bottom: 25),
-                          child: SingleChildScrollView(
-                              child: Column(
+                        resizeToAvoidBottomPadding: true,
+                        //    bottomNavigationBar: ,
+                        body: Material(
+                            child: OBCupertinoPageScaffold(
+                              navigationBar: OBThemedNavigationBar(
+                                title: "Your reading",
+                                autoLeading: true,),
+                          resizeToAvoidBottomInset: true,
+                          child: Stack(
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(post.category,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 16)),
-                                  Text(
-                                      DateFormat('dd/MM/yyyy')
-                                          .format(post.postTime),
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontStyle: FontStyle.italic,
-                                          fontSize: 16))
-                                ],
-                              ),
                               Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 10),
-                                  child: Text(post.title,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 25))),
-                              Padding(
-                                  padding: EdgeInsets.only(bottom: 10),
-                                  child: Text(
-                                      post.subtitle,
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                      ))),
-                              Padding(
-                                  padding: EdgeInsets.only(top: 10, bottom: 10),
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(user["photoUrl"]),
-                                        radius: 30,
-                                      ),
-                                      SizedBox(width: 20),
-                                      Text("@${user["displayName"]}".toString(),
-                                          style: TextStyle(
-                                              fontSize: 17,
-                                              color: Colors.blueGrey,
-                                              fontWeight: FontWeight.bold))
-                                    ],
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(bottom: 20),
-                                  child: Column(
-                                    children: post.images.map((String e) {
-                                    return Image.network(e);
-                                  }).toList())),
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 20),
-                                child: Column(
-                                  children: post.content.map((e) {
-                                    return Padding( 
-                                      padding: EdgeInsets.only(bottom: 20),
-                                      child: Column(
-                                        children: [
-                                          (e["type"] == "text") ? Text(e["value"].toString(), style: TextStyle(
-                                          color: Colors.black, fontSize: 17)) : Image.network(e["value"].toString()),
-                                          SizedBox(height: 10),
-                                          (e["type"] == "image") ? Text(e["title"].toString(), style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic)) : SizedBox()
-                                        ])
-                                    );
-                                  }).toList()
-                                )
-                              ),
-                          
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Wrap(
-                                  children: post.tags.map((e) {
-                                    return Container(
-                                      child: Text("#${e.toString()}",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontStyle: FontStyle.italic)),
-                                      decoration:
-                                          BoxDecoration(color: Colors.blueGrey),
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: 5, horizontal: 10),
-                                      margin: EdgeInsets.only(left: 10, bottom: 5),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(bottom: 10),
-                                margin: EdgeInsets.only(bottom: 20),
-                                child: Text("Comments",
-                                    style: TextStyle(fontWeight: FontWeight.bold)),
-                                alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: Colors.black,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                  padding: EdgeInsets.only(bottom: 0.0),
-                                  child: ListView.separated(
-                                    padding: EdgeInsets.zero,
-                                    shrinkWrap: true,
-                                    primary: false,
-                                    separatorBuilder:
-                                        (BuildContext context, int index) =>
-                                            Divider(),
-                                    itemCount: commens_post.length,
-                                    itemBuilder: (context, index) {
-                                      Comment comment = Comment.fromSnapshot(
-                                          commens_post[
-                                              index]); 
-                                      var dataComment = _firestore
-                                          .collection("users")
-                                          .where('email',
-                                              isEqualTo: comment.sender);
-                                      return StreamBuilder<QuerySnapshot>(
-                                          stream: dataComment.snapshots(),
-                                          builder: (context, snapshotComment) {
-                                            if (!snapshotComment.hasData)
-                                              return Center(
-                                                child: CircularProgressIndicator(),
-                                              );
-                                            var userComment =
-                                                snapshotComment.data.documents[0];
-                                            return Container(
-                                                child: Column(
+                                padding: EdgeInsets.only(
+                                    left: 15, right: 15, bottom: 25),
+                                child: SingleChildScrollView(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                        margin: EdgeInsets.only(bottom: 10, top: 5),
+                                        height: 200,
+                                        child: Stack(
+                                          children: [
+                                            PageView.builder(
+                                              
+                                              controller: _pageController,
+                                                onPageChanged: (value) {
+                                                  setState(() {
+                                                    _currentPage = value;
+                                                  });
+                                                
+                                                },
+                                                itemCount: post.images.length,
+                                                scrollDirection: Axis.horizontal,
+                                                itemBuilder: (context, index) {
+                                                  var e = post.images[index];
+                                                  return Container(
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image:
+                                                                  NetworkImage(e),
+                                                              fit: BoxFit.cover),
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topLeft: Radius
+                                                                      .circular(10),
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10))));
+                                                }),
+                                            Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Row(
-                                                  children: [
-                                                    CircleAvatar(
-                                                      backgroundImage: NetworkImage(
-                                                          userComment["photoUrl"]
-                                                              .toString()),
-                                                    ),
-                                                    SizedBox(width: 20),
-                                                    Expanded(
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Text("@${userComment['displayName']}", style: TextStyle(color: Colors.green[900], fontWeight: FontWeight.bold)),
-                                                          Text(comment.comment
-                                                              .toString()),
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                if (comment.images.length > 0)
-                                                  imageGridView(comment.images),
                                                 Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    //   if (comment.rating!= null) Text(comment.rating.toString()),
-                                                    if (comment.rating != null)
-                                                      _ratingBarComment(comment
-                                                          .rating
-                                                          ?.toDouble()),
-                                                    Text(
-                                                        DateFormat('dd/MM/yyyy')
-                                                            .format(comment.time),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _currentPage--;
+                                                          if (_currentPage == -1) {
+                                                            _currentPage =
+                                                                post.images.length -
+                                                                    1;
+                                                          }
+                                                        });
+                                                        _pageController.animateToPage(_currentPage,     duration: Duration(
+                                milliseconds: 200,
+                              ),
+                              curve: Curves.easeIn,);
+                                                      },
+                                                      child: Container(
+                                                          color: Colors.white
+                                                              .withOpacity(0.7),
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                  vertical: 10,
+                                                                  horizontal: 5),
+                                                          child: Icon(
+                                                              Icons
+                                                                  .arrow_back_ios_rounded,
+                                                              color: Colors.white)),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _currentPage++;
+                                                          if (_currentPage ==
+                                                              post.images.length) {
+                                                            _currentPage = 0;
+                                                          }
+                                                        });
+                                                        _pageController.animateToPage(_currentPage,     duration: Duration(
+                                milliseconds: 200,
+                              ),
+                              curve: Curves.easeIn,);
+                                                      },
+                                                      child: Container(
+                                                          color: Colors.white
+                                                              .withOpacity(0.7),
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                  vertical: 10,
+                                                                  horizontal: 5),
+                                                          child: Icon(
+                                                              Icons
+                                                                  .arrow_forward_ios_rounded,
+                                                              color: Colors.white)),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        )),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(post.category[0],
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w900,
+                                                fontSize: 16)),
+                                        Text(
+                                            DateFormat('dd/MM/yyyy')
+                                                .format(post.postTime),
+                                            style: TextStyle(
+                                                color: Colors.grey,
+                                                fontStyle: FontStyle.italic,
+                                                fontSize: 16))
+                                      ],
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(post.title,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 25))),
+                                    Padding(
+                                        padding: EdgeInsets.only(bottom: 10),
+                                        child: Text(post.subtitle,
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                            ))),
+                                    Padding(
+                                        padding:
+                                            EdgeInsets.only(top: 10, bottom: 10),
+                                        child: Row(
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundImage:
+                                                  NetworkImage(user["photoUrl"]),
+                                              radius: 30,
+                                            ),
+                                            SizedBox(width: 20),
+                                            Text(
+                                                "@${user["displayName"]}"
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 17,
+                                                    color: Colors.blueGrey,
+                                                    fontWeight: FontWeight.bold))
+                                          ],
+                                        )),
+                                    Padding(
+                                        padding: EdgeInsets.only(bottom: 20),
+                                        child: Column(
+                                            children: post.content.map((e) {
+                                          return Padding(
+                                              padding: EdgeInsets.only(bottom: 20),
+                                              child: Column(children: [
+                                                (e["type"] == "text")
+                                                    ? Text(e["value"].toString(),
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 17))
+                                                    : Image.network(
+                                                        e["value"].toString()),
+                                                SizedBox(height: 10),
+                                                (e["type"] == "image")
+                                                    ? Text(e["title"].toString(),
                                                         style: TextStyle(
                                                             color: Colors.grey,
-                                                            fontSize: 13))
-                                                  ],
-                                                )
-                                              ],
-                                            ));
-                                          });
-                                    },
-                                  )),
-                              Padding(
-                                padding: EdgeInsets.only(top: 20),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  controller: _ratingController,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: Colors.black,
+                                                            fontStyle:
+                                                                FontStyle.italic))
+                                                    : SizedBox()
+                                              ]));
+                                        }).toList())),
+                                    Padding(
+                                      padding: EdgeInsets.only(bottom: 10),
+                                      child: Wrap(
+                                        children: post.tags.map((e) {
+                                          return Container(
+                                            child: Text("#${e.toString()}",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontStyle: FontStyle.italic)),
+                                            decoration: BoxDecoration(
+                                                color: Colors.blueGrey),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 5, horizontal: 10),
+                                            margin: EdgeInsets.only(
+                                                left: 10, bottom: 5),
+                                          );
+                                        }).toList(),
                                       ),
                                     ),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                      color: Colors.black,
-                                    )),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                      color: Colors.black,
-                                    )),
-                                    hintText: 'Leave your comment',
-                                    labelText: 'Typing',
-                                    labelStyle: TextStyle(color: Colors.black),
-                                    prefixIcon: GestureDetector( 
-                                      child: Icon(Icons.image, color: Colors.grey),
-                                      onTap: ()async{
-                                        loadAssets();
-                                      },
+                                    Container(
+                                      padding: EdgeInsets.only(bottom: 10),
+                                      margin: EdgeInsets.only(bottom: 20),
+                                      child: Text("Comments",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      alignment: Alignment.centerLeft,
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Colors.black,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                    suffixIcon: MaterialButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () async {
-                                            List<String> listImages = await saveImage(assetList);              
-                          Comment newPet = Comment(
-                            sender: loggedInUser.email, 
-                            comment:  _ratingController.text, 
-                            location: post.reference.documentID,
-                            rating: _rating,
-                            
-                            time: DateTime.now(),
-                            images: listImages );
-                          _firestore
-        .collection("comment").add(newPet.toJson());
-        
-                                        setState(() {
-                                          assetList.clear();
-                                          _rating = 0;
-                                          _ratingController.clear();
-                                        });
-                                      },
-                                      child: Text('Send'),
+                                    Padding(
+                                        padding: EdgeInsets.only(bottom: 0.0),
+                                        child: ListView.separated(
+                                          padding: EdgeInsets.zero,
+                                          shrinkWrap: true,
+                                          primary: false,
+                                          separatorBuilder:
+                                              (BuildContext context, int index) =>
+                                                  Divider(),
+                                          itemCount: commens_post.length,
+                                          itemBuilder: (context, index) {
+                                            Comment comment = Comment.fromSnapshot(
+                                                commens_post[index]);
+                                            var dataComment = _firestore
+                                                .collection("users")
+                                                .where('email',
+                                                    isEqualTo: comment.sender);
+                                            return StreamBuilder<QuerySnapshot>(
+                                                stream: dataComment.snapshots(),
+                                                builder:
+                                                    (context, snapshotComment) {
+                                                  if (!snapshotComment.hasData)
+                                                    return Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  var userComment = snapshotComment
+                                                      .data.documents[0];
+                                                  return Container(
+                                                      child: Column(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            backgroundImage:
+                                                                NetworkImage(
+                                                                    userComment[
+                                                                            "photoUrl"]
+                                                                        .toString()),
+                                                          ),
+                                                          SizedBox(width: 20),
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                    "@${userComment['displayName']}",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                                .green[
+                                                                            900],
+                                                                        fontWeight:
+                                                                            FontWeight
+                                                                                .bold)),
+                                                                Text(comment.comment
+                                                                    .toString()),
+                                                              ],
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      if (comment.images.length > 0)
+                                                        imageGridView(
+                                                            comment.images),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          //   if (comment.rating!= null) Text(comment.rating.toString()),
+                                                          if (comment.rating !=
+                                                              null)
+                                                            _ratingBarComment(
+                                                                comment.rating
+                                                                    ?.toDouble()),
+                                                          Text(
+                                                              DateFormat(
+                                                                      'dd/MM/yyyy')
+                                                                  .format(
+                                                                      comment.time),
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      Colors.grey,
+                                                                  fontSize: 13))
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ));
+                                                });
+                                          },
+                                        )),
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 20),
+                                      child: TextFormField(
+                                        keyboardType: TextInputType.multiline,
+                                        maxLines: null,
+                                        controller: _ratingController,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                            color: Colors.black,
+                                          )),
+                                          enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                            color: Colors.black,
+                                          )),
+                                          hintText: 'Leave your comment',
+                                          labelText: 'Typing',
+                                          labelStyle:
+                                              TextStyle(color: Colors.black),
+                                          prefixIcon: GestureDetector(
+                                            child: Icon(Icons.image,
+                                                color: Colors.grey),
+                                            onTap: () async {
+                                              loadAssets();
+                                            },
+                                          ),
+                                          suffixIcon: MaterialButton(
+                                            padding: EdgeInsets.zero,
+                                            onPressed: () async {
+                                              List<String> listImages =
+                                                  await saveImage(assetList);
+                                              Comment newPet = Comment(
+                                                  sender: loggedInUser.email,
+                                                  comment: _ratingController.text,
+                                                  location:
+                                                      post.reference.documentID,
+                                                  rating: _rating,
+                                                  time: DateTime.now(),
+                                                  images: listImages);
+                                              _firestore
+                                                  .collection("comment")
+                                                  .add(newPet.toJson());
+
+                                              _firestore.collection("post")
+        .document(post.reference.documentID)
+        .updateData({"count_comment": post.countComment + 1});
+                                              setState(() {
+                                                assetList.clear();
+                                                _rating = 0;
+                                                _ratingController.clear();
+                                              });
+                                            },
+                                            child: Text('Send'),
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                    Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 15, bottom: 10, top: 10),
+                                        child: _ratingBar(_ratingBarMode)),
+
+                                    Divider(),
+
+                                    
+                                  ],
+                                )),
                               ),
-                              Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 15, bottom: 10, top: 10),
-                                  child: _ratingBar(_ratingBarMode))
+                            Positioned(
+
+                              right: 0,
+                              top: MediaQuery.of(context).size.height * 0.5,
+                                                          child: Padding(
+                              padding: new EdgeInsets.only(right: 20.0),
+                              child: new Stack(
+                                alignment: FractionalOffset.center,
+                                overflow: Overflow.visible,
+                                children: <Widget>[
+                                  getScoreButton(post.countLike),
+                                  getClapButton(),
+                                ],
+                              )),
+                            )
                             ],
-                          )),
-                        ),
-                      )),
-                    );
-                  }
-                );
+                          ),
+                        )),
+                      );
+                    });
               });
         });
   }
- //TODO: load multi image
+
+  //TODO: load multi image
   Future<void> loadAssets() async {
     List<Asset> resultList = List<Asset>();
     try {
@@ -551,6 +710,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
       assetList = resultList;
     });
   }
+
   Widget imageGridView(List<String> listImages) {
     return GridView.count(
         primary: false,
@@ -558,35 +718,60 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
         crossAxisCount: 3,
         shrinkWrap: true,
         children: listImages.map((e) {
-          return Container(
-              height: (MediaQuery.of(context).size.width - 30 - 50) * 0.3 ,
-              width:(MediaQuery.of(context).size.width - 30 - 50) * 0.3  ,
-              padding: EdgeInsets.all(5), child: Image.network(e.toString(), fit: BoxFit.cover,));
+          return GestureDetector(
+            onTap: (){
+              showAlertFitWidth(content: Image.network(e) , context: context);
+            },
+                      child: Container(
+                height: (MediaQuery.of(context).size.width - 30 - 50) * 0.3,
+                width: (MediaQuery.of(context).size.width - 30 - 50) * 0.3,
+                padding: EdgeInsets.all(5),
+                child: Image.network(
+                  e.toString(),
+                  fit: BoxFit.cover,
+                )),
+          );
         }).toList());
   }
 
+    Future<dynamic> showAlertFitWidth(
+      {@required context, @required content, actions}) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              insetPadding: EdgeInsets.symmetric(horizontal: 30),
+              elevation: 5,
+              backgroundColor: Colors.white,
+              child: content);
+        });
+  }
+
   Widget _ratingBar(int mode) {
-        return RatingBar.builder(
-          initialRating: _initialRating,
-          minRating: 1,
-          direction: _isVertical ? Axis.vertical : Axis.horizontal,
-          allowHalfRating: true,
-          unratedColor: Colors.amber.withAlpha(50),
-          itemCount: 5,
-          itemSize: 25.0,
-          itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-          itemBuilder: (context, _) => Icon(
-            _selectedIcon ?? Icons.star,
-            color: Colors.amber,
-          ),
-          glowColor: Colors.yellow,
-          onRatingUpdate: (rating) {
-            setState(() {
-              _rating = rating;
-            });
-          },
-          updateOnDrag: true,
-        );
+    return RatingBar.builder(
+      initialRating: _initialRating,
+      minRating: 1,
+      direction: _isVertical ? Axis.vertical : Axis.horizontal,
+      allowHalfRating: true,
+      unratedColor: Colors.amber.withAlpha(50),
+      itemCount: 5,
+      itemSize: 25.0,
+      itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => Icon(
+        _selectedIcon ?? Icons.star,
+        color: Colors.amber,
+      ),
+      glowColor: Colors.yellow,
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating = rating;
+        });
+      },
+      updateOnDrag: true,
+    );
   }
 
   Widget _ratingBarComment(double rating) {
