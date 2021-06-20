@@ -4,4 +4,4 @@ Reading
 
 CONTRIBUTORS : FLUTTER/FIREBASE 
 
-![1]<img src="https://github.com/TungLam111/flutter_vietnam_app/tree/master/images/Screenshot_1624203184.png" width="400" height="790">
+![1]<img src="https://github.com/TungLam111/flutter_vietnam_app/tree/master/images/Bản vẽ không có tiêu đề.png">
