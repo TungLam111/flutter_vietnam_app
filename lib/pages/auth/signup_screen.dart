@@ -78,64 +78,85 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 200 ,
                       alignment: Alignment.center,
                       child: Image.asset("assets/images/mua_roi_sqr-removebg-preview.png")),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Register',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
+                  
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 20, top: 20),
+                    decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, 15.0),
+                blurRadius: 15.0),
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, -10.0),
+                blurRadius: 10.0),
+          ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Register',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text('Username'),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextFormField(
-                    validator: _validateUsername,
-                    controller: _usernameController,
-                    decoration: InputDecoration(
-                        hintText: "username",
-                        hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 12.0)),
-                  ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text('Username'),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    TextFormField(
+                      validator: _validateUsername,
+                      controller: _usernameController,
+                      decoration: InputDecoration(
+                          hintText: "username",
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 12.0)),
+                    ),
 
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text('Password'),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextFormField(
-                    validator: _validatePassword,
-                    controller: _passwordController,
-                    decoration: InputDecoration(
-                        hintText: "password",
-                        hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 12.0)),
-                  ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text('Password'),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    TextFormField(
+                      validator: _validatePassword,
+                      controller: _passwordController,
+                      decoration: InputDecoration(
+                          hintText: "password",
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 12.0)),
+                    ),
 
-                  //
+                    //
 
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text('Confirm Password'),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  TextFormField(
-                    validator: _validateConfirmPassword,
-                    controller: _passwordConfirmController,
-                    decoration: InputDecoration(
-                        hintText: "Confirm password",
-                        hintStyle:
-                            TextStyle(color: Colors.grey, fontSize: 12.0)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text('Confirm Password'),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    TextFormField(
+                      validator: _validateConfirmPassword,
+                      controller: _passwordConfirmController,
+                      decoration: InputDecoration(
+                          hintText: "Confirm password",
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 12.0)),
+                    ),
+                    ],),
                   ),
 
                   SizedBox(height: 50),
@@ -153,8 +174,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Container(
                 padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
                 decoration: BoxDecoration(
+                   gradient: LinearGradient(colors: [
+                                Color(0xFF17ead9),
+                                Color(0xFF6078ea)
+                              ]),
                   color: Colors.indigo,
-                  border: Border.all(width: 0),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: _loginInProgress

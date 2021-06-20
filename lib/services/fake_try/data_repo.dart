@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_vietnam_app/models/comment.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
-import 'pets.dart';
 
 
 class DataRepository {
@@ -29,22 +28,8 @@ class DataRepository {
     return collectionPost.add(post.toJson());
   }
 
-  updatePost(Pet post) async {
-      await collectionPost.document(post.reference.documentID).updateData(post.toJson());
-  }
-
-
   Stream<QuerySnapshot> getStream() {
     return collection.snapshots();
-  }
-  
-
-  Future<DocumentReference> addPet(Pet pet) {
-    return collection.add(pet.toJson());
-  }
-
-  updatePet(Pet pet) async {
-      await collection.document(pet.reference.documentID).updateData(pet.toJson());
   }
 
   Stream<QuerySnapshot> getSuggestion(String suggestion) {
