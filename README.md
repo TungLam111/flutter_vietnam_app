@@ -4,4 +4,4 @@ Reading
 
 CONTRIBUTORS : FLUTTER/FIREBASE 
 
-![Main Layouts](images/Bản vẽ không có tiêu đề.png)
+![Main Layouts](https://github.com/TungLam111/flutter_vietnam_app/blob/master/images/B%E1%BA%A3n%20v%E1%BA%BD%20kh%C3%B4ng%20c%C3%B3%20ti%C3%AAu%20%C4%91%E1%BB%81.png)
