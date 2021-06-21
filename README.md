@@ -2,6 +2,12 @@ VIETNAM_APP is an Cross-platform application supported by FLUTTER/FIREBASE which
 
 COMPONENTS
 
+For convenience :
+
+Password : tunglam111
+
+Account : lamtungphan8@gmail.com
+
 1,2. Login/Signup : Allow user to create new account or user the app with available account
 
 3. Home : A staggered listview specified by many different tabs. Each tab is respective to each speciality's category. Each speciality has many categories
