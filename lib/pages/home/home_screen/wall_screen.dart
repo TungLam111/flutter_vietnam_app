@@ -139,6 +139,7 @@ class _WallScreenState extends State<WallScreen> {
                                       "Ethnicity",
                                       "SaiGon",
                                       "HaNoi",
+                                      "Heritage",
                                       "VietNam wars",
                                       "Humanity"
                                     ].map((e) {

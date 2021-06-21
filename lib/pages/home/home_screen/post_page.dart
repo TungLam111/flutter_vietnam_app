@@ -49,9 +49,12 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
   int _currentPage;
 
   PageController _pageController;
+
+  FocusNode _focusNode;
   void initState() {
     super.initState();
     getCurrentUser();
+    _focusNode = new FocusNode();
     _currentPage = 0;
     _pageController = new PageController(initialPage: 0);
     assetList = [];
@@ -87,10 +90,12 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
       setState(() {});
     });
   }
-
+  
+  @override 
   void dispose() {
     scoreInAnimationController.dispose();
     scoreOutAnimationController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -451,7 +456,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                     : Image.network(
                                                         e["value"].toString()),
                                                 SizedBox(height: 10),
-                                                (e["type"] == "image")
+                                                (e["type"] == "image" && e["title"] != null)
                                                     ? Text(e["title"].toString(),
                                                         style: TextStyle(
                                                             color: Colors.grey,
@@ -591,6 +596,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                     Padding(
                                       padding: EdgeInsets.only(top: 20),
                                       child: TextFormField(
+                                        focusNode: _focusNode,
                                         keyboardType: TextInputType.multiline,
                                         maxLines: null,
                                         controller: _ratingController,
