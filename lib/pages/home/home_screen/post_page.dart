@@ -13,8 +13,8 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
 
-final _firestore = Firestore.instance;
 FirebaseUser loggedInUser;
 
 class PostPage extends StatefulWidget {
@@ -26,6 +26,7 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
   final _firestore = Firestore.instance;
+  final DataRepository repository = DataRepository();
   int _ratingBarMode = 1;
   double _rating;
   IconData _selectedIcon;

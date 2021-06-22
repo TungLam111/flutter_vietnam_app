@@ -59,9 +59,6 @@ class DataRepository {
       await collectionLocation.document(location.reference.documentID).updateData(location.toJson());
   }
 
-
-
-
   Stream<QuerySnapshot> getStreamComment() {
     return collectionComment.snapshots();
   }

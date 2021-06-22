@@ -25,10 +25,6 @@ class AuthApiService implements Auth {
   static const GET_USERS_PATH = 'api/auth/users/';
   static const LOGIN_PATH = 'auth/Login';
   static const SIGNUP_PATH = 'auth/Register';
-  static const REQUEST_RESET_PASSWORD_PATH = 'api/auth/password/reset/';
-  static const VERIFY_RESET_PASSWORD_PATH = 'api/auth/password/verify/';
-  static const AUTHENTICATED_USER_NOTIFICATIONS_SETTINGS_PATH =
-      'api/auth/user/notifications-settings/';
 
   Httpie _httpService = serviceLocator<Httpie>();
 
