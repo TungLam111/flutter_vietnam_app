@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
-import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_vietnam_app/common/widgets/preferred_size_appbar.dart';
 import 'package:flutter_vietnam_app/common/widgets/scaffold.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_vietnam_app/pages/home/home_screen/widgets.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_vietnam_app/pages/home/home_screen/post_page.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'no_result.dart';
 import 'search_page.dart';
@@ -84,9 +80,8 @@ class _WallScreenState extends State<WallScreen> {
               navigationBar: OBThemedNavigationBar(
                   bgColor: Colors.black,
                   middle: Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 15),
-
-                                      child: Row(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("I love banana",
@@ -95,8 +90,8 @@ class _WallScreenState extends State<WallScreen> {
                                 color: Colors.white,
                                 fontSize: 25)),
                         GestureDetector(
-                          onTap: () => _navigateToSearch(context),
-                          child: Icon(Icons.search, color: Colors.white))
+                            onTap: () => _navigateToSearch(context),
+                            child: Icon(Icons.search, color: Colors.white))
                       ],
                     ),
                   )),
@@ -110,7 +105,10 @@ class _WallScreenState extends State<WallScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(height: 70),
-                          Container(child: (data == null || data.length == 0) ? _buildNoList(context): _buildList(context, data) ),
+                          Container(
+                              child: (data == null || data.length == 0)
+                                  ? _buildNoList(context)
+                                  : _buildList(context, data)),
                         ],
                       ),
                       Stack(
@@ -231,13 +229,14 @@ class _WallScreenState extends State<WallScreen> {
     ));
   }
 
-  Widget _buildNoList(BuildContext context){
+  Widget _buildNoList(BuildContext context) {
     return NoResultFoundScreen();
   }
 }
 
 void _navigateToSearch(BuildContext context) {
-       Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SearchPage() ),
-                );}
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SearchPage()),
+  );
+}

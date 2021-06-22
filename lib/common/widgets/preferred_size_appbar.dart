@@ -38,16 +38,16 @@ class OBThemedNavigationBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-       Color actionsForegroundColor = Colors.white;
-        return Column(
-          children: [
-            !autoLeading ? Container(
-              decoration: BoxDecoration(color: bgColor),
-              padding: EdgeInsets.only(left: 20, top: 10, bottom:10),
-              child: middle
-            ) :  Container(
-              child: CupertinoNavigationBar(
-
+    Color actionsForegroundColor = Colors.white;
+    return Column(
+      children: [
+        !autoLeading
+            ? Container(
+                decoration: BoxDecoration(color: bgColor),
+                padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                child: middle)
+            : Container(
+                child: CupertinoNavigationBar(
                   padding: padding ??
                       EdgeInsetsDirectional.only(
                           bottom: 0, start: 15, end: 15, top: 0),
@@ -59,14 +59,11 @@ class OBThemedNavigationBar extends StatelessWidget
                       ? middle
                       : (title != null
                           ? Text(title,
-                              style:  GoogleFonts.montserrat(
-                                  color: Color(0xff0E6085),
-                                  fontSize: 20 ))
+                              style: GoogleFonts.montserrat(
+                                  color: Color(0xff0E6085), fontSize: 20))
                           : const SizedBox(width: 0)),
                   transitionBetweenRoutes: false,
-                  backgroundColor: bgColor != null
-                      ? bgColor
-                      : Colors.white,
+                  backgroundColor: bgColor != null ? bgColor : Colors.white,
                   trailing: trailing ?? const SizedBox(width: 0),
                   leading: (leading != null)
                       ? leading
@@ -75,19 +72,17 @@ class OBThemedNavigationBar extends StatelessWidget
                               onTap: () => Navigator.pop(context),
                               child: SizedBox(
                                 width: 20,
-                                child: Icon(
-                                  Icons.arrow_back_ios_rounded, color: Colors.blueGrey
-                                ),
+                                child: Icon(Icons.arrow_back_ios_rounded,
+                                    color: Colors.blueGrey),
                               ),
                             )
                           : null,
                   automaticallyImplyLeading: autoLeading,
                 ),
-            ),
-             
-            if (overlayWidget != null) overlayWidget,
-          ],
-        );
+              ),
+        if (overlayWidget != null) overlayWidget,
+      ],
+    );
   }
 
   /// True if the navigation bar's background color has no transparency.

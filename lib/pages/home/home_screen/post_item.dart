@@ -60,11 +60,11 @@ class PostItem extends StatelessWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text("${post.category[0]}",
+                                        ( post.category != null && post.category.length > 0 ) ? Text("${post.category[0]}",
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
-                                            )),
+                                            )) : SizedBox(),
                                         Text("@${user["displayName"]}",
                                             style: TextStyle(
                                                 color: Colors.grey,
@@ -75,12 +75,12 @@ class PostItem extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              Text(
+                              post.postTime != null ?Text(
                                   DateFormat('dd/MM/yyyy')
                                       .format(post.postTime),
                                   style: TextStyle(
                                       color: Colors.grey,
-                                      fontStyle: FontStyle.italic))
+                                      fontStyle: FontStyle.italic)) : SizedBox()
                             ],
                           ),
                           SizedBox(
@@ -95,7 +95,8 @@ class PostItem extends StatelessWidget {
                           Text("${post.title}",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 25)),
-                          Wrap(
+                          post.tags != null ? Wrap(
+                            
                             children: post.tags.map((e) {
                               return Container(
                                 child: Text("#${e.toString()}",
@@ -109,7 +110,7 @@ class PostItem extends StatelessWidget {
                                 margin: EdgeInsets.only(left: 10, bottom: 5),
                               );
                             }).toList(),
-                          )
+                          ) : SizedBox()
                         ],
                       ),
                     )

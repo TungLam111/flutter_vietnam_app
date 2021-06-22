@@ -55,9 +55,9 @@ class _ImageIntroState extends State<ImageIntro> {
                     });
                   },
                   controller: _pageController,
-                  itemCount: widget.location.images.length + 1,
+                  itemCount: (widget.location.videoCode == null || widget.location.videoCode == "") ? widget.location.images.length :widget.location.images.length + 1 ,
                   itemBuilder: (context, index) {
-                    if (index == widget.location.images.length)
+                    if ( index == widget.location.images.length)
                       return Youtube(idLinkYoutube: widget.location.videoCode);
                     return Container(
                       decoration: BoxDecoration(

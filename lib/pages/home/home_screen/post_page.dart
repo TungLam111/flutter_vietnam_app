@@ -90,8 +90,8 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
       setState(() {});
     });
   }
-  
-  @override 
+
+  @override
   void dispose() {
     scoreInAnimationController.dispose();
     scoreOutAnimationController.dispose();
@@ -279,9 +279,10 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                         //    bottomNavigationBar: ,
                         body: Material(
                             child: OBCupertinoPageScaffold(
-                              navigationBar: OBThemedNavigationBar(
-                                title: "Your reading",
-                                autoLeading: true,),
+                          navigationBar: OBThemedNavigationBar(
+                            title: "Your reading",
+                            autoLeading: true,
+                          ),
                           resizeToAvoidBottomInset: true,
                           child: Stack(
                             children: [
@@ -290,36 +291,39 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                     left: 15, right: 15, bottom: 25),
                                 child: SingleChildScrollView(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                        margin: EdgeInsets.only(bottom: 10, top: 5),
+                                        margin:
+                                            EdgeInsets.only(bottom: 10, top: 5),
                                         height: 200,
                                         child: Stack(
                                           children: [
                                             PageView.builder(
-                                              
-                                              controller: _pageController,
+                                                controller: _pageController,
                                                 onPageChanged: (value) {
                                                   setState(() {
                                                     _currentPage = value;
                                                   });
-                                                
                                                 },
                                                 itemCount: post.images.length,
-                                                scrollDirection: Axis.horizontal,
+                                                scrollDirection:
+                                                    Axis.horizontal,
                                                 itemBuilder: (context, index) {
                                                   var e = post.images[index];
                                                   return Container(
                                                       decoration: BoxDecoration(
                                                           image: DecorationImage(
                                                               image:
-                                                                  NetworkImage(e),
-                                                              fit: BoxFit.cover),
+                                                                  NetworkImage(
+                                                                      e),
+                                                              fit:
+                                                                  BoxFit.cover),
                                                           borderRadius:
                                                               BorderRadius.only(
                                                                   topLeft: Radius
-                                                                      .circular(10),
+                                                                      .circular(
+                                                                          10),
                                                                   topRight: Radius
                                                                       .circular(
                                                                           10))));
@@ -337,54 +341,69 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                       onTap: () {
                                                         setState(() {
                                                           _currentPage--;
-                                                          if (_currentPage == -1) {
-                                                            _currentPage =
-                                                                post.images.length -
-                                                                    1;
+                                                          if (_currentPage ==
+                                                              -1) {
+                                                            _currentPage = post
+                                                                    .images
+                                                                    .length -
+                                                                1;
                                                           }
                                                         });
-                                                        _pageController.animateToPage(_currentPage,     duration: Duration(
-                                milliseconds: 200,
-                              ),
-                              curve: Curves.easeIn,);
+                                                        _pageController
+                                                            .animateToPage(
+                                                          _currentPage,
+                                                          duration: Duration(
+                                                            milliseconds: 200,
+                                                          ),
+                                                          curve: Curves.easeIn,
+                                                        );
                                                       },
                                                       child: Container(
                                                           color: Colors.white
                                                               .withOpacity(0.7),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
                                                                   vertical: 10,
-                                                                  horizontal: 5),
+                                                                  horizontal:
+                                                                      5),
                                                           child: Icon(
                                                               Icons
                                                                   .arrow_back_ios_rounded,
-                                                              color: Colors.white)),
+                                                              color: Colors
+                                                                  .white)),
                                                     ),
                                                     InkWell(
                                                       onTap: () {
                                                         setState(() {
                                                           _currentPage++;
                                                           if (_currentPage ==
-                                                              post.images.length) {
+                                                              post.images
+                                                                  .length) {
                                                             _currentPage = 0;
                                                           }
                                                         });
-                                                        _pageController.animateToPage(_currentPage,     duration: Duration(
-                                milliseconds: 200,
-                              ),
-                              curve: Curves.easeIn,);
+                                                        _pageController
+                                                            .animateToPage(
+                                                          _currentPage,
+                                                          duration: Duration(
+                                                            milliseconds: 200,
+                                                          ),
+                                                          curve: Curves.easeIn,
+                                                        );
                                                       },
                                                       child: Container(
                                                           color: Colors.white
                                                               .withOpacity(0.7),
-                                                          padding:
-                                                              EdgeInsets.symmetric(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
                                                                   vertical: 10,
-                                                                  horizontal: 5),
+                                                                  horizontal:
+                                                                      5),
                                                           child: Icon(
                                                               Icons
                                                                   .arrow_forward_ios_rounded,
-                                                              color: Colors.white)),
+                                                              color: Colors
+                                                                  .white)),
                                                     )
                                                   ],
                                                 ),
@@ -396,39 +415,43 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(post.category[0],
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w900,
-                                                fontSize: 16)),
-                                        Text(
+                                        (post.category != null &&
+                                                post.category.length > 0)
+                                            ? Text(post.category[0],
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w900,
+                                                    fontSize: 16))
+                                            : SizedBox(),
+                                       post.postTime != null ? Text(
                                             DateFormat('dd/MM/yyyy')
                                                 .format(post.postTime),
                                             style: TextStyle(
                                                 color: Colors.grey,
                                                 fontStyle: FontStyle.italic,
-                                                fontSize: 16))
+                                                fontSize: 16)) : const SizedBox()
                                       ],
                                     ),
                                     Padding(
-                                        padding: EdgeInsets.symmetric(vertical: 10),
-                                        child: Text(post.title,
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 10),
+                                        child: Text(post.title ?? '',
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 25))),
                                     Padding(
                                         padding: EdgeInsets.only(bottom: 10),
-                                        child: Text(post.subtitle,
+                                        child: Text(post.subtitle ?? '',
                                             style: TextStyle(
                                               color: Colors.grey,
                                             ))),
                                     Padding(
-                                        padding:
-                                            EdgeInsets.only(top: 10, bottom: 10),
+                                        padding: EdgeInsets.only(
+                                            top: 10, bottom: 10),
                                         child: Row(
                                           children: [
                                             CircleAvatar(
-                                              backgroundImage:
-                                                  NetworkImage(user["photoUrl"]),
+                                              backgroundImage: NetworkImage(
+                                                  user["photoUrl"]),
                                               radius: 30,
                                             ),
                                             SizedBox(width: 20),
@@ -438,52 +461,71 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                 style: TextStyle(
                                                     fontSize: 17,
                                                     color: Colors.blueGrey,
-                                                    fontWeight: FontWeight.bold))
+                                                    fontWeight:
+                                                        FontWeight.bold))
                                           ],
                                         )),
                                     Padding(
                                         padding: EdgeInsets.only(bottom: 20),
                                         child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: post.content.map((e) {
-                                          return Padding(
-                                              padding: EdgeInsets.only(bottom: 20),
-                                              child: Column(children: [
-                                                (e["type"] == "text")
-                                                    ? Text(e["value"].toString(),
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 17))
-                                                    : Image.network(
-                                                        e["value"].toString()),
-                                                SizedBox(height: 10),
-                                                (e["type"] == "image" && e["title"] != null)
-                                                    ? Text(e["title"].toString(),
-                                                        style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontStyle:
-                                                                FontStyle.italic))
-                                                    : SizedBox()
-                                              ]));
-                                        }).toList())),
-                                    Padding(
-                                      padding: EdgeInsets.only(bottom: 10),
-                                      child: Wrap(
-                                        children: post.tags.map((e) {
-                                          return Container(
-                                            child: Text("#${e.toString()}",
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontStyle: FontStyle.italic)),
-                                            decoration: BoxDecoration(
-                                                color: Colors.blueGrey),
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 5, horizontal: 10),
-                                            margin: EdgeInsets.only(
-                                                left: 10, bottom: 5),
-                                          );
-                                        }).toList(),
-                                      ),
-                                    ),
+                                              return Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 20),
+                                                  child: Column(children: [
+                                                    (e["type"] == "text")
+                                                        ? Text(
+                                                            e["value"]
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 17))
+                                                        : Image.network(
+                                                            e["value"]
+                                                                .toString()),
+                                                    SizedBox(height: 10),
+                                                    (e["type"] == "image" &&
+                                                            e["title"] != null)
+                                                        ? Text(
+                                                            e["title"]
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.grey,
+                                                                fontStyle:
+                                                                    FontStyle
+                                                                        .italic))
+                                                        : SizedBox()
+                                                  ]));
+                                            }).toList())),
+                                    post.tags != null
+                                        ? Padding(
+                                            padding:
+                                                EdgeInsets.only(bottom: 10),
+                                            child: Wrap(
+                                              children: post.tags.map((e) {
+                                                return Container(
+                                                  child: Text(
+                                                      "#${e.toString()}",
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontStyle: FontStyle
+                                                              .italic)),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.blueGrey),
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 5,
+                                                      horizontal: 10),
+                                                  margin: EdgeInsets.only(
+                                                      left: 10, bottom: 5),
+                                                );
+                                              }).toList(),
+                                            ),
+                                          )
+                                        : SizedBox(),
                                     Container(
                                       padding: EdgeInsets.only(bottom: 10),
                                       margin: EdgeInsets.only(bottom: 20),
@@ -507,12 +549,14 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                           shrinkWrap: true,
                                           primary: false,
                                           separatorBuilder:
-                                              (BuildContext context, int index) =>
+                                              (BuildContext context,
+                                                      int index) =>
                                                   Divider(),
                                           itemCount: commens_post.length,
                                           itemBuilder: (context, index) {
-                                            Comment comment = Comment.fromSnapshot(
-                                                commens_post[index]);
+                                            Comment comment =
+                                                Comment.fromSnapshot(
+                                                    commens_post[index]);
                                             var dataComment = _firestore
                                                 .collection("users")
                                                 .where('email',
@@ -526,8 +570,9 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                       child:
                                                           CircularProgressIndicator(),
                                                     );
-                                                  var userComment = snapshotComment
-                                                      .data.documents[0];
+                                                  var userComment =
+                                                      snapshotComment
+                                                          .data.documents[0];
                                                   return Container(
                                                       child: Column(
                                                     children: [
@@ -550,20 +595,21 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                                 Text(
                                                                     "@${userComment['displayName']}",
                                                                     style: TextStyle(
-                                                                        color: Colors
-                                                                                .green[
+                                                                        color: Colors.green[
                                                                             900],
                                                                         fontWeight:
-                                                                            FontWeight
-                                                                                .bold)),
-                                                                Text(comment.comment
+                                                                            FontWeight.bold)),
+                                                                Text(comment
+                                                                    .comment
                                                                     .toString()),
                                                               ],
                                                             ),
                                                           )
                                                         ],
                                                       ),
-                                                      if (comment.images.length > 0)
+                                                      if (comment
+                                                              .images.length >
+                                                          0)
                                                         imageGridView(
                                                             comment.images),
                                                       Row(
@@ -580,11 +626,11 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                           Text(
                                                               DateFormat(
                                                                       'dd/MM/yyyy')
-                                                                  .format(
-                                                                      comment.time),
+                                                                  .format(comment
+                                                                      .time),
                                                               style: TextStyle(
-                                                                  color:
-                                                                      Colors.grey,
+                                                                  color: Colors
+                                                                      .grey,
                                                                   fontSize: 13))
                                                         ],
                                                       )
@@ -632,7 +678,8 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                   await saveImage(assetList);
                                               Comment newPet = Comment(
                                                   sender: loggedInUser.email,
-                                                  comment: _ratingController.text,
+                                                  comment:
+                                                      _ratingController.text,
                                                   location:
                                                       post.reference.documentID,
                                                   rating: _rating,
@@ -642,9 +689,14 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                                   .collection("comment")
                                                   .add(newPet.toJson());
 
-                                              _firestore.collection("post")
-        .document(post.reference.documentID)
-        .updateData({"count_comment": post.countComment + 1});
+                                              _firestore
+                                                  .collection("post")
+                                                  .document(
+                                                      post.reference.documentID)
+                                                  .updateData({
+                                                "count_comment":
+                                                    post.countComment + 1
+                                              });
                                               setState(() {
                                                 assetList.clear();
                                                 _rating = 0;
@@ -660,28 +712,24 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
                                         padding: EdgeInsets.only(
                                             left: 15, bottom: 10, top: 10),
                                         child: _ratingBar(_ratingBarMode)),
-
                                     Divider(),
-
-                                    
                                   ],
                                 )),
                               ),
-                            Positioned(
-
-                              right: 0,
-                              top: MediaQuery.of(context).size.height * 0.5,
-                                                          child: Padding(
-                              padding: new EdgeInsets.only(right: 20.0),
-                              child: new Stack(
-                                alignment: FractionalOffset.center,
-                                overflow: Overflow.visible,
-                                children: <Widget>[
-                                  getScoreButton(post.countLike),
-                                  getClapButton(),
-                                ],
-                              )),
-                            )
+                              Positioned(
+                                right: 0,
+                                top: MediaQuery.of(context).size.height * 0.5,
+                                child: Padding(
+                                    padding: new EdgeInsets.only(right: 20.0),
+                                    child: new Stack(
+                                      alignment: FractionalOffset.center,
+                                      overflow: Overflow.visible,
+                                      children: <Widget>[
+                                        getScoreButton(post.countLike),
+                                        getClapButton(),
+                                      ],
+                                    )),
+                              )
                             ],
                           ),
                         )),
@@ -725,10 +773,10 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
         shrinkWrap: true,
         children: listImages.map((e) {
           return GestureDetector(
-            onTap: (){
-              showAlertFitWidth(content: Image.network(e) , context: context);
+            onTap: () {
+              showAlertFitWidth(content: Image.network(e), context: context);
             },
-                      child: Container(
+            child: Container(
                 height: (MediaQuery.of(context).size.width - 30 - 50) * 0.3,
                 width: (MediaQuery.of(context).size.width - 30 - 50) * 0.3,
                 padding: EdgeInsets.all(5),
@@ -740,7 +788,7 @@ class _PostPageState extends State<PostPage> with TickerProviderStateMixin {
         }).toList());
   }
 
-    Future<dynamic> showAlertFitWidth(
+  Future<dynamic> showAlertFitWidth(
       {@required context, @required content, actions}) {
     return showDialog(
         context: context,
