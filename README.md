@@ -1,12 +1,13 @@
+##Introduction
 VIETNAM_APP is an Cross-platform application supported by FLUTTER/FIREBASE which makes contributions to promote Viet Nam's Cuisine, History, Intangible Cultural Heritage, etc. 
 
-COMPONENTS
-
-For convenience :
+##For convenience :
 
 Password : tunglam111
 
 Account : lamtungphan8@gmail.com
+
+##COMPONENTS
 
 1,2. Login/Signup : Allow user to create new account or user the app with available account
 
