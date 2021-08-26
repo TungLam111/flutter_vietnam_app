@@ -7,9 +7,8 @@ import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/validate_service.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
+import 'package:flutter_vietnam_app/view_models/login_view_model.dart';
 import 'Widgets/FormCard.dart';
-import 'Widgets/SocialIcons.dart';
-import 'Widgets/CustomIcons.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
@@ -19,6 +18,9 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+
+  LoginScreenViewModel model = serviceLocator<LoginScreenViewModel>();
+  
   TextEditingController _usernameController;
   TextEditingController _passwordController;
 
@@ -99,7 +101,8 @@ class _LoginState extends State<Login> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               SizedBox(
-                child: Image.asset("assets/images/com_lang_vong_sqr-removebg-preview.png"),
+                child: Image.asset(
+                    "assets/images/com_lang_vong_sqr-removebg-preview.png"),
               ),
               Expanded(
                 child: Container(),
@@ -112,7 +115,6 @@ class _LoginState extends State<Login> {
               padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 300.0),
               child: Column(
                 children: <Widget>[
-              
                   FormCard(
                       formKey: _formKey,
                       userNameController: _usernameController,
@@ -126,36 +128,28 @@ class _LoginState extends State<Login> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                   
                       InkWell(
                         onTap: () async {
-                                String _emailId = _usernameController.text;
-                                String _password = _passwordController.text;
-
-                                print(_emailId);
-                                print(_password);
-
-                                _setLoginInProgress(true);
-                                await signIn(_emailId, _password).then((user) {
-                                  if (user != null) {
-                                    print(
-                                        'Logged in successfully with $_emailId and $_password');
-                                    setState(() {
-                                      successMessage =
-                                          'Logged in successfully.\nYou can now navigate to Home Page.';
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MyHomePage()));
-                                    });
-                                  //  _submitForm();
-                                  } else {
-                                    print('Error while Login.');
-                                  }
-                                });
-                                _setLoginInProgress(false);
-                              },
+                          _setLoginInProgress(true);
+                          await signIn().then((user) {
+                            if (user != null) {
+                              print(
+                                  'Logged in successfully with $user');
+                              setState(() {
+                                successMessage =
+                                    'Logged in successfully.\nYou can now navigate to Home Page.';
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => MyHomePage()));
+                              });
+                              //  _submitForm();
+                            } else {
+                              print('Error while Login.');
+                            }
+                          });
+                          _setLoginInProgress(false);
+                        },
                         child: Container(
                           width: ScreenUtil().setWidth(330),
                           height: ScreenUtil().setHeight(100),
@@ -171,24 +165,23 @@ class _LoginState extends State<Login> {
                                     offset: Offset(0.0, 8.0),
                                     blurRadius: 8.0)
                               ]),
-                          child:    
-                              _loginInProgress
-                                  ? Center(
-                                      child: _getLoadingIndicator(Colors.blue))
-                                  : Center(
-                                      child: Text("SIGNIN",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18,
-                                              letterSpacing: 1.0)),
-                                    ),
-                          ),
+                          child: _loginInProgress
+                              ? Center(child: _getLoadingIndicator(Colors.blue))
+                              : Center(
+                                  child: Text("SIGNIN",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          letterSpacing: 1.0)),
+                                ),
                         ),
+                      ),
                     ],
                   ),
                   SizedBox(
                     height: ScreenUtil().setHeight(40),
-                  ),               Row(
+                  ),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
@@ -217,44 +210,49 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-  
-  
-  Future<void> _submitForm() async {
-    _isSubmitted = true;
-    if (_validateForm()) {
-      await _login(context);
-    }
-  }
 
-  Future<void> _login(BuildContext context) async {
-    _setLoginInProgress(true);
-    String username = _usernameController.text;
-    String password = _passwordController.text;
-    try {
-      print("huhu");
-      await _userService.loginWithCredentials(
-          username: username, password: password);
-      print("kkk");
-      Navigator.pop(context);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => MyHomePage()),
-      );
-    } on CredentialsMismatchError {
-      _setLoginFeedback("auth login credentials mismatch error");
-    } on HttpieRequestError {
-      _setLoginFeedback("auth login server error");
-    } on HttpieConnectionRefusedError {
-      _setLoginFeedback("auth login connection error");
-    }
-    _setLoginInProgress(false);
-  }
+  // Future<void> _submitForm() async {
+  //   _isSubmitted = true;
+  //   if (_validateForm()) {
+  //     await _login(context);
+  //   }
+  // }
+
+  // Future<void> _login(BuildContext context) async {
+  //   _setLoginInProgress(true);
+  //   String username = _usernameController.text;
+  //   String password = _passwordController.text;
+  //   try {
+  //     print("huhu");
+  //     await _userService.loginWithCredentials(
+  //         username: username, password: password);
+  //     print("kkk");
+  //     Navigator.pop(context);
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => MyHomePage()),
+  //     );
+  //   } on CredentialsMismatchError {
+  //     _setLoginFeedback("auth login credentials mismatch error");
+  //   } on HttpieRequestError {
+  //     _setLoginFeedback("auth login server error");
+  //   } on HttpieConnectionRefusedError {
+  //     _setLoginFeedback("auth login connection error");
+  //   }
+  //   _setLoginInProgress(false);
+  // }
 
   //for sign in by default email and password
-  Future<String> signIn(String email, String password) async {
+  Future<String> signIn() async {
     try {
+      String _emailId = _usernameController.text;
+      String _password = _passwordController.text;
+
+      print(_emailId);
+      print(_password);
+
       FirebaseUser user = (await auth.signInWithEmailAndPassword(
-              email: email, password: password))
+              email: _emailId, password: _password))
           .user;
 
       assert(user != null);
@@ -285,11 +283,11 @@ class _LoginState extends State<Login> {
     }
   }
 
-  String _validateUsername(String value) {
-    if (!_isSubmitted) return null;
-    return _validationService.validateUserUsername(value);
-    // return _validationService.validateUserUsername(value.trim());
-  }
+  // String _validateUsername(String value) {
+  //   if (!_isSubmitted) return null;
+  //   return _validationService.validateUserUsername(value);
+  //   // return _validationService.validateUserUsername(value.trim());
+  // }
 
   String _validatePassword(String value) {
     if (!_isSubmitted) return null;
@@ -326,8 +324,7 @@ class _LoginState extends State<Login> {
     return SizedBox(
       height: 15.0,
       width: 15.0,
-      child: CircularProgressIndicator(
-          strokeWidth: 2.0),
+      child: CircularProgressIndicator(strokeWidth: 2.0),
     );
   }
 }

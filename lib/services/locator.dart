@@ -4,6 +4,9 @@ import 'package:flutter_vietnam_app/services/media/media.dart';
 import 'package:flutter_vietnam_app/services/media/media_impl.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/service_impl.dart';
+import 'package:flutter_vietnam_app/view_models/home_view_model.dart';
+import 'package:flutter_vietnam_app/view_models/login_view_model.dart';
+import 'package:flutter_vietnam_app/view_models/signup_view_model.dart';
 import 'package:get_it/get_it.dart';
 
 import 'storage/storage_service.dart';
@@ -28,8 +31,8 @@ void setupServiceLocator() {
   serviceLocator.registerLazySingleton<ServiceMain>(() => Service());
   serviceLocator.registerLazySingleton<MediaService>(() => MediaServiceImpl());
   // view models
-  //serviceLocator.registerFactory<CalculateScreenViewModel>(() => CalculateScreenViewModel());
-  //serviceLocator.registerFactory<FavoriteViewModel>(() => FavoriteViewModel());
-  //serviceLocator.registerFactory<LoginScreenViewModel>(() => LoginScreenViewModel());
+  serviceLocator.registerFactory<SignupScreenViewModel>(() => SignupScreenViewModel());
+  serviceLocator.registerFactory<HomePageViewModel>(() => HomePageViewModel());
+  serviceLocator.registerFactory<LoginScreenViewModel>(() => LoginScreenViewModel());
 
 }
