@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vietnam_app/pages/auth/signup_screen.dart';
 import 'package:flutter_vietnam_app/pages/home/home_page.dart';
+import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
-import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/validation/validation_service.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 import 'package:flutter_vietnam_app/view_models/login_view_model.dart';
-import 'Widgets/form_card.dart';
+import 'widget/form_card.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 
@@ -31,10 +30,9 @@ class _LoginScreenState extends State<LoginScreen> {
   String _loginFeedback;
   bool _loginInProgress;
 
-  final ServiceMain _userService = serviceLocator<ServiceMain>();
   final ValidationService _validationService = serviceLocator<ValidationService>();
+  final AuthService _authService = serviceLocator<AuthService>();
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
   String errorMessage = '';
   String successMessage = '';
 
@@ -63,8 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
-    ScreenUtil.instance = ScreenUtil(allowFontScaling: true);
+    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true)..init(context);
     return new Scaffold(
       backgroundColor: Colors.white,
       resizeToAvoidBottomPadding: true,
@@ -219,14 +216,13 @@ class _LoginScreenState extends State<LoginScreen> {
       print(_emailId);
       print(_password);
 
-      FirebaseUser user = (await auth.signInWithEmailAndPassword(
-              email: _emailId, password: _password))
-          .user;
+      FirebaseUser user = await _authService.loginWithFirebase(
+              emailId: _emailId, password: _password);
 
       assert(user != null);
       assert(await user.getIdToken() != null);
 
-      final FirebaseUser currentUser = await auth.currentUser();
+      final FirebaseUser currentUser = await _authService.getCurrentUserWithFirebase();
       assert(user.uid == currentUser.uid);
       return user.uid;
     } catch (e) {

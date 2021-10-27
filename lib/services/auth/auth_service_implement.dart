@@ -1,13 +1,13 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_vietnam_app/services/data_repository/repository.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 
 import '../locator.dart';
 import '../web_httpie/httpie.dart';
 import 'auth_service.dart';
 
-class AuthApiService implements Auth {
-  
+class AuthApiService implements AuthService {
   static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
   static const CHECK_USERNAME_PATH = 'api/auth/username-check/';
   static const CHECK_EMAIL_PATH = 'api/auth/email-check/';
@@ -27,29 +27,44 @@ class AuthApiService implements Auth {
   static const SIGNUP_PATH = 'auth/Register';
 
   Httpie _httpService = serviceLocator<Httpie>();
+  Repository _dataRepository = serviceLocator<Repository>();
+  
+  Future<FirebaseUser> loginWithFirebase({String emailId, String password}){
+    return _dataRepository.loginWithFirebase(
+              email: emailId, password: password);
+  }
 
+  Future<FirebaseUser> signupWithFirebase({String emailId, String password}){
+    return _dataRepository.signupWithFirebase(
+              email: emailId, password: password);
+  }
+
+  Future<FirebaseUser> getCurrentUserWithFirebase(){
+    return _dataRepository.getCurrentUserWithFirebase();
+  }
 
   Future<HttpieResponse> loginWithCredentials(
       {@required String username, @required String password}) {
-Map<String, dynamic> body = {'username': username, 'password': password};
-    return this._httpService.postJSON('$apiURL$LOGIN_PATH',
-        body: body);
+    Map<String, dynamic> body = {'username': username, 'password': password};
+    return this._httpService.postJSON('$apiURL$LOGIN_PATH', body: body);
   }
 
-    Future<HttpieResponse> getUserWithAuthToken(String authToken) {
+  Future<HttpieResponse> getUserWithAuthToken(String authToken) {
     Map<String, String> headers = {'Authorization': '$authToken'};
 
     return _httpService.get('$apiURL$GET_AUTHENTICATED_USER_PATH',
         headers: headers);
   }
 
-    Future<HttpieResponse> signupWithCredentials({@required String name, @required String username, @required String password}){
-      Map<String, dynamic> body = {
-        "name": name,
-        "username": username,
-        "password": password
-      };
-      return _httpService.postJSON('$apiURL$SIGNUP_PATH',
-      body: body);
-    }
+  Future<HttpieResponse> signupWithCredentials(
+      {@required String name,
+      @required String username,
+      @required String password}) {
+    Map<String, dynamic> body = {
+      "name": name,
+      "username": username,
+      "password": password
+    };
+    return _httpService.postJSON('$apiURL$SIGNUP_PATH', body: body);
+  }
 }

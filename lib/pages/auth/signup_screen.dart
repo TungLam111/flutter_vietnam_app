@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
+import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/validation/validate_service_impl.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
+import 'package:flutter_vietnam_app/services/validation/validation_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -21,14 +23,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _loginFeedback;
   bool _loginInProgress;
 
-  ValidationServiceImpl _validationService;
-  final ServiceMain _userService = serviceLocator<ServiceMain>();
+  final ValidationService _validationService = serviceLocator<ValidationService>();
+  final AuthService _authService = serviceLocator<AuthService>();
 
   TextEditingController _usernameController;
   TextEditingController _passwordController;
   TextEditingController _passwordConfirmController;
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
   String errorMessage = '';
   String successMessage = '';
 
@@ -59,7 +60,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _validationService = ValidationServiceImpl();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(children: [
@@ -116,7 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 5,
                     ),
                     TextFormField(
-                      validator: _validateUsername,
+                      validator: _validateEmail,
                       controller: _usernameController,
                       decoration: InputDecoration(
                           hintText: "username",
@@ -173,7 +173,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
               _submitForm();
             },
             child: Container(
-                padding: const EdgeInsets.fromLTRB(50, 10, 50, 10),
+                height: ScreenUtil().setHeight(100),
+                width: ScreenUtil().setWidth(330),
                 decoration: BoxDecoration(
                    gradient: LinearGradient(colors: [
                                 Color(0xFF17ead9),
@@ -184,13 +185,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 child: _loginInProgress
                     ? Center(child: _getLoadingIndicator(Colors.blue))
-                    : Text(
-                        'Sign Up',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
-                      )),
+                    : Center(
+                      child: Text(
+                          'SIGNUP',
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                    )),
           ),
         ),
         GestureDetector( 
@@ -209,9 +212,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> signUp(email, password) async {
     _setLoginInProgress(true);
     try {
-      FirebaseUser user = (await auth.createUserWithEmailAndPassword(
-              email: email, password: password))
-          .user;
+      FirebaseUser user = await _authService.signupWithFirebase(
+              emailId: email, password: password);
+          
       assert(user != null);
       assert(await user.getIdToken() != null);
 
@@ -239,23 +242,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (value.isEmpty || !regex.hasMatch(value))
-      return 'Enter Valid Email Id!!!';
-    else
-      return null;
-  }
-
-  String validatePassword(String value) {
-    if (value.trim().isEmpty || value.length < 6 || value.length > 14) {
-      return 'Minimum 6 & Maximum 14 Characters!!!';
-    }
-    return null;
-  }
-
   String _validateConfirmPassword(String value) {
     if (!_isSubmitted) return null;
 
@@ -268,49 +254,41 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Future<void> _submitForm() async {
     _isSubmitted = true;
     if (_validateForm()) {
-      //await _signup(context);
       String _emailId = _usernameController.text;
       String _password = _passwordController.text;
+      print(_password);
       await signUp(_emailId, _password);
     }
   }
 
-  Future<void> _signup(BuildContext context) async {
-    _setLoginInProgress(true);
-    String username = _usernameController.text;
-    String password = _passwordController.text;
-    String name = "";
-    try {
-      print("Start running");
-      await _userService.signUpWithCredientials(
-          name: name, username: username, password: password);
-      print("kkk");
-      Navigator.pop(context);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-    } on CredentialsMismatchError {
-      _setLoginFeedback("auth login credentials mismatch error");
-    } on HttpieRequestError {
-      _setLoginFeedback("auth login server error");
-    } on HttpieConnectionRefusedError {
-      _setLoginFeedback("auth login connection error");
-    }
-    _setLoginInProgress(false);
-  }
+  // Future<void> _signup(BuildContext context) async {
+  //   _setLoginInProgress(true);
+  //   String username = _usernameController.text;
+  //   String password = _passwordController.text;
+  //   String name = "";
+  //   try {
+  //     print("Start running");
+  //     await _userService.signUpWithCredientials(
+  //         name: name, username: username, password: password);
+  //     print("kkk");
+  //     Navigator.pop(context);
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(builder: (context) => LoginScreen()),
+  //     );
+  //   } on CredentialsMismatchError {
+  //     _setLoginFeedback("auth login credentials mismatch error");
+  //   } on HttpieRequestError {
+  //     _setLoginFeedback("auth login server error");
+  //   } on HttpieConnectionRefusedError {
+  //     _setLoginFeedback("auth login connection error");
+  //   }
+  //   _setLoginInProgress(false);
+  // }
 
-  String _validateUsername(String value) {
+  String _validateEmail(String value) {
     if (!_isSubmitted) return null;
-    // return _validationService.validateUserUsername(value);
-
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (value.isEmpty || !regex.hasMatch(value))
-      return 'Enter Valid Email Id!!!';
-    else
-      return null;
+    return _validationService.validateEmail(value);
   }
 
   String _validatePassword(String value) {

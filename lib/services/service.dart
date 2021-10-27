@@ -55,7 +55,7 @@ abstract class ServiceMain {
 
   Future<List<Location>> getLocationsByList(List listLocation);
 
-   Future<DestinationList> getLocal();
+  Future<DestinationList> getLocal();
 
   Future<String> sendImage({@required File file}) ;
 

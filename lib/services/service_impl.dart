@@ -10,8 +10,8 @@ import 'package:flutter_vietnam_app/services/media/media.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:flutter_vietnam_app/services/storage/storage_service.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
-import 'locator.dart';
-import 'web_httpie/httpie.dart';
+import 'package:flutter_vietnam_app/services/locator.dart';
+import 'package:flutter_vietnam_app/services/web_httpie/httpie.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -20,7 +20,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Service implements ServiceMain {
   final Store  _userStorage = serviceLocator<Store>();
-  final Auth _authApiService = serviceLocator<Auth>();
+  final AuthService _authApiService = serviceLocator<AuthService>();
   final Httpie _httpieService = serviceLocator<Httpie>();
   final LocationService _locationService = serviceLocator<LocationService>();
   final MediaService _mediaService = serviceLocator<MediaService>();
@@ -35,18 +35,6 @@ class Service implements ServiceMain {
 
   String _authToken; 
   
-  Stream<QuerySnapshot> getStreamSpeciality() {
-    return collectionLocation.snapshots();
-  }
-
-  Future<DocumentReference> addLocation(Location location) {
-    return collectionLocation.add(location.toJson());
-  }
-
-  updateLocation(Location location) async {
-      await collectionLocation.document(location.reference.documentID).updateData(location.toJson());
-  }
-
   Future<void> loginWithCredentials(
       {@required String username, @required String password}) async {
         print("HOHO");

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 
-import '../locator.dart';
-import '../web_httpie/httpie.dart';
-import 'location_service.dart';
+import 'package:flutter_vietnam_app/services/locator.dart';
+import 'package:flutter_vietnam_app/services/web_httpie/httpie.dart';
+import 'package:flutter_vietnam_app/services/location/location_service.dart';
 
 class LocationApiService implements LocationService {
   

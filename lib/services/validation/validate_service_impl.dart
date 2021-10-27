@@ -12,7 +12,7 @@ class ValidationServiceImpl implements ValidationService {
     RegExp regex = new RegExp(pattern);
     String errorMsg;
     
-    if (errorMsg.length == 0){
+    if (email.length == 0){
       errorMsg = "Email can't be empty";
     }
     if (email.isEmpty || !regex.hasMatch(email))
