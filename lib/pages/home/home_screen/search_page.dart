@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
+import 'package:flutter_vietnam_app/services/data_repository/data_repo.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'post_item.dart';

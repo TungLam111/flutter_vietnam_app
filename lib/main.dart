@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
+import 'package:flutter_vietnam_app/routes.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
-//import 'package:flutter_vietnam_app/services/fake_try/homelist.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
-void main() {
+void main() async {
   setupServiceLocator();
-  WidgetsFlutterBinding.ensureInitialized(); //you may need this line 
+  WidgetsFlutterBinding.ensureInitialized(); 
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   runApp(MyApp());
 }
@@ -22,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Flutter Vietnam App',
       theme: ThemeData(
         accentColor: Color(0xff465EFD),
         visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -31,7 +27,8 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
 
-      home: Login(),
+      initialRoute: "/log_in",
+      routes: RoutePage.getRoute(),
     );
   }
 }

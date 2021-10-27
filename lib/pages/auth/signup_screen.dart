@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/pages/auth/login_screen.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
-import 'package:flutter_vietnam_app/services/validate_service.dart';
+import 'package:flutter_vietnam_app/services/validation/validate_service_impl.dart';
 import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +14,6 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
-  bool _isSelected = false;
   FocusNode _passwordFocusNode;
 
   bool _isSubmitted;
@@ -22,7 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String _loginFeedback;
   bool _loginInProgress;
 
-  ValidationService _validationService;
+  ValidationServiceImpl _validationService;
   final ServiceMain _userService = serviceLocator<ServiceMain>();
 
   TextEditingController _usernameController;
@@ -32,12 +31,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   String errorMessage = '';
   String successMessage = '';
-
-  void _radio() {
-    setState(() {
-      _isSelected = !_isSelected;
-    });
-  }
 
   @override
   void initState() {
@@ -55,10 +48,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.addListener(_validateForm);
     _passwordConfirmController.addListener(_validateForm);
   }
+  
+  @override 
+  void dispose(){
+    _usernameController.dispose();
+    _passwordController.dispose();
+    _passwordConfirmController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    _validationService = new ValidationService();
+    _validationService = ValidationServiceImpl();
     return Scaffold(
       body: SingleChildScrollView(
           child: Column(children: [
@@ -196,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           onTap: (){
                   Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
           },
           child: Text("LogIn", style: TextStyle(color: Colors.blue))
@@ -217,7 +218,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.pop(context);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
       //return user;
     } catch (e) {
@@ -287,7 +288,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.pop(context);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Login()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     } on CredentialsMismatchError {
       _setLoginFeedback("auth login credentials mismatch error");

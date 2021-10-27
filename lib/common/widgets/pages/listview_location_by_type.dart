@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
+import 'package:flutter_vietnam_app/services/data_repository/data_repo.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'page_product.dart';
@@ -16,16 +16,6 @@ class ListViewLocationByType  extends StatefulWidget {
 
 class _ListViewLocationByTypeState extends State<ListViewLocationByType> {
   final DataRepository repository = DataRepository();
-  
-  @override 
-  void initState(){
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
   @override 
   Widget build(BuildContext context){
     return Scaffold(

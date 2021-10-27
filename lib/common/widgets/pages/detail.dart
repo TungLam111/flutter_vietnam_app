@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
+import 'package:flutter_vietnam_app/services/data_repository/data_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:ui';
 import 'package:flutter/painting.dart';
 import 'page_product.dart';
-import 'listViewLocationByType.dart';
+import 'listview_location_by_type.dart';
 
 class Detail extends StatefulWidget {
   final Location location;

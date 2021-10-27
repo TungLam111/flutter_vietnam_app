@@ -5,14 +5,12 @@ import 'package:flutter_vietnam_app/models/post.dart';
 
 
 class DataRepository {
-  final CollectionReference collection = Firestore.instance.collection('pets');
   final CollectionReference collectionLocation = Firestore.instance.collection('speciality');
   final CollectionReference collectionComment = Firestore.instance.collection('comment');
-  //final CollectionReference collectionDestination = Firestore.instance.collection('destination');
   final CollectionReference collectionPost = Firestore.instance.collection('post');
   final CollectionReference collectionUser = Firestore.instance.collection('users');
   
-    Stream<QuerySnapshot> getStreamUser(String value) {
+  Stream<QuerySnapshot> getStreamUser(String value) {
     return collectionUser.where('email', isEqualTo: value ).snapshots();
   }
   
@@ -26,10 +24,6 @@ class DataRepository {
   
   Future<DocumentReference> addPost(Post post) {
     return collectionPost.add(post.toJson());
-  }
-
-  Stream<QuerySnapshot> getStream() {
-    return collection.snapshots();
   }
 
   Stream<QuerySnapshot> getSuggestion(String suggestion) {

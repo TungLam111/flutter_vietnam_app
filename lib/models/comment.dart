@@ -41,14 +41,6 @@ class Comment extends UpdatableModel<Comment> {
   factory Comment.fromJSON(Map<String, dynamic> json) {
     if (json == null) return null;
     return factory.makeFromJson(json);
-    // return Comment(
-    //   sender: json['sender'],
-    //   comment: json['comment'],
-    //   rating: json['rating'],
-    //   time: json['time'],
-    //   images: json['images'],
-    //   location: json['location']
-    // );
   }
   // a factory constructor to create a Location from a Firestore DocumentSnapshot
   factory Comment.fromSnapshot(DocumentSnapshot snapshot) {

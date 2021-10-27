@@ -3,7 +3,7 @@ import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/service.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_vietnam_app/services/fake_try/data_repo.dart';
+import 'package:flutter_vietnam_app/services/data_repository/data_repo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_vietnam_app/common/widgets/preferred_size_appbar.dart';
 import 'package:flutter_vietnam_app/common/widgets/scaffold.dart';
