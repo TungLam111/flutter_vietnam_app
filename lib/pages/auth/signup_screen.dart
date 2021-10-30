@@ -140,8 +140,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               TextStyle(color: Colors.grey, fontSize: 12.0)),
                     ),
 
-                    //
-
                     SizedBox(
                       height: 5,
                     ),
@@ -242,15 +240,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  String _validateConfirmPassword(String value) {
-    if (!_isSubmitted) return null;
-
-    if (value != _passwordController.text) {
-      return 'Confirm passowrd must be same with passowrd';
-    }
-    return null;
-  }
-
   Future<void> _submitForm() async {
     _isSubmitted = true;
     if (_validateForm()) {
@@ -295,6 +284,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (!_isSubmitted) return null;
 
     return _validationService.validateUserPassword(value);
+  }
+
+  String _validateConfirmPassword(String value) {
+    if (!_isSubmitted) return null;
+
+    if (value != _passwordController.text) {
+      return 'Confirm passowrd must be same with passowrd';
+    }
+    return null;
   }
 
   bool _validateForm() {

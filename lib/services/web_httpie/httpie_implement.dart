@@ -285,7 +285,6 @@ class HttpieService implements Httpie{
     print(bodyKeys);
     for (final String key in bodyKeys) {
       dynamic value = body[key];
-      print("++++++++++++++");
       print(value);
       if (value is String || value is bool) {
         request.fields[key] = value.toString();
