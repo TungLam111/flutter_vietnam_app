@@ -1,70 +1,62 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vietnam_app/pages/auth/signup_screen.dart';
-import 'package:flutter_vietnam_app/pages/home/home_page.dart';
-import 'package:flutter_vietnam_app/services/auth/auth_service.dart';
-import 'package:flutter_vietnam_app/services/locator.dart';
-import 'package:flutter_vietnam_app/services/validation/validation_service.dart';
-import 'package:flutter_vietnam_app/view_models/login_view_model.dart';
+import 'package:flutter_vietnam_app/pages/navigation_tab.dart';
+import 'package:flutter_vietnam_app/utils/logg.dart';
+import 'package:flutter_vietnam_app/view_models/login_notifier.dart';
+import 'package:provider/provider.dart';
 import 'widget/form_card.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => new _LoginScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-  LoginScreenViewModel model = serviceLocator<LoginScreenViewModel>();
-  
-  TextEditingController _usernameController;
-  TextEditingController _passwordController;
-
-  final _formKey = GlobalKey<FormState>();
-  FocusNode _passwordFocusNode;
-
-  bool _isSubmitted;
-  bool _passwordIsVisible;
-  String _loginFeedback;
-  bool _loginInProgress;
-
-  final ValidationService _validationService = serviceLocator<ValidationService>();
-  final AuthService _authService = serviceLocator<AuthService>();
-
-  String errorMessage = '';
-  String successMessage = '';
-
+  late StreamSubscription<bool>? isLoginSuccessSub;
   @override
   void initState() {
     super.initState();
-    _passwordFocusNode = FocusNode();
-    _loginInProgress = false;
-    _isSubmitted = false;
-    _passwordIsVisible = false;
+    Provider.of<LoginScreenViewModel>(context, listen: false).init();
 
-    _usernameController = TextEditingController();
-    _passwordController = TextEditingController();
-
-    _usernameController.addListener(_validateForm);
-    _passwordController.addListener(_validateForm);
+    WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+      isLoginSuccessSub =
+          Provider.of<LoginScreenViewModel>(context, listen: false)
+              .isLoginSuccess
+              .listen((bool event) {
+        if (event == true) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) => const NavigationTab(),
+            ),
+            (_) => false,
+          );
+        }
+      });
+    });
   }
 
   @override
-  void dispose(){
-    _usernameController.dispose();
-    _passwordController.dispose();
-    _passwordFocusNode.dispose();
+  void dispose() {
+    isLoginSuccessSub?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.instance = ScreenUtil(width: 750, height: 1334, allowFontScaling: true)..init(context);
-    return new Scaffold(
+    ScreenUtil.init(
+      context,
+      designSize: const Size(
+        750,
+        1334,
+      ),
+    );
+    return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomPadding: true,
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -73,107 +65,124 @@ class _LoginScreenState extends State<LoginScreen> {
             children: <Widget>[
               SizedBox(
                 child: Image.asset(
-                    "assets/images/com_lang_vong_sqr-removebg-preview.png"),
+                  'assets/images/com_lang_vong_sqr-removebg-preview.png',
+                ),
               ),
               Expanded(
                 child: Container(),
               ),
-              Expanded(child: Image.asset("assets/images/image_02.png"))
+              Expanded(child: Image.asset('assets/images/image_02.png'))
             ],
           ),
-          SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.only(left: 28.0, right: 28.0, top: 300.0),
-              child: Column(
-                children: <Widget>[
-                  FormCard(
-                      formKey: _formKey,
-                      userNameController: _usernameController,
-                      passwordController: _passwordController,
-                      togglePasswordVisibility: _togglePasswordVisibility,
-                      passwordIsVisible: _passwordIsVisible,
-                      usernameValidate: _validateEmail,
-                      passwordValidate: _validatePassword,
-                      passwordFocusNode: _passwordFocusNode),
-                  SizedBox(height: ScreenUtil().setHeight(40)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () async {
-                          _setLoginInProgress(true);
-                          await signIn().then((user) {
-                            if (user != null) {
-                              print(
-                                  'Logged in successfully with $user');
-                              setState(() {
-                                successMessage =
-                                    'Logged in successfully.\nYou can now navigate to Home Page.';
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MyHomePage()));
-                              });
-                              //  _submitForm();
-                            } else {
-                              print('Error while Login.');
-                            }
-                          });
-                          _setLoginInProgress(false);
-                        },
-                        child: Container(
-                          width: ScreenUtil().setWidth(330),
-                          height: ScreenUtil().setHeight(100),
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [
-                                Color(0xFF17ead9),
-                                Color(0xFF6078ea)
-                              ]),
+          Consumer<LoginScreenViewModel>(
+            builder: (
+              BuildContext context,
+              LoginScreenViewModel value,
+              Widget? child,
+            ) =>
+                SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(left: 28.0, right: 28.0, top: 300.0),
+                child: Column(
+                  children: <Widget>[
+                    FormCard(
+                      formKey: value.getFormKey,
+                      userNameController: value.getUsernameController,
+                      passwordController: value.getPasswordController,
+                      togglePasswordVisibility: value.togglePasswordVisibility,
+                      passwordIsVisible: value.getPasswordIsVisible,
+                      usernameValidate: value.validateEmail,
+                      passwordValidate: value.validatePassword,
+                      passwordFocusNode: value.getPasswordFocusNode,
+                    ),
+                    SizedBox(height: ScreenUtil().setHeight(40)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () async {
+                            value.setLoginInProgress(true);
+                            await value.signIn().then((String userId) {
+                              if (userId.isNotEmpty) {
+                                logg('Logged in successfully with $userId');
+                                value.setSuccessMessage(
+                                  '''Logged in successfully.\nYou can now navigate to Home Page.''',
+                                );
+                              } else {
+                                logg('Error while Login.');
+                              }
+                            });
+                            value.setLoginInProgress(false);
+                          },
+                          child: Container(
+                            width: ScreenUtil().setWidth(330),
+                            height: ScreenUtil().setHeight(100),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: <Color>[
+                                  Color(0xFF17ead9),
+                                  Color(0xFF6078ea)
+                                ],
+                              ),
                               borderRadius: BorderRadius.circular(6.0),
-                              boxShadow: [
+                              boxShadow: <BoxShadow>[
                                 BoxShadow(
-                                    color: Color(0xFF6078ea).withOpacity(.3),
-                                    offset: Offset(0.0, 8.0),
-                                    blurRadius: 8.0)
-                              ]),
-                          child: _loginInProgress
-                              ? Center(child: _getLoadingIndicator(Colors.blue))
-                              : Center(
-                                  child: Text("SIGNIN",
+                                  color:
+                                      const Color(0xFF6078ea).withOpacity(.3),
+                                  offset: const Offset(0.0, 8.0),
+                                  blurRadius: 8.0,
+                                )
+                              ],
+                            ),
+                            child: value.getLoginInProgess!
+                                ? Center(
+                                    child: _getLoadingIndicator(Colors.blue),
+                                  )
+                                : const Center(
+                                    child: Text(
+                                      'SIGNIN',
                                       style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18,
-                                          letterSpacing: 1.0)),
-                                ),
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        letterSpacing: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: ScreenUtil().setHeight(40),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "New User? ",
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SignUpScreen()),
-                          );
-                        },
-                        child: Text("SignUp",
+                      ],
+                    ),
+                    SizedBox(
+                      height: ScreenUtil().setHeight(40),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        const Text(
+                          'New User? ',
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<dynamic>(
+                                builder: (BuildContext context) =>
+                                    const SignUpScreen(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'SignUp',
                             style: TextStyle(
                               color: Color(0xFF5d74e3),
-                            )),
-                      )
-                    ],
-                  )
-                ],
+                            ),
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
               ),
             ),
           )
@@ -181,110 +190,38 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-  
-    Widget radioButton(bool isSelected) => Container(
+
+  Widget radioButton(bool isSelected) => Container(
         width: 16.0,
         height: 16.0,
-        padding: EdgeInsets.all(2.0),
+        padding: const EdgeInsets.all(2.0),
         decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(width: 2.0, color: Colors.black)),
+          shape: BoxShape.circle,
+          border: Border.all(width: 2.0, color: Colors.black),
+        ),
         child: isSelected
             ? Container(
                 width: double.infinity,
                 height: double.infinity,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: Colors.black),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black,
+                ),
               )
             : Container(),
       );
 
   Widget horizontalLine() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Container(
-          width: ScreenUtil.getInstance().setWidth(120),
+          width: ScreenUtil().setWidth(120),
           height: 1.0,
           color: Colors.black26.withOpacity(.2),
         ),
       );
 
-  Future<String> signIn() async {
-    try {
-      String _emailId = _usernameController.text;
-      String _password = _passwordController.text;
-
-      print(_emailId);
-      print(_password);
-
-      FirebaseUser user = await _authService.loginWithFirebase(
-              emailId: _emailId, password: _password);
-
-      assert(user != null);
-      assert(await user.getIdToken() != null);
-
-      final FirebaseUser currentUser = await _authService.getCurrentUserWithFirebase();
-      assert(user.uid == currentUser.uid);
-      return user.uid;
-    } catch (e) {
-      handleError(e);
-      return null;
-    }
-  }
-
-  handleError(PlatformException error) {
-    print(error);
-    switch (error.code) {
-      case 'ERROR_USER_NOT_FOUND':
-        setState(() {
-          errorMessage = 'User Not Found!!!';
-        });
-        break;
-      case 'ERROR_WRONG_PASSWORD':
-        setState(() {
-          errorMessage = 'Wrong Password!!!';
-        });
-        break;
-    }
-  }
-
-  String _validateEmail(String value) {
-    if (!_isSubmitted) return null;
-    return _validationService.validateEmail(value);
-  }
-
-  String _validatePassword(String value) {
-    if (!_isSubmitted) return null;
-
-    return _validationService.validateUserPassword(value);
-  }
-
-  bool _validateForm() {
-    if (_loginFeedback != null) {
-      _setLoginFeedback(null);
-    }
-    return _formKey.currentState.validate();
-  }
-
-  void _togglePasswordVisibility() {
-    setState(() {
-      _passwordIsVisible = !_passwordIsVisible;
-    });
-  }
-
-  void _setLoginFeedback(String feedback) {
-    setState(() {
-      _loginFeedback = feedback;
-    });
-  }
-
-  void _setLoginInProgress(bool loginInProgress) {
-    setState(() {
-      _loginInProgress = loginInProgress;
-    });
-  }
-
   Widget _getLoadingIndicator(Color color) {
-    return SizedBox(
+    return const SizedBox(
       height: 15.0,
       width: 15.0,
       child: CircularProgressIndicator(strokeWidth: 2.0),

@@ -1,34 +1,44 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_vietnam_app/services/locator.dart';
 import 'package:flutter_vietnam_app/services/media/media.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
+import 'package:flutter_vietnam_app/data/web_httpie/httpie.dart';
 
-class MediaServiceImpl implements MediaService{
-  final Httpie _httpService = serviceLocator<Httpie>();
+class MediaServiceImpl implements MediaService {
+  MediaServiceImpl(this._httpService);
+  final Httpie _httpService;
 
   static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
 
-  Future<HttpieStreamedResponse> sendImage({@required File file}) async{
+  @override
+  Future<HttpieStreamedResponse> sendImage({required File file}) async {
+    Map<String, dynamic> body = <String, dynamic>{'image': file};
 
-    Map<String, dynamic> body = {"image": file}; 
-
-    return _httpService.postMultiform("https://shielded-depths-44788.herokuapp.com/image/upload",
-        body: body,
-        appendAuthorizationToken: false);
+    return _httpService.postMultiform(
+      'https://shielded-depths-44788.herokuapp.com/image/upload',
+      body: body,
+      appendAuthorizationToken: false,
+    );
   }
 
-   Future<HttpieResponse> getPredictions({@required String file}) async{
-     Map<String, dynamic> body = {"image_name": file};
-     return _httpService.postJSON("", body: body, appendAuthorizationToken: false );
-   }
+  @override
+  Future<HttpieResponse> getPredictions({required String file}) async {
+    Map<String, dynamic> body = <String, dynamic>{'image_name': file};
+    return _httpService.postJSON(
+      '',
+      body: body,
+      appendAuthorizationToken: false,
+    );
+  }
 
-   Future<HttpieResponse> getRecommendations() async {
-     Map<String, dynamic> body = {};
-     return _httpService.postJSON("", body: body, appendAuthorizationToken: false);
-   }
+  @override
+  Future<HttpieResponse> getRecommendations() async {
+    Map<String, dynamic> body = <String, dynamic>{};
+    return _httpService.postJSON(
+      '',
+      body: body,
+      appendAuthorizationToken: false,
+    );
+  }
 }
 
 class StringTemplateService {

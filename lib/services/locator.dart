@@ -1,50 +1,159 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_vietnam_app/data/firebase_api/firebase_api.dart';
+import 'package:flutter_vietnam_app/data/firebase_api/firebase_api_impl.dart';
+import 'package:flutter_vietnam_app/repository/auth_repo/auth_repo.dart';
+import 'package:flutter_vietnam_app/repository/auth_repo/auth_repo_impl.dart';
+import 'package:flutter_vietnam_app/repository/location_repo/location_repo.dart';
+import 'package:flutter_vietnam_app/repository/location_repo/location_repo_impl.dart';
+import 'package:flutter_vietnam_app/repository/media_repo/media_repo.dart';
+import 'package:flutter_vietnam_app/repository/media_repo/media_repo_impl.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
 import 'package:flutter_vietnam_app/services/location/location_service_impl.dart';
 
 import 'package:flutter_vietnam_app/services/media/media.dart';
 import 'package:flutter_vietnam_app/services/media/media_impl.dart';
 
-import 'package:flutter_vietnam_app/services/service.dart';
-import 'package:flutter_vietnam_app/services/service_impl.dart';
+import 'package:flutter_vietnam_app/utils/utils_service.dart';
 
-import 'package:flutter_vietnam_app/services/validation/validate_service_impl.dart';
-import 'package:flutter_vietnam_app/services/validation/validation_service.dart';
+import 'package:flutter_vietnam_app/utils/validation/validate_service_impl.dart';
+import 'package:flutter_vietnam_app/utils/validation/validation_service.dart';
 
-import 'storage/storage_service.dart';
-import 'storage/storage_service_implement.dart';
+import 'package:flutter_vietnam_app/utils/storage/storage_service.dart';
+import 'package:flutter_vietnam_app/utils/storage/storage_service_implement.dart';
+import 'package:flutter_vietnam_app/view_models/detail_speciality_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/listview_location_by_type_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/navigation_tab_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/post_detail_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/search_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/wall_notifier.dart';
 
-import 'web_httpie/httpie.dart';
-import 'web_httpie/httpie_implement.dart';
+import '../data/web_httpie/httpie.dart';
 
 import 'auth/auth_service.dart';
-import 'auth/auth_service_implement.dart';
+import 'auth/auth_service_impl.dart';
 
-import 'package:flutter_vietnam_app/services/data_repository/data_repo.dart';
-import 'package:flutter_vietnam_app/services/data_repository/repository.dart';
-
-
-import 'package:flutter_vietnam_app/view_models/home_view_model.dart';
-import 'package:flutter_vietnam_app/view_models/login_view_model.dart';
-import 'package:flutter_vietnam_app/view_models/signup_view_model.dart';
+import 'package:flutter_vietnam_app/view_models/home_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/login_notifier.dart';
+import 'package:flutter_vietnam_app/view_models/signup_notifier.dart';
 import 'package:get_it/get_it.dart';
-// Using GetIt is a convenient way to provide services and view models
-// anywhere we need them in the app.
+
+import 'package:http/http.dart' as http;
+
 GetIt serviceLocator = GetIt.instance;
 
-void setupServiceLocator() {
+Future<void> setupServiceLocator() async {
+  serviceLocator.registerLazySingleton<http.Client>(
+    () => http.Client(),
+  );
 
-  serviceLocator.registerLazySingleton<Httpie>(() => HttpieService());
-  serviceLocator.registerLazySingleton<Store>(() => SystemPreferencesStorage());
-  serviceLocator.registerLazySingleton<AuthService>(()=> AuthApiService());
-  serviceLocator.registerLazySingleton<LocationService>(() => LocationApiService());
-  serviceLocator.registerLazySingleton<ServiceMain>(() => Service());
-  serviceLocator.registerLazySingleton<MediaService>(() => MediaServiceImpl());
-  serviceLocator.registerLazySingleton<ValidationService>(() => ValidationServiceImpl());
-  serviceLocator.registerLazySingleton<Repository>(() => DataRepository());
+  serviceLocator.registerLazySingleton<FirebaseFirestore>(
+    () => FirebaseFirestore.instance,
+  );
+
+  serviceLocator.registerLazySingleton<FirebaseAuth>(
+    () => FirebaseAuth.instance,
+  );
+
+  serviceLocator.registerLazySingleton<UtilsService>(
+    () => UtilsService(),
+  );
+  serviceLocator.registerLazySingleton<ValidationService>(
+    () => ValidationServiceImpl(),
+  );
+
+  serviceLocator.registerLazySingleton<Httpie>(
+    () => HttpieImpl(
+      serviceLocator(),
+      serviceLocator(),
+    ),
+  );
+
+  serviceLocator.registerLazySingleton<FirebaseApi>(
+    () => FirebaseApiImpl(
+      serviceLocator<FirebaseFirestore>(),
+      serviceLocator<FirebaseAuth>(),
+    ),
+  );
+
+  // service
+
+  serviceLocator.registerLazySingleton<StorageService>(
+    () => StorageServiceImpl(),
+  );
+
+  await serviceLocator<StorageService>().init();
+
+  serviceLocator.registerLazySingleton<AuthService>(
+    () => AuthServiceImpl(
+      serviceLocator(),
+      serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton<LocationService>(
+    () => LocationServiceImpl(serviceLocator(), serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton<MediaService>(
+    () => MediaServiceImpl(serviceLocator()),
+  );
+
+  // repository
+  serviceLocator.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      serviceLocator(),
+      serviceLocator(),
+      serviceLocator(),
+    ),
+  );
+  serviceLocator.registerLazySingleton<LocationRepository>(
+    () => LocationRepositoryImpl(serviceLocator()),
+  );
+
+  serviceLocator.registerLazySingleton<MediaRepository>(
+    () => MediaRepositoryImpl(serviceLocator()),
+  );
 
   // view models
-  serviceLocator.registerFactory<SignupScreenViewModel>(() => SignupScreenViewModel());
-  serviceLocator.registerFactory<HomePageViewModel>(() => HomePageViewModel());
-  serviceLocator.registerFactory<LoginScreenViewModel>(() => LoginScreenViewModel());
+  serviceLocator.registerFactory<SignupScreenViewModel>(
+    () => SignupScreenViewModel(
+      serviceLocator(),
+      serviceLocator(),
+    ),
+  );
+  serviceLocator.registerFactory<HomePageViewModel>(
+    () => HomePageViewModel(
+      serviceLocator(),
+    ),
+  );
+  serviceLocator.registerFactory<LoginScreenViewModel>(
+    () => LoginScreenViewModel(
+      serviceLocator<AuthRepository>(),
+      serviceLocator<ValidationService>(),
+    ),
+  );
 
+  serviceLocator.registerFactory<NavigationTabViewModel>(
+    () => NavigationTabViewModel(),
+  );
+
+  serviceLocator.registerFactory<SearchViewModel>(
+    () => SearchViewModel(serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<WallPageViewModel>(
+    () => WallPageViewModel(serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<DetailSpecialityViewModel>(
+    () => DetailSpecialityViewModel(serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<PostDetailViewModel>(
+    () => PostDetailViewModel(serviceLocator()),
+  );
+
+  serviceLocator.registerFactory<ListviewLocationByTypeNotifer>(
+    () => ListviewLocationByTypeNotifer(serviceLocator()),
+  );
 }

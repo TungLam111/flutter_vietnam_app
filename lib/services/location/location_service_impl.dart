@@ -1,54 +1,134 @@
-
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie_implement.dart';
-
-import 'package:flutter_vietnam_app/services/locator.dart';
-import 'package:flutter_vietnam_app/services/web_httpie/httpie.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_vietnam_app/data/firebase_api/firebase_api.dart';
+import 'package:flutter_vietnam_app/data/web_httpie/httpie.dart';
+import 'package:flutter_vietnam_app/models/post.dart';
+import 'package:flutter_vietnam_app/models/location.dart';
+import 'package:flutter_vietnam_app/models/comment.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
 
-class LocationApiService implements LocationService {
-  
+class LocationServiceImpl implements LocationService {
+  LocationServiceImpl(this._httpService, this._firebaseApi);
+  final Httpie _httpService;
+  final FirebaseApi _firebaseApi;
   static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
-  static const GET_ALL_LOCATION = 'speciality/ReadAllSpeciality';
-  static const GET_LOCATION_BY_NAME = "speciality/ReadSpeciality";
-  static const GET_LOCATIONS_BY_LIST = "speciality/ReadListSpecialityByListName";
-  static const GET_LOCATIONS_BY_CATEGORY = "speciality/ReadListSpecialityByCategories";
+  static const String getAllLocationEndpoint = 'speciality/ReadAllSpeciality';
+  static const String getLocationByNameEndpoint = 'speciality/ReadSpeciality';
+  static const String getLocationsByListEndpoint =
+      'speciality/ReadListSpecialityByListName';
+  static const String getLocationsByCategoryEndpoint =
+      'speciality/ReadListSpecialityByCategories';
 
-  Httpie _httpService = serviceLocator<Httpie>();
-
-
+  @override
   Future<HttpieResponse> getAllLocations() {
-    return this._httpService.postJSON('$apiURL$GET_ALL_LOCATION', appendAuthorizationToken: true);
-  }
-  
-  Future<dynamic> getLocal() async {
-    String data =
-        await rootBundle.loadString('assets/data/destination_response.json');
-    return json.decode(data.toString());
-  }
-  
-  Future<dynamic> getLocation() async {
-    String data =
-        await rootBundle.loadString('assets/data/food-1.json');
-    return json.decode(data.toString());
+    return _httpService.postJSON(
+      '$apiURL$getAllLocationEndpoint',
+      appendAuthorizationToken: true,
+    );
   }
 
-  Future<HttpieResponse> getLocationByName({@required String locationName}) {
-    Map<String, dynamic> body = {"name" : locationName};
-    return this._httpService.post('$apiURL$GET_LOCATION_BY_NAME', body: body, appendAuthorizationToken: true);
+  @override
+  Future<HttpieResponse> getLocationByName({required String locationName}) {
+    Map<String, dynamic> body = <String, dynamic>{'name': locationName};
+    return _httpService.post(
+      '$apiURL$getLocationByNameEndpoint',
+      body: body,
+      appendAuthorizationToken: true,
+    );
   }
 
-  Future<HttpieResponse> getLocationsByList(List listLocation){
-    Map<String, dynamic> body = {"name": listLocation};
-    return this._httpService.postJSON('$apiURL$GET_LOCATIONS_BY_LIST', body: body, appendAuthorizationToken: true);
+  @override
+  Future<HttpieResponse> getLocationsByList(List<String> listLocation) {
+    Map<String, dynamic> body = <String, dynamic>{'name': listLocation};
+    return _httpService.postJSON(
+      '$apiURL$getLocationsByListEndpoint',
+      body: body,
+      appendAuthorizationToken: true,
+    );
   }
 
-   Future<HttpieResponse> getLocationsByCategory({String category}){
-     Map body = {"categories": category};
+  @override
+  Future<HttpieResponse> getLocationsByCategory({String? category}) {
+    Map<String, dynamic> body = <String, dynamic>{'categories': category};
 
-    return this._httpService.postJSON('$apiURL$GET_LOCATIONS_BY_CATEGORY', body: body, appendAuthorizationToken: true);
-   }
+    return _httpService.postJSON(
+      '$apiURL$getLocationsByCategoryEndpoint',
+      body: body,
+      appendAuthorizationToken: true,
+    );
+  }
+
+  @override
+  Future<DocumentReference<Map<String, dynamic>>> addComment(Comment comment) {
+    return _firebaseApi.addComment(comment);
+  }
+
+  @override
+  Future<DocumentReference<Map<String, dynamic>>> addLocation(
+    Location location,
+  ) {
+    return _firebaseApi.addLocation(location);
+  }
+
+  @override
+  Future<DocumentReference<Map<String, dynamic>>> addPost(Post post) {
+    return _firebaseApi.addPost(post);
+  }
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStreamComment(String postId) {
+    return _firebaseApi.getStreamComment(postId);
+  }
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getStreamPost() {
+    return _firebaseApi.getStreamPost();
+  }
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getStreamPostFilter(
+    String filter,
+  ) {
+    return _firebaseApi.getStreamPostFilter(filter);
+  }
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStreamSpeciality() {
+    return _firebaseApi.getStreamSpeciality();
+  }
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStreamSpecialityByCategory(
+    String filter,
+  ) {
+    return _firebaseApi.getStreamSpecialityByCategory(filter);
+  }
+
+  @override
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStreamSpecialityByType(
+    String filter,
+  ) {
+    return _firebaseApi.getStreamSpecialityByType(filter);
+  }
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getStreamUser(
+    List<String> value,
+  ) {
+    return _firebaseApi.getStreamUser(value);
+  }
+
+  @override
+  Future<QuerySnapshot<Map<String, dynamic>>> getSuggestion(String suggestion) {
+    return _firebaseApi.getSuggestion(suggestion);
+  }
+
+  @override
+  updateComment(Comment pet) {
+    _firebaseApi.updateComment(pet);
+  }
+
+  @override
+  updateLocation(Location location) {
+    _firebaseApi.updateLocation(location);
+  }
 }

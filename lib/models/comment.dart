@@ -1,31 +1,54 @@
-import 'package:flutter_vietnam_app/models/updateable_model.dart';
-import 'package:dcache/dcache.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CommentList{
-  final List<Comment> categories;
-  CommentList({
-    this.categories
-  });
-   factory CommentList.fromJson(List<dynamic> parsedJson) {
+class CommentList {
+  CommentList({this.categories});
+  factory CommentList.fromJson(List<dynamic> parsedJson) {
     List<Comment> categories = parsedJson
-        .map((categoryJson) => Comment.fromJSON(categoryJson))
+        .map(
+          (dynamic categoryJson) => Comment.fromJSON(
+            categoryJson as Map<String, dynamic>,
+          ),
+        )
         .toList();
 
-    return new CommentList(
+    return CommentList(
       categories: categories,
     );
   }
+
+  factory CommentList.fromFirebase(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> parsedJson,
+  ) {
+    List<Comment> categories = parsedJson
+        .map(
+          (QueryDocumentSnapshot<Map<String, dynamic>> categoryJson) =>
+              Comment.fromSnapshot(
+            categoryJson,
+          ),
+        )
+        .toList();
+
+    return CommentList(
+      categories: categories,
+    );
+  }
+
+  final List<Comment>? categories;
 }
-class Comment extends UpdatableModel<Comment> {
-  String sender;
-  String comment;
-  double rating; //rating of sender towards that locations
-  List<String> images;
-  DateTime time;
-  String location;
-  
-  DocumentReference reference;
+
+class Comment {
+  factory Comment.fromSnapshot(
+    QueryDocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    Comment newPet = Comment.fromJSON(snapshot.data());
+    newPet.reference = snapshot.reference;
+    return newPet;
+  }
+
+  factory Comment.fromJSON(Map<String, dynamic> json) {
+    return factory.makeFromJson(json);
+  }
+
   Comment({
     this.sender,
     this.comment,
@@ -33,91 +56,62 @@ class Comment extends UpdatableModel<Comment> {
     this.time,
     this.images,
     this.location, // or location post
-    this.reference
+    this.reference,
+    this.displayName,
+    this.photoUrl,
   });
-  
-  static final factory = CommentFactory();
+  String? sender;
+  String? comment;
+  double? rating; //rating of sender towards that locations
+  List<String>? images;
+  DateTime? time;
+  String? location;
+  String? photoUrl;
+  String? displayName;
 
-  factory Comment.fromJSON(Map<String, dynamic> json) {
-    if (json == null) return null;
-    return factory.makeFromJson(json);
-  }
-  // a factory constructor to create a Location from a Firestore DocumentSnapshot
-  factory Comment.fromSnapshot(DocumentSnapshot snapshot) {
-    Comment newPet = Comment.fromJSON(snapshot.data);
-    newPet.reference = snapshot.reference;
-    return newPet;
-  }
+  DocumentReference? reference;
+
+  static final CommentFactory factory = CommentFactory();
 
   Map<String, dynamic> toJson() {
-    return {
-    "sender": sender ,
-    "location": location ,
-    "comment": comment ,
-    "rating": rating ,
-    "time": time?.toString(),
-    "images": images?.map((String e) => e)?.toList() ,
+    return <String, dynamic>{
+      'sender': sender,
+      'location': location,
+      'comment': comment,
+      'rating': rating,
+      'time': time?.toString(),
+      'images': images?.map((String e) => e).toList(),
+      'photoUrl': photoUrl,
+      'displayName': displayName,
     };
-  }
-
-  
-  @override
-  void updateFromJson(Map json) {
-    
-    if (json.containsKey('sender')) {
-      sender = json['sender'];
-    }
-    //address of that destination
-    if (json.containsKey('location')) {
-      location = json['location'];
-    }
-    //content of that comment 
-    if (json.containsKey('comment')) {
-      comment = json['comment'];
-    }
-
-    if (json.containsKey('rating')) {
-      rating = json['rating'];
-    }
-
-    if (json.containsKey('time')) {
-      time = factory.parseDateJoined(json['time']);
-    }
-    // list images about that destination
-    if (json.containsKey('images')) {
-      images = factory.parseImages(json['images']);
-    } 
   }
 }
 
-class CommentFactory extends UpdatableModelFactory<Comment> {
-  @override
-  SimpleCache<int, Comment> cache =
-      SimpleCache(storage: UpdatableModelSimpleStorage(size: 20));
-
-  @override
-  Comment makeFromJson(Map json) {
+class CommentFactory {
+  Comment makeFromJson(Map<String, dynamic> json) {
     return Comment(
-      sender: json['sender'],
-      location: json['location'],
-      comment: json['comment'],
-      time: parseDateJoined(json['time']),
-      rating: json['rating'].toDouble(),
-      images: parseImages(json['images']),
+      sender: json['sender'] as String?,
+      photoUrl: json['photoUrl'] as String?,
+      displayName: json['displayName'] as String?,
+      location: json['location'] as String?,
+      comment: json['comment'] as String?,
+      time: parseDateJoined(json['time'] as String?),
+      rating: json['rating'] == null
+          ? null
+          : double.parse(json['rating'].toString()),
+      images: parseImages(json['images'] as List<dynamic>?),
     );
   }
 
-  List<String> parseImages(List images){
+  List<String>? parseImages(List<dynamic>? images) {
     if (images == null) return null;
-    List<String> categories = images
-        .map((categoryJson) => categoryJson.toString())
-        .toList();
+    List<String> categories =
+        images.map((dynamic categoryJson) => categoryJson.toString()).toList();
     return categories;
   }
-  
-  DateTime parseDateJoined(String dateJoined) {
+
+  DateTime? parseDateJoined(String? dateJoined) {
     if (dateJoined == null) return null;
     return DateTime.parse(dateJoined).toLocal();
   }
-
 }

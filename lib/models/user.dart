@@ -1,53 +1,95 @@
-import 'package:dcache/dcache.dart';
-import 'package:flutter_vietnam_app/models/updateable_model.dart';
-class User extends UpdatableModel<User> {
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-   String displayName;
-   String email;
-   String phoneNumber;
-   String photoUrl;
+class UserModelList {
+  factory UserModelList.fromFirebase(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> parsedJson,
+  ) {
+    List<UserModel> categories = parsedJson
+        .map(
+          (QueryDocumentSnapshot<Map<String, dynamic>> categoryJson) =>
+              UserModel.fromFirebase(
+            categoryJson,
+          ),
+        )
+        .toList();
 
-   User({ this.displayName,this.email, this.phoneNumber, this.photoUrl});
-   
-     static final navigationUsersFactory = UserFactory(
-      cache:
-          LfuCache<int, User>(storage: UpdatableModelSimpleStorage(size: 100)));
-
-  factory User.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
-
-    return navigationUsersFactory.makeFromJson(json);
+    return UserModelList(
+      categories: categories,
+    );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'displayName': displayName,
-      'phoneNumber' : phoneNumber,
-      'photoUrl' : photoUrl,
-      'email' : email 
-    };
+  factory UserModelList.fromJson(List<dynamic> parsedJson) {
+    List<UserModel> categories = parsedJson
+        .map(
+          (dynamic categoryJson) => UserModel.fromJson(
+            categoryJson as Map<String, dynamic>,
+          ),
+        )
+        .toList();
+
+    return UserModelList(
+      categories: categories,
+    );
+  }
+  UserModelList({
+    this.categories,
+  });
+
+  UserModel? getPosterOfPost(String poster) {
+    for (UserModel user in categories ?? <UserModel>[]) {
+      if (user.email == poster) {
+        return user;
+      }
+    }
+    return null;
   }
 
-  void updateFromJson(Map json) {
-    if (json.containsKey('displayName')) displayName = json['displayName'];
-    if (json.containsKey('phoneNumber')) phoneNumber = json['phoneNumber'];
-    if (json.containsKey('photoUrl')) photoUrl = json['photoUrl'];
-    if (json.containsKey('email')) email = json['email'];
-  }
-
+  List<UserModel>? categories;
 }
 
+class UserModel {
+  factory UserModel.fromFirebase(
+    QueryDocumentSnapshot<Map<String, dynamic>> snapshot,
+  ) {
+    return UserModel.fromJson(snapshot.data());
+  }
+  UserModel({
+    this.id,
+    this.displayName,
+    this.email,
+    this.phoneNumber,
+    this.photoUrl,
+  });
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return userFactory.makeFromJson(json);
+  }
+  String? id;
+  String? displayName;
+  String? email;
+  String? phoneNumber;
+  String? photoUrl;
 
-class UserFactory extends UpdatableModelFactory<User> {
-  UserFactory({cache}) : super(cache: cache);
+  static final UserFactory userFactory = UserFactory();
 
-  @override
-  User makeFromJson(Map json) {
-    return User(
-        displayName: json['displayName'],
-        phoneNumber: json['phoneNumber'],
-        photoUrl: json['photoUrl'],
-        email: json['email']
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'displayName': displayName,
+      'phoneNumber': phoneNumber,
+      'photoUrl': photoUrl,
+      'email': email
+    };
+  }
+}
+
+class UserFactory {
+  UserModel makeFromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'] as String?,
+      displayName: json['displayName'] as String?,
+      phoneNumber: json['phoneNumber'] as String?,
+      photoUrl: json['photoUrl'] as String?,
+      email: json['email'] as String?,
     );
   }
 }

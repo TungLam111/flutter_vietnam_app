@@ -1,3 +1,1 @@
-class Constant {
-  
-}
+class Constant {}
