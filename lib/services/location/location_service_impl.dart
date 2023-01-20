@@ -1,61 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_vietnam_app/data/firebase_api/firebase_api.dart';
-import 'package:flutter_vietnam_app/data/web_httpie/httpie.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/comment.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
 
 class LocationServiceImpl implements LocationService {
-  LocationServiceImpl(this._httpService, this._firebaseApi);
-  final Httpie _httpService;
+  LocationServiceImpl( this._firebaseApi);
   final FirebaseApi _firebaseApi;
-  static const String apiURL = 'https://shielded-depths-44788.herokuapp.com/';
-  static const String getAllLocationEndpoint = 'speciality/ReadAllSpeciality';
-  static const String getLocationByNameEndpoint = 'speciality/ReadSpeciality';
-  static const String getLocationsByListEndpoint =
-      'speciality/ReadListSpecialityByListName';
-  static const String getLocationsByCategoryEndpoint =
-      'speciality/ReadListSpecialityByCategories';
-
-  @override
-  Future<HttpieResponse> getAllLocations() {
-    return _httpService.postJSON(
-      '$apiURL$getAllLocationEndpoint',
-      appendAuthorizationToken: true,
-    );
-  }
-
-  @override
-  Future<HttpieResponse> getLocationByName({required String locationName}) {
-    Map<String, dynamic> body = <String, dynamic>{'name': locationName};
-    return _httpService.post(
-      '$apiURL$getLocationByNameEndpoint',
-      body: body,
-      appendAuthorizationToken: true,
-    );
-  }
-
-  @override
-  Future<HttpieResponse> getLocationsByList(List<String> listLocation) {
-    Map<String, dynamic> body = <String, dynamic>{'name': listLocation};
-    return _httpService.postJSON(
-      '$apiURL$getLocationsByListEndpoint',
-      body: body,
-      appendAuthorizationToken: true,
-    );
-  }
-
-  @override
-  Future<HttpieResponse> getLocationsByCategory({String? category}) {
-    Map<String, dynamic> body = <String, dynamic>{'categories': category};
-
-    return _httpService.postJSON(
-      '$apiURL$getLocationsByCategoryEndpoint',
-      body: body,
-      appendAuthorizationToken: true,
-    );
-  }
 
   @override
   Future<DocumentReference<Map<String, dynamic>>> addComment(Comment comment) {

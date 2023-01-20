@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_vietnam_app/models/comment.dart';
-import 'package:flutter_vietnam_app/services/locator.dart';
+import 'package:flutter_vietnam_app/utils/locator.dart';
 import 'package:flutter_vietnam_app/utils/storage/storage_service.dart';
 import 'package:flutter_vietnam_app/view_models/post_detail_notifier.dart';
 import 'package:intl/intl.dart';

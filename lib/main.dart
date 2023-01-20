@@ -9,7 +9,7 @@ import 'package:flutter_vietnam_app/view_models/search_notifier.dart';
 import 'package:flutter_vietnam_app/view_models/signup_notifier.dart';
 import 'package:flutter_vietnam_app/view_models/wall_notifier.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:flutter_vietnam_app/services/locator.dart' as locator;
+import 'package:flutter_vietnam_app/utils/locator.dart' as locator;
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';

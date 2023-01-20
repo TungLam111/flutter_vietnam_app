@@ -5,6 +5,8 @@ import 'package:flutter_vietnam_app/models/comment.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
 
+// FirebaseApi composes both Future and Stream type. It's more reasonable to
+// just use one of them, not both, in practical situation
 class FirebaseApiImpl implements FirebaseApi {
   FirebaseApiImpl(this._firestoreInstance, this._firebaseAuth);
 

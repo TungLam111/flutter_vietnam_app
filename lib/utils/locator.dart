@@ -6,13 +6,8 @@ import 'package:flutter_vietnam_app/repository/auth_repo/auth_repo.dart';
 import 'package:flutter_vietnam_app/repository/auth_repo/auth_repo_impl.dart';
 import 'package:flutter_vietnam_app/repository/location_repo/location_repo.dart';
 import 'package:flutter_vietnam_app/repository/location_repo/location_repo_impl.dart';
-import 'package:flutter_vietnam_app/repository/media_repo/media_repo.dart';
-import 'package:flutter_vietnam_app/repository/media_repo/media_repo_impl.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
 import 'package:flutter_vietnam_app/services/location/location_service_impl.dart';
-
-import 'package:flutter_vietnam_app/services/media/media.dart';
-import 'package:flutter_vietnam_app/services/media/media_impl.dart';
 
 import 'package:flutter_vietnam_app/utils/utils_service.dart';
 
@@ -28,10 +23,10 @@ import 'package:flutter_vietnam_app/view_models/post_detail_notifier.dart';
 import 'package:flutter_vietnam_app/view_models/search_notifier.dart';
 import 'package:flutter_vietnam_app/view_models/wall_notifier.dart';
 
-import '../data/web_httpie/httpie.dart';
+import '../data/httpie/httpie.dart';
 
-import 'auth/auth_service.dart';
-import 'auth/auth_service_impl.dart';
+import '../services/auth/auth_service.dart';
+import '../services/auth/auth_service_impl.dart';
 
 import 'package:flutter_vietnam_app/view_models/home_notifier.dart';
 import 'package:flutter_vietnam_app/view_models/login_notifier.dart';
@@ -87,15 +82,10 @@ Future<void> setupServiceLocator() async {
   serviceLocator.registerLazySingleton<AuthService>(
     () => AuthServiceImpl(
       serviceLocator(),
-      serviceLocator(),
     ),
   );
   serviceLocator.registerLazySingleton<LocationService>(
-    () => LocationServiceImpl(serviceLocator(), serviceLocator()),
-  );
-
-  serviceLocator.registerLazySingleton<MediaService>(
-    () => MediaServiceImpl(serviceLocator()),
+    () => LocationServiceImpl(serviceLocator()),
   );
 
   // repository
@@ -103,15 +93,10 @@ Future<void> setupServiceLocator() async {
     () => AuthRepositoryImpl(
       serviceLocator(),
       serviceLocator(),
-      serviceLocator(),
     ),
   );
   serviceLocator.registerLazySingleton<LocationRepository>(
     () => LocationRepositoryImpl(serviceLocator()),
-  );
-
-  serviceLocator.registerLazySingleton<MediaRepository>(
-    () => MediaRepositoryImpl(serviceLocator()),
   );
 
   // view models

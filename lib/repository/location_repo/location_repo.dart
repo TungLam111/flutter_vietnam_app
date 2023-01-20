@@ -4,16 +4,6 @@ import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 
 abstract class LocationRepository {
-  Future<List<Location>?> getLocationsByList(List<String> listLocation);
-
-  Future<List<Location>?> getAllLocations();
-
-  Future<Location> getLocationByName({required String locationName});
-
-  Future<List<Location>?> getLocationsByCategory({
-    required String category,
-  });
-
   Future<UserModelList> getStreamUser(List<String> value);
 
   Future<List<Post>?> getStreamPost();

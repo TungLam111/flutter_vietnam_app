@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/pages/detail/detail_speciality_page.dart';
 import 'package:flutter_vietnam_app/pages/detail/listview_location_by_type.dart';
-import 'package:flutter_vietnam_app/services/locator.dart';
+import 'package:flutter_vietnam_app/utils/locator.dart';
 import 'package:flutter_vietnam_app/view_models/detail_speciality_notifier.dart';
 import 'package:provider/provider.dart';
 

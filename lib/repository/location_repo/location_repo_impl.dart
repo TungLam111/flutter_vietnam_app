@@ -1,60 +1,16 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_vietnam_app/data/web_httpie/httpie.dart';
 import 'package:flutter_vietnam_app/models/comment.dart';
 import 'package:flutter_vietnam_app/models/location.dart';
 import 'package:flutter_vietnam_app/models/post.dart';
 import 'package:flutter_vietnam_app/models/user.dart';
 import 'package:flutter_vietnam_app/repository/location_repo/location_repo.dart';
 import 'package:flutter_vietnam_app/services/location/location_service.dart';
-import 'package:flutter_vietnam_app/utils/logg.dart';
 
 class LocationRepositoryImpl implements LocationRepository {
   LocationRepositoryImpl(this._locationService);
   final LocationService _locationService;
 
-  @override
-  Future<List<Location>> getLocationsByList(List<String> listLocation) async {
-    HttpieResponse response =
-        await _locationService.getLocationsByList(listLocation);
-    return LocationList.fromJson(
-          json.decode(response.body) as List<dynamic>,
-        ).categories ??
-        <Location>[];
-  }
-
-  @override
-  Future<List<Location>> getAllLocations() async {
-    HttpieResponse response = await _locationService.getAllLocations();
-    return LocationList.fromJson(json.decode(response.body) as List<dynamic>)
-            .categories ??
-        <Location>[];
-  }
-
-  @override
-  Future<Location> getLocationByName({required String locationName}) async {
-    HttpieResponse response =
-        await _locationService.getLocationByName(locationName: locationName);
-    return Location.fromJSON(
-      (json.decode(response.body)['data']) as Map<String, dynamic>,
-    );
-  }
-
-  @override
-  Future<List<Location>> getLocationsByCategory({
-    required String category,
-  }) async {
-    HttpieResponse response =
-        await _locationService.getLocationsByCategory(category: category);
-    logg(json.decode(response.body));
-    return LocationList.fromJson(json.decode(response.body) as List<dynamic>)
-            .categories ??
-        <Location>[];
-  }
-
   // firebase
-
   @override
   Future<String> addComment(Comment comment) async {
     DocumentReference<Map<String, dynamic>> stream =

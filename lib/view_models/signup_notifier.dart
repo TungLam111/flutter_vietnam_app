@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_vietnam_app/data/web_httpie/httpie.dart';
 import 'package:flutter_vietnam_app/repository/auth_repo/auth_repo.dart';
-import 'package:flutter_vietnam_app/services/exception.dart';
 import 'package:flutter_vietnam_app/utils/logg.dart';
 import 'package:flutter_vietnam_app/utils/validation/validation_service.dart';
 
@@ -92,25 +90,6 @@ class SignupScreenViewModel extends ChangeNotifier {
     if (_validateForm()) {
       await signupWithFirebase();
     }
-  }
-
-  Future<void> signupWithCredientials() async {
-    _setSignUpProgress(true);
-    String username = _usernameController.text;
-    String password = _passwordController.text;
-    String name = '';
-    try {
-      logg('Start running');
-      await _authRepository.signUpWithCredientials(
-          name: name, username: username, password: password,);
-    } on CredentialsMismatchError {
-      _setLoginFeedback('auth login credentials mismatch error');
-    } on HttpieRequestError<dynamic> {
-      _setLoginFeedback('auth login server error');
-    } on HttpieConnectionRefusedError {
-      _setLoginFeedback('auth login connection error');
-    }
-    _setSignUpProgress(false);
   }
 
   String? validateEmail(String? value) {
